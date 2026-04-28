@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Core Asset Store - Temporary Service Notice</title>
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <style>
+    :root {
+      --bg: #0c1224;
+      --panel: #131b33;
+      --line: #253154;
+      --text: #e8edf8;
+      --muted: #a7b2cc;
+      --accent: #e7a93a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background:
+        radial-gradient(circle at 15% 15%, rgba(231, 169, 58, 0.14), transparent 45%),
+        radial-gradient(circle at 85% 10%, rgba(52, 111, 255, 0.12), transparent 42%),
+        var(--bg);
+      color: var(--text);
+      font: 16px/1.5 "Segoe UI", Arial, sans-serif;
+      padding: 24px;
+    }
+    .card {
+      width: min(760px, 100%);
+      background: linear-gradient(180deg, rgba(19, 27, 51, 0.96), rgba(13, 19, 37, 0.96));
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+    }
+    .badge {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(231, 169, 58, 0.35);
+      color: var(--accent);
+      background: rgba(231, 169, 58, 0.08);
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(24px, 3vw, 34px);
+      line-height: 1.2;
+    }
+    p {
+      margin: 0 0 12px;
+      color: var(--muted);
+    }
+    ul {
+      margin: 16px 0 0;
+      padding-left: 20px;
+      color: var(--muted);
+    }
+    li { margin: 8px 0; }
+    .foot {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+      font-size: 14px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <main class="card" role="main" aria-labelledby="notice-title">
+    <div class="badge">Temporary Notice</div>
+    <h1 id="notice-title">Core Asset Store is temporarily unavailable</h1>
+    <p>
+      We are currently performing a security and compliance review of the website content and configuration.
+    </p>
+    <p>
+      During this period, public access to account features and online services is temporarily disabled.
+    </p>
+    <ul>
+      <li>Security review and hosting hardening in progress</li>
+      <li>Content review and policy updates in progress</li>
+      <li>Service access will resume after review completion</li>
+    </ul>
+    <div class="foot">
+      This is a temporary holding page. Please check back later.
+    </div>
+  </main>
+</body>
+</html>
