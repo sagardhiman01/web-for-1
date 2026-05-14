@@ -28,33 +28,23 @@ return new class extends Migration
                 }
             });
 
-        $indexExists = DB::table('information_schema.statistics')
-            ->where('table_schema', DB::getDatabaseName())
-            ->where('table_name', 'users')
-            ->where('index_name', 'users_referral_code_unique')
-            ->exists();
-
-        if (!$indexExists) {
+        try {
             Schema::table('users', function (Blueprint $table) {
-                $table->unique('referral_code');
+                $table->unique('referral_code', 'users_referral_code_unique');
             });
-        }
+        } catch (\Throwable $e) {}
+
     }
 
     public function down()
     {
         if (Schema::hasColumn('users', 'referral_code')) {
-            $indexExists = DB::table('information_schema.statistics')
-                ->where('table_schema', DB::getDatabaseName())
-                ->where('table_name', 'users')
-                ->where('index_name', 'users_referral_code_unique')
-                ->exists();
-
-            if ($indexExists) {
+            try {
                 Schema::table('users', function (Blueprint $table) {
                     $table->dropUnique('users_referral_code_unique');
                 });
-            }
+            } catch (\Throwable $e) {}
+
 
             Schema::table('users', function (Blueprint $table) {
                 $table->dropColumn('referral_code');

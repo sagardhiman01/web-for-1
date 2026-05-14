@@ -560,7 +560,7 @@ function hexToHsl($hex)
     $lightness  = round($lightness);
     $saturation = round($saturation);
 
-    return "hsl(${hue}, ${saturation}%, ${lightness}%)";
+    return "hsl({$hue}, {$saturation}%, {$lightness}%)";
 }
 
 function getReferees($user, $maxLevel, $data = [], $depth = 1, $layer = 0)

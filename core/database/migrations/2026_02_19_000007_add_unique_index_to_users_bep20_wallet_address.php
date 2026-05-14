@@ -35,17 +35,11 @@ return new class extends Migration {
             throw new RuntimeException('Duplicate BEP20 wallet addresses found. Resolve duplicates before running this migration.');
         }
 
-        $indexExists = DB::table('information_schema.statistics')
-            ->where('table_schema', DB::getDatabaseName())
-            ->where('table_name', 'users')
-            ->where('index_name', 'users_bep20_wallet_address_unique')
-            ->exists();
-
-        if (!$indexExists) {
+        try {
             Schema::table('users', function (Blueprint $table) {
                 $table->unique('bep20_wallet_address', 'users_bep20_wallet_address_unique');
             });
-        }
+        } catch (\Throwable $e) {}
     }
 
     public function down(): void
@@ -54,17 +48,11 @@ return new class extends Migration {
             return;
         }
 
-        $indexExists = DB::table('information_schema.statistics')
-            ->where('table_schema', DB::getDatabaseName())
-            ->where('table_name', 'users')
-            ->where('index_name', 'users_bep20_wallet_address_unique')
-            ->exists();
-
-        if ($indexExists) {
+        try {
             Schema::table('users', function (Blueprint $table) {
                 $table->dropUnique('users_bep20_wallet_address_unique');
             });
-        }
+        } catch (\Throwable $e) {}
     }
 };
 
