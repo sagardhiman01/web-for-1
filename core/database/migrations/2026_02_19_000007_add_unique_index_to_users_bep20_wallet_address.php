@@ -24,10 +24,10 @@ return new class extends Migration {
             ->update(['bep20_wallet_address' => null]);
 
         $duplicateCount = DB::table('users')
-            ->selectRaw('LOWER(bep20_wallet_address) as wallet, COUNT(*) as total')
+            ->selectRaw('LOWER(bep20_wallet_address) as wallet')
             ->whereNotNull('bep20_wallet_address')
             ->groupBy('wallet')
-            ->having('total', '>', 1)
+            ->havingRaw('COUNT(*) > 1')
             ->get()
             ->count();
 
