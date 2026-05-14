@@ -42,6 +42,9 @@ class ProfileController extends Controller
             'city' => $request->city,
         ];
 
+        $user->bep20_wallet_address = $request->bep20_wallet_address;
+        $user->trc20_wallet_address = $request->trc20_wallet_address;
+
         if ($request->hasFile('profile_image')) {
             $oldImage = $this->isDefaultAvatar($user->image) ? null : $user->image;
             $user->image = fileUploader($request->file('profile_image'), getFilePath('userProfile'), getFileSize('userProfile'), $oldImage);

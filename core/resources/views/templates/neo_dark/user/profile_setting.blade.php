@@ -75,7 +75,18 @@
                                     <label class="form-label">@lang('City')</label>
                                     <input type="text"  name="city" value="{{@$user->address->city}}">
                                 </div>
+                            </div>
 
+                            <div class="row">
+                                <div class="form-group col-sm-6">
+                                    <label class="form-label">@lang('USDT (BEP20) Wallet Address')</label>
+                                    <input type="text" name="bep20_wallet_address" value="{{$user->bep20_wallet_address}}" placeholder="0x...">
+                                </div>
+
+                                <div class="form-group col-sm-6">
+                                    <label class="form-label">@lang('USDT (TRC20) Wallet Address')</label>
+                                    <input type="text" name="trc20_wallet_address" value="{{$user->trc20_wallet_address}}" placeholder="T...">
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">@lang('Upload Profile Photo')</label>
