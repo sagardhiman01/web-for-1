@@ -54,7 +54,6 @@ def convert_mysql_to_pg(mysql_file, pg_file):
 
     # -------------------------------------------------------
     # 7. Remove MySQL column COMMENT syntax
-    #    e.g.  status tinyint DEFAULT 0 COMMENT '1=>active'
     # -------------------------------------------------------
     content = re.sub(r"\s+COMMENT\s+'(?:[^'\\]|\\.)*'", '', content)
 
@@ -74,7 +73,6 @@ def convert_mysql_to_pg(mysql_file, pg_file):
     content = re.sub(r'\blongtext\b', 'text', content, flags=re.IGNORECASE)
     content = re.sub(r'\bmediumtext\b', 'text', content, flags=re.IGNORECASE)
     content = re.sub(r'\bdatetime\b', 'timestamp', content, flags=re.IGNORECASE)
-    # Fix leftover from previous bad runs
     content = re.sub(r'\btinyinteger\b', 'smallint', content, flags=re.IGNORECASE)
 
     # -------------------------------------------------------
@@ -102,24 +100,46 @@ def convert_mysql_to_pg(mysql_file, pg_file):
     content = re.sub(r'\bSTART TRANSACTION\b', 'BEGIN', content, flags=re.IGNORECASE)
 
     # -------------------------------------------------------
-    # 14. Remove inline SQL -- comments
+    # 14. CRITICAL: Fix MySQL string escape sequences for PostgreSQL
+    #   MySQL uses \' to escape single quotes inside strings
+    #   PostgreSQL (standard_conforming_strings=ON) uses '' instead
+    #   We must do this BEFORE removing comments to avoid corrupting data
+    # -------------------------------------------------------
+    # Replace \' with '' (MySQL escaped quote -> PostgreSQL double single quote)
+    content = content.replace("\\'", "''")
+
+    # Replace \" with " (MySQL escaped double quote -> plain double quote)
+    content = content.replace('\\"', '"')
+
+    # Replace \r\n and \n sequences (MySQL newline escapes in strings)
+    # These cause psql to see backslash at start of continuation lines
+    # Replace with a safe space to keep data readable
+    content = content.replace('\\r\\n', ' ')
+    content = content.replace('\\n', ' ')
+    content = content.replace('\\r', ' ')
+
+    # Replace \\ (double backslash) with single backslash
+    content = content.replace('\\\\', '\\')
+
+    # -------------------------------------------------------
+    # 15. Remove inline SQL -- comments
     # -------------------------------------------------------
     content = re.sub(r'--[^\n]*', '', content)
 
     # -------------------------------------------------------
-    # 15. Clean up trailing commas before closing parenthesis
+    # 16. Clean up trailing commas before closing parenthesis
     # -------------------------------------------------------
     content = re.sub(r',\s*\)', ')', content)
 
     # -------------------------------------------------------
-    # 16. Clean up multiple blank lines
+    # 17. Clean up multiple blank lines
     # -------------------------------------------------------
     content = re.sub(r'\n{3,}', '\n\n', content)
 
     # -------------------------------------------------------
-    # 17. Add psql header to suppress metacommand errors
-    #     \set ON_ERROR_STOP off  -> psql keeps going on errors
-    #     SET standard_conforming_strings = ON -> handle backslashes in strings
+    # 18. Add psql header
+    #   \set ON_ERROR_STOP off  -> psql keeps going on errors
+    #   standard_conforming_strings = ON -> treat \ as literal in strings
     # -------------------------------------------------------
     header = (
         "\\set ON_ERROR_STOP off\n"
