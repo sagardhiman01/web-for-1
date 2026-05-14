@@ -1,31 +1,6 @@
 
 
-
-
-
-
-
-
-
-
 BEGIN;
-SET time_zone = "+00:00";
-
-
-/*
-/*
-/*
-/*
-
-
-
-
-
-
-
-
-
-
 
 CREATE TABLE admins (
   id bigint NOT NULL,
@@ -40,32 +15,18 @@ CREATE TABLE admins (
   updated_at timestamp NULL DEFAULT NULL
 );
 
-
-
-
-
 INSERT INTO admins (id, name, email, username, email_verified_at, image, password, remember_token, created_at, updated_at) VALUES
 (1, 'Super Admin', 'aliabbasnadeem538@gmail.com', 'admin', NULL, '6238276ac25d11647847274.png', '$2y$10$9FlJPX2MB1a4KABCy7Od8eMbgwGMMc01Tvtj/vNyHcwHUpeHZ3gKG', 'n6tTiXhsWBeDaybOJ4y4q1oEbls5TedEBsAMpMpPUXjIQv63fQ3ro8vr9Dsv', NULL, '2023-11-04 12:01:37');
-
-
-
-
-
-
 
 CREATE TABLE admin_notifications (
   id bigint NOT NULL,
   user_id integer NOT NULL DEFAULT 0,
   title varchar(255) DEFAULT NULL,
-  is_read tinyinteger NOT NULL DEFAULT 0,
+  is_read smallint NOT NULL DEFAULT 0,
   click_url text DEFAULT NULL,
   created_at timestamp NULL DEFAULT NULL,
   updated_at timestamp NULL DEFAULT NULL
 );
-
-
-
-
 
 INSERT INTO admin_notifications (id, user_id, title, is_read, click_url, created_at, updated_at) VALUES
 (1, 1, 'New member registered', 0, '/admin/users/detail/1', '2023-11-03 19:41:33', '2023-11-03 19:41:33'),
@@ -73,25 +34,13 @@ INSERT INTO admin_notifications (id, user_id, title, is_read, click_url, created
 (3, 1, 'Deposit request from 03042324661', 0, '/admin/deposit/details/3', '2023-11-04 07:36:28', '2023-11-04 07:36:28'),
 (4, 1, 'New withdraw request from 03042324661', 0, '/admin/withdraw/details/2', '2023-11-04 08:08:04', '2023-11-04 08:08:04');
 
-
-
-
-
-
-
 CREATE TABLE admin_password_resets (
   id bigint NOT NULL,
   email varchar(40) DEFAULT NULL,
   token varchar(40) DEFAULT NULL,
-  status tinyinteger NOT NULL DEFAULT 1,
+  status smallint NOT NULL DEFAULT 1,
   created_at timestamp NULL DEFAULT NULL
 );
-
-
-
-
-
-
 
 CREATE TABLE deposits (
   id bigint NOT NULL,
@@ -108,16 +57,12 @@ CREATE TABLE deposits (
   btc_wallet varchar(255) DEFAULT NULL,
   trx varchar(40) DEFAULT NULL,
   try integer NOT NULL DEFAULT 0,
-  status tinyinteger NOT NULL DEFAULT 0 COMMENT '1=>success, 2=>pending, 3=>cancel',
-  from_api tinyinteger NOT NULL DEFAULT 0,
+  status smallint NOT NULL DEFAULT 0 COMMENT '1=>success, 2=>pending, 3=>cancel',
+  from_api smallint NOT NULL DEFAULT 0,
   admin_feedback varchar(255) DEFAULT NULL,
   created_at timestamp NULL DEFAULT NULL,
   updated_at timestamp NULL DEFAULT NULL
 );
-
-
-
-
 
 INSERT INTO deposits (id, user_id, plan_id, method_code, amount, method_currency, charge, rate, final_amo, detail, btc_amo, btc_wallet, trx, try, status, from_api, admin_feedback, created_at, updated_at) VALUES
 (1, 1, 0, 1000, '2000.00000000', 'PKR', '0.00000000', '1.00000000', '2000.00000000', NULL, '0', '', '1H5RXODNAXSS', 0, 0, 0, NULL, '2023-11-03 23:36:27', '2023-11-03 23:36:27'),
@@ -126,26 +71,14 @@ INSERT INTO deposits (id, user_id, plan_id, method_code, amount, method_currency
 (4, 1, 0, 1000, '500.00000000', 'PKR', '0.00000000', '1.00000000', '500.00000000', NULL, '0', '', '7QOZ4PP7ZQ4D', 0, 0, 0, NULL, '2023-11-04 12:09:19', '2023-11-04 12:09:19'),
 (5, 1, 0, 1000, '500.00000000', 'PKR', '0.00000000', '1.00000000', '500.00000000', NULL, '0', '', 'UXNFUXU7JX3C', 0, 0, 0, NULL, '2023-11-04 12:19:27', '2023-11-04 12:19:27');
 
-
-
-
-
-
-
 CREATE TABLE device_tokens (
   id bigint NOT NULL,
   user_id integer NOT NULL DEFAULT 0,
-  is_app tinyinteger NOT NULL DEFAULT 0,
+  is_app smallint NOT NULL DEFAULT 0,
   token text NOT NULL,
   created_at timestamp NULL DEFAULT NULL,
   updated_at timestamp NULL DEFAULT NULL
 );
-
-
-
-
-
-
 
 CREATE TABLE extensions (
   id bigint NOT NULL,
@@ -156,27 +89,17 @@ CREATE TABLE extensions (
   script text DEFAULT NULL,
   shortcode text DEFAULT NULL COMMENT 'object',
   support text DEFAULT NULL COMMENT 'help section',
-  status tinyinteger NOT NULL DEFAULT 1 COMMENT '1=>enable, 2=>disable',
+  status smallint NOT NULL DEFAULT 1 COMMENT '1=>enable, 2=>disable',
   created_at timestamp NULL DEFAULT NULL,
   updated_at timestamp NULL DEFAULT NULL
 );
-
-
-
-
 
 INSERT INTO extensions (id, act, name, description, image, script, shortcode, support, status, created_at, updated_at) VALUES
 (1, 'tawk-chat', 'Tawk.to', 'Key location is shown bellow', 'tawky_big.png', '<script>\r\n                        var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();\r\n                        (function(){\r\n                        var s1=document.createElement(\"script\"),s0=document.getElementsByTagName(\"script\")[0];\r\n                        s1.async=true;\r\n                        s1.src=\"https://embed.tawk.to/{{app_key}}\";\r\n                        s1.charset=\"UTF-8\";\r\n                        s1.setAttribute(\"crossorigin\",\"*\");\r\n                        s0.parentNode.insertBefore(s1,s0);\r\n                        })();\r\n                    </script>', '{\"app_key\":{\"title\":\"App Key\",\"value\":\"
 (2, 'google-recaptcha2', 'Google Recaptcha 2', 'Key location is shown bellow', 'recaptcha3.png', '\n<script src=\"https://www.google.com/recaptcha/api.js\"></script>\n<div class=\"g-recaptcha\" data-sitekey=\"{{site_key}}\" data-callback=\"verifyCaptcha\"></div>\n<div id=\"g-recaptcha-error\"></div>', '{\"site_key\":{\"title\":\"Site Key\",\"value\":\"6LdPC88fAAAAADQlUf_DV6Hrvgm-pZuLJFSLDOWV\"},\"secret_key\":{\"title\":\"Secret Key\",\"value\":\"6LdPC88fAAAAAG5SVaRYDnV2NpCrptLg2XLYKRKB\"}}', 'recaptcha.png', 0, '2019-10-18 23:16:05', '2022-10-06 03:02:22'),
 (3, 'custom-captcha', 'Custom Captcha', 'Just put any random string', 'customcaptcha.png', NULL, '{\"random_key\":{\"title\":\"Random String\",\"value\":\"SecureString\"}}', 'na', 0, '2019-10-18 23:16:05', '2022-10-06 03:02:25'),
-(4, 'google-analytics', 'Google Analytics', 'Key location is shown bellow', 'google_analytics.png', '<script async src=\"https://www.googletagmanager.com/gtag/js?id={{app_key}}\"></script>\r\n                <script>\r\n                  window.dataLayer = window.dataLayer || [];\r\n                  function gtag(){dataLayer.push(arguments);}\r\n                  gtag(\"js\", new Date();\r\n                \r\n                  gtag(\"config\", \"{{app_key}}\");\r\n                </script>', '{\"app_key\":{\"title\":\"App Key\",\"value\":\"
+(4, 'google-analytics', 'Google Analytics', 'Key location is shown bellow', 'google_analytics.png', '<script async src=\"https://www.googletagmanager.com/gtag/js?id={{app_key}}\"></script>\r\n                <script>\r\n                  window.dataLayer = window.dataLayer || [];\r\n                  function gtag(){dataLayer.push(arguments);}\r\n                  gtag(\"js\", new Date());\r\n                \r\n                  gtag(\"config\", \"{{app_key}}\");\r\n                </script>', '{\"app_key\":{\"title\":\"App Key\",\"value\":\"
 (5, 'fb-comment', 'Facebook Comment ', 'Key location is shown bellow', 'Facebook.png', '<div id=\"fb-root\"></div><script async defer crossorigin=\"anonymous\" src=\"https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v4.0&appId={{app_key}}&autoLogAppEvents=1\"></script>', '{\"app_key\":{\"title\":\"App Key\",\"value\":\"
-
-
-
-
-
-
 
 CREATE TABLE forms (
   id bigint NOT NULL,
@@ -185,10 +108,6 @@ CREATE TABLE forms (
   created_at timestamp NULL DEFAULT NULL,
   updated_at timestamp NULL DEFAULT NULL
 );
-
-
-
-
 
 INSERT INTO forms (id, act, form_data, created_at, updated_at) VALUES
 (2, 'manual_deposit', '{\"nid_number\":{\"name\":\"NID Number\",\"label\":\"nid_number\",\"is_required\":\"required\",\"extensions\":null,\"options\":[],\"type\":\"text\"},\"nid_number_22\":{\"name\":\"NID Number 22\",\"label\":\"nid_number_22\",\"is_required\":\"required\",\"extensions\":null,\"options\":[],\"type\":\"textarea\"},\"sadfg\":{\"name\":\"sadfg\",\"label\":\"sadfg\",\"is_required\":\"optional\",\"extensions\":null,\"options\":[],\"type\":\"text\"},\"asdf\":{\"name\":\"asdf\",\"label\":\"asdf\",\"is_required\":\"required\",\"extensions\":null,\"options\":[\"Test\",\"Test2\",\"Test3\"],\"type\":\"select\"},\"nid_number_226985\":{\"name\":\"NID Number 226985\",\"label\":\"nid_number_226985\",\"is_required\":\"required\",\"extensions\":null,\"options\":[\"Test\",\"Test 2\",\"Test 3\"],\"type\":\"checkbox\"},\"nid_number_3333\":{\"name\":\"NID Number 3333\",\"label\":\"nid_number_3333\",\"is_required\":\"required\",\"extensions\":null,\"options\":[\"Test\",\"asdf\"],\"type\":\"radio\"},\"nid_number_3333587\":{\"name\":\"NID Number 3333587\",\"label\":\"nid_number_3333587\",\"is_required\":\"optional\",\"extensions\":\"jpg,bmp,png,pdf\",\"options\":[],\"type\":\"file\"}}', '2022-03-16 01:09:49', '2022-03-17 00:02:54'),
@@ -209,12 +128,6 @@ INSERT INTO forms (id, act, form_data, created_at, updated_at) VALUES
 (18, 'manual_deposit', '{\"attachment_proof\":{\"name\":\"Attachment proof\",\"label\":\"attachment_proof\",\"is_required\":\"required\",\"extensions\":\"jpg,jpeg,png\",\"options\":[],\"type\":\"file\"}}', '2023-11-03 23:19:00', '2023-11-03 23:19:00'),
 (19, 'withdraw_method', '{\"account_name\":{\"name\":\"Account Name\",\"label\":\"account_name\",\"is_required\":\"required\",\"extensions\":\"\",\"options\":[],\"type\":\"text\"},\"account_number\":{\"name\":\"Account Number\",\"label\":\"account_number\",\"is_required\":\"required\",\"extensions\":null,\"options\":[],\"type\":\"text\"}}', '2023-11-04 07:51:49', '2023-11-04 07:54:28');
 
-
-
-
-
-
-
 CREATE TABLE frontends (
   id bigint NOT NULL,
   data_keys varchar(40) DEFAULT NULL,
@@ -223,10 +136,6 @@ CREATE TABLE frontends (
   created_at timestamp NULL DEFAULT NULL,
   updated_at timestamp NULL DEFAULT NULL
 );
-
-
-
-
 
 INSERT INTO frontends (id, data_keys, data_values, template_name, created_at, updated_at) VALUES
 (1, 'seo.data', '{\"seo_image\":\"1\",\"keywords\":[\"hyip\",\"bitcoin\",\"investment\",\"hyip business\",\"hyip script\",\"best hyip\",\"buy hyip script\",\"advanced hyip script\",\"hyip software\",\"hight yield investment program\",\"Hyip manager\",\"hyip manager script\",\"cheap hyip script\",\"realable hyip\",\"secure hyip script\",\"php hyip script\",\"new hyip script\",\"hyip program\"],\"description\":\"Future Bike Home\",\"social_title\":\"Future Bike Home\",\"social_description\":\"Future Bike Home\",\"image\":\"6546327f58bb71699099263.png\"}', 'global', '2020-07-04 23:42:52', '2023-11-04 12:01:03'),
@@ -419,36 +328,26 @@ INSERT INTO frontends (id, data_keys, data_values, template_name, created_at, up
 (401, 'testimonial.element', '{\"has_image\":\"1\",\"name\":\"David Doe\",\"designation\":\"User from England\",\"quote\":\"Legit....and legit. Although the payment was processed manually, I have received my first payment within a very short time., I think nice for invest at this site.\",\"image\":\"633edd66c19231665064294.jpg\"}', 'bit_gold', '2022-10-06 07:50:53', '2022-10-06 07:51:34'),
 (411, 'preloader.content', '{\"has_image\":\"1\",\"image_one\":\"633efa583f0551665071704.png\",\"image_two\":\"633efa584317d1665071704.png\"}', 'neo_dark', '2022-10-06 09:55:04', '2022-10-06 09:55:04');
 
-
-
-
-
-
-
 CREATE TABLE gateways (
   id bigint NOT NULL,
   form_id integer NOT NULL DEFAULT 0,
   code integer DEFAULT NULL,
   name varchar(40) DEFAULT NULL,
   alias varchar(40) NOT NULL DEFAULT 'NULL',
-  status tinyinteger NOT NULL DEFAULT 1 COMMENT '1=>enable, 2=>disable',
+  status smallint NOT NULL DEFAULT 1 COMMENT '1=>enable, 2=>disable',
   gateway_parameters text DEFAULT NULL,
   supported_currencies text DEFAULT NULL,
-  crypto tinyinteger NOT NULL DEFAULT 0 COMMENT '0: fiat currency, 1: crypto currency',
+  crypto smallint NOT NULL DEFAULT 0 COMMENT '0: fiat currency, 1: crypto currency',
   extra text DEFAULT NULL,
   description text DEFAULT NULL,
   created_at timestamp NULL DEFAULT NULL,
   updated_at timestamp NULL DEFAULT NULL
 );
 
-
-
-
-
 INSERT INTO gateways (id, form_id, code, name, alias, status, gateway_parameters, supported_currencies, crypto, extra, description, created_at, updated_at) VALUES
 (1, 0, 101, 'Paypal', 'Paypal', 1, '{\"paypal_email\":{\"title\":\"PayPal Email\",\"global\":true,\"value\":\"sb-owud61543012@business.example.com\"}}', '{\"AUD\":\"AUD\",\"BRL\":\"BRL\",\"CAD\":\"CAD\",\"CZK\":\"CZK\",\"DKK\":\"DKK\",\"EUR\":\"EUR\",\"HKD\":\"HKD\",\"HUF\":\"HUF\",\"INR\":\"INR\",\"ILS\":\"ILS\",\"JPY\":\"JPY\",\"MYR\":\"MYR\",\"MXN\":\"MXN\",\"TWD\":\"TWD\",\"NZD\":\"NZD\",\"NOK\":\"NOK\",\"PHP\":\"PHP\",\"PLN\":\"PLN\",\"GBP\":\"GBP\",\"RUB\":\"RUB\",\"SGD\":\"SGD\",\"SEK\":\"SEK\",\"CHF\":\"CHF\",\"THB\":\"THB\",\"USD\":\"$\"}', 0, NULL, NULL, '2019-09-14 13:14:22', '2021-05-21 00:04:38'),
 (2, 0, 102, 'Perfect Money', 'PerfectMoney', 1, '{\"passphrase\":{\"title\":\"ALTERNATE PASSPHRASE\",\"global\":true,\"value\":\"hR26aw02Q1eEeUPSIfuwNypXX\"},\"wallet_id\":{\"title\":\"PM Wallet\",\"global\":false,\"value\":\"\"}}', '{\"USD\":\"$\",\"EUR\":\"\\u20ac\"}', 0, NULL, NULL, '2019-09-14 13:14:22', '2021-05-21 01:35:33'),
-(3, 0, 103, 'Stripe Hosted', 'Stripe', 1, '{\"secret_key\":{\"title\":\"Secret Key\",\"global\":true,\"value\":\"sk_test_dummy_key_to_bypass_github_scanning\"},\"publishable_key\":{\"title\":\"PUBLISHABLE KEY\",\"global\":true,\"value\":\"pk_test_dummy_key_to_bypass_github_scanning\"}}', '{\"USD\":\"USD\",\"AUD\":\"AUD\",\"BRL\":\"BRL\",\"CAD\":\"CAD\",\"CHF\":\"CHF\",\"DKK\":\"DKK\",\"EUR\":\"EUR\",\"GBP\":\"GBP\",\"HKD\":\"HKD\",\"INR\":\"INR\",\"JPY\":\"JPY\",\"MXN\":\"MXN\",\"MYR\":\"MYR\",\"NOK\":\"NOK\",\"NZD\":\"NZD\",\"PLN\":\"PLN\",\"SEK\":\"SEK\",\"SGD\":\"SGD\"}', 0, NULL, NULL, '2019-09-14 13:14:22', '2021-05-21 00:48:36'),
+(3, 0, 103, 'Stripe Hosted', 'Stripe', 1, '{\"secret_key\":{\"title\":\"Secret Key\",\"global\":true,\"value\":\"sk_test_51I6GGiCGv1sRiQlEi5v1or9eR0HVbuzdMd2rW4n3DxC8UKfz66R4X6n4yYkzvI2LeAIuRU9H99ZpY7XCNFC9xMs500vBjZGkKG\"},\"publishable_key\":{\"title\":\"PUBLISHABLE KEY\",\"global\":true,\"value\":\"pk_test_51I6GGiCGv1sRiQlEOisPKrjBqQqqcFsw8mXNaZ2H2baN6R01NulFS7dKFji1NRRxuchoUTEDdB7ujKcyKYSVc0z500eth7otOM\"}}', '{\"USD\":\"USD\",\"AUD\":\"AUD\",\"BRL\":\"BRL\",\"CAD\":\"CAD\",\"CHF\":\"CHF\",\"DKK\":\"DKK\",\"EUR\":\"EUR\",\"GBP\":\"GBP\",\"HKD\":\"HKD\",\"INR\":\"INR\",\"JPY\":\"JPY\",\"MXN\":\"MXN\",\"MYR\":\"MYR\",\"NOK\":\"NOK\",\"NZD\":\"NZD\",\"PLN\":\"PLN\",\"SEK\":\"SEK\",\"SGD\":\"SGD\"}', 0, NULL, NULL, '2019-09-14 13:14:22', '2021-05-21 00:48:36'),
 (4, 0, 104, 'Skrill', 'Skrill', 1, '{\"pay_to_email\":{\"title\":\"Skrill Email\",\"global\":true,\"value\":\"merchant@skrill.com\"},\"secret_key\":{\"title\":\"Secret Key\",\"global\":true,\"value\":\"
 (5, 0, 105, 'PayTM', 'Paytm', 1, '{\"MID\":{\"title\":\"Merchant ID\",\"global\":true,\"value\":\"DIY12386817555501617\"},\"merchant_key\":{\"title\":\"Merchant Key\",\"global\":true,\"value\":\"bKMfNxPPf_QdZppa\"},\"WEBSITE\":{\"title\":\"Paytm Website\",\"global\":true,\"value\":\"DIYtestingweb\"},\"INDUSTRY_TYPE_ID\":{\"title\":\"Industry Type\",\"global\":true,\"value\":\"Retail\"},\"CHANNEL_ID\":{\"title\":\"CHANNEL ID\",\"global\":true,\"value\":\"WEB\"},\"transaction_url\":{\"title\":\"Transaction URL\",\"global\":true,\"value\":\"https:\\/\\/pguat.paytm.com\\/oltp-web\\/processTransaction\"},\"transaction_status_url\":{\"title\":\"Transaction STATUS URL\",\"global\":true,\"value\":\"https:\\/\\/pguat.paytm.com\\/paytmchecksum\\/paytmCallback.jsp\"}}', '{\"AUD\":\"AUD\",\"ARS\":\"ARS\",\"BDT\":\"BDT\",\"BRL\":\"BRL\",\"BGN\":\"BGN\",\"CAD\":\"CAD\",\"CLP\":\"CLP\",\"CNY\":\"CNY\",\"COP\":\"COP\",\"HRK\":\"HRK\",\"CZK\":\"CZK\",\"DKK\":\"DKK\",\"EGP\":\"EGP\",\"EUR\":\"EUR\",\"GEL\":\"GEL\",\"GHS\":\"GHS\",\"HKD\":\"HKD\",\"HUF\":\"HUF\",\"INR\":\"INR\",\"IDR\":\"IDR\",\"ILS\":\"ILS\",\"JPY\":\"JPY\",\"KES\":\"KES\",\"MYR\":\"MYR\",\"MXN\":\"MXN\",\"MAD\":\"MAD\",\"NPR\":\"NPR\",\"NZD\":\"NZD\",\"NGN\":\"NGN\",\"NOK\":\"NOK\",\"PKR\":\"PKR\",\"PEN\":\"PEN\",\"PHP\":\"PHP\",\"PLN\":\"PLN\",\"RON\":\"RON\",\"RUB\":\"RUB\",\"SGD\":\"SGD\",\"ZAR\":\"ZAR\",\"KRW\":\"KRW\",\"LKR\":\"LKR\",\"SEK\":\"SEK\",\"CHF\":\"CHF\",\"THB\":\"THB\",\"TRY\":\"TRY\",\"UGX\":\"UGX\",\"UAH\":\"UAH\",\"AED\":\"AED\",\"GBP\":\"GBP\",\"USD\":\"USD\",\"VND\":\"VND\",\"XOF\":\"XOF\"}', 0, NULL, NULL, '2019-09-14 13:14:22', '2021-05-21 03:00:44'),
 (6, 0, 106, 'Payeer', 'Payeer', 0, '{\"merchant_id\":{\"title\":\"Merchant ID\",\"global\":true,\"value\":\"866989763\"},\"secret_key\":{\"title\":\"Secret key\",\"global\":true,\"value\":\"7575\"}}', '{\"USD\":\"USD\",\"EUR\":\"EUR\",\"RUB\":\"RUB\"}', 0, '{\"status\":{\"title\": \"Status URL\",\"value\":\"ipn.Payeer\"}}', NULL, '2019-09-14 13:14:22', '2020-12-28 01:26:58'),
@@ -456,7 +355,7 @@ INSERT INTO gateways (id, form_id, code, name, alias, status, gateway_parameters
 (8, 0, 108, 'VoguePay', 'Voguepay', 1, '{\"merchant_id\":{\"title\":\"MERCHANT ID\",\"global\":true,\"value\":\"demo\"}}', '{\"USD\":\"USD\",\"GBP\":\"GBP\",\"EUR\":\"EUR\",\"GHS\":\"GHS\",\"NGN\":\"NGN\",\"ZAR\":\"ZAR\"}', 0, NULL, NULL, '2019-09-14 13:14:22', '2021-05-21 01:22:38'),
 (9, 0, 109, 'Flutterwave', 'Flutterwave', 1, '{\"public_key\":{\"title\":\"Public Key\",\"global\":true,\"value\":\"
 (10, 0, 110, 'RazorPay', 'Razorpay', 1, '{\"key_id\":{\"title\":\"Key Id\",\"global\":true,\"value\":\"rzp_test_kiOtejPbRZU90E\"},\"key_secret\":{\"title\":\"Key Secret \",\"global\":true,\"value\":\"osRDebzEqbsE1kbyQJ4y0re7\"}}', '{\"INR\":\"INR\"}', 0, NULL, NULL, '2019-09-14 13:14:22', '2021-05-21 02:51:32'),
-(11, 0, 111, 'Stripe Storefront', 'StripeJs', 1, '{\"secret_key\":{\"title\":\"Secret Key\",\"global\":true,\"value\":\"sk_test_dummy_key_to_bypass_github_scanning\"},\"publishable_key\":{\"title\":\"PUBLISHABLE KEY\",\"global\":true,\"value\":\"pk_test_dummy_key_to_bypass_github_scanning\"}}', '{\"USD\":\"USD\",\"AUD\":\"AUD\",\"BRL\":\"BRL\",\"CAD\":\"CAD\",\"CHF\":\"CHF\",\"DKK\":\"DKK\",\"EUR\":\"EUR\",\"GBP\":\"GBP\",\"HKD\":\"HKD\",\"INR\":\"INR\",\"JPY\":\"JPY\",\"MXN\":\"MXN\",\"MYR\":\"MYR\",\"NOK\":\"NOK\",\"NZD\":\"NZD\",\"PLN\":\"PLN\",\"SEK\":\"SEK\",\"SGD\":\"SGD\"}', 0, NULL, NULL, '2019-09-14 13:14:22', '2021-05-21 00:53:10'),
+(11, 0, 111, 'Stripe Storefront', 'StripeJs', 1, '{\"secret_key\":{\"title\":\"Secret Key\",\"global\":true,\"value\":\"sk_test_51I6GGiCGv1sRiQlEi5v1or9eR0HVbuzdMd2rW4n3DxC8UKfz66R4X6n4yYkzvI2LeAIuRU9H99ZpY7XCNFC9xMs500vBjZGkKG\"},\"publishable_key\":{\"title\":\"PUBLISHABLE KEY\",\"global\":true,\"value\":\"pk_test_51I6GGiCGv1sRiQlEOisPKrjBqQqqcFsw8mXNaZ2H2baN6R01NulFS7dKFji1NRRxuchoUTEDdB7ujKcyKYSVc0z500eth7otOM\"}}', '{\"USD\":\"USD\",\"AUD\":\"AUD\",\"BRL\":\"BRL\",\"CAD\":\"CAD\",\"CHF\":\"CHF\",\"DKK\":\"DKK\",\"EUR\":\"EUR\",\"GBP\":\"GBP\",\"HKD\":\"HKD\",\"INR\":\"INR\",\"JPY\":\"JPY\",\"MXN\":\"MXN\",\"MYR\":\"MYR\",\"NOK\":\"NOK\",\"NZD\":\"NZD\",\"PLN\":\"PLN\",\"SEK\":\"SEK\",\"SGD\":\"SGD\"}', 0, NULL, NULL, '2019-09-14 13:14:22', '2021-05-21 00:53:10'),
 (12, 0, 112, 'Instamojo', 'Instamojo', 1, '{\"api_key\":{\"title\":\"API KEY\",\"global\":true,\"value\":\"test_2241633c3bc44a3de84a3b33969\"},\"auth_token\":{\"title\":\"Auth Token\",\"global\":true,\"value\":\"test_279f083f7bebefd35217feef22d\"},\"salt\":{\"title\":\"Salt\",\"global\":true,\"value\":\"19d38908eeff4f58b2ddda2c6d86ca25\"}}', '{\"INR\":\"INR\"}', 0, NULL, NULL, '2019-09-14 13:14:22', '2021-05-21 02:56:20'),
 (13, 0, 501, 'Blockchain', 'Blockchain', 1, '{\"api_key\":{\"title\":\"API Key\",\"global\":true,\"value\":\"55529946-05ca-48ff-8710-f279d86b1cc5\"},\"xpub_code\":{\"title\":\"XPUB CODE\",\"global\":true,\"value\":\"xpub6CKQ3xxWyBoFAF83izZCSFUorptEU9AF8TezhtWeMU5oefjX3sFSBw62Lr9iHXPkXmDQJJiHZeTRtD9Vzt8grAYRhvbz4nEvBu3QKELVzFK\"}}', '{\"BTC\":\"BTC\"}', 1, NULL, NULL, '2019-09-14 13:14:22', '2022-03-21 07:41:56'),
 (15, 0, 503, 'CoinPayments', 'Coinpayments', 1, '{\"public_key\":{\"title\":\"Public Key\",\"global\":true,\"value\":\"
@@ -464,19 +363,13 @@ INSERT INTO gateways (id, form_id, code, name, alias, status, gateway_parameters
 (17, 0, 505, 'Coingate', 'Coingate', 1, '{\"api_key\":{\"title\":\"API Key\",\"global\":true,\"value\":\"6354mwVCEw5kHzRJ6thbGo-N\"}}', '{\"USD\":\"USD\",\"EUR\":\"EUR\"}', 0, NULL, NULL, '2019-09-14 13:14:22', '2022-03-30 09:24:57'),
 (18, 0, 506, 'Coinbase Commerce', 'CoinbaseCommerce', 1, '{\"api_key\":{\"title\":\"API Key\",\"global\":true,\"value\":\"c47cd7df-d8e8-424b-a20a\"},\"secret\":{\"title\":\"Webhook Shared Secret\",\"global\":true,\"value\":\"55871878-2c32-4f64-ab66\"}}', '{\"USD\":\"USD\",\"EUR\":\"EUR\",\"JPY\":\"JPY\",\"GBP\":\"GBP\",\"AUD\":\"AUD\",\"CAD\":\"CAD\",\"CHF\":\"CHF\",\"CNY\":\"CNY\",\"SEK\":\"SEK\",\"NZD\":\"NZD\",\"MXN\":\"MXN\",\"SGD\":\"SGD\",\"HKD\":\"HKD\",\"NOK\":\"NOK\",\"KRW\":\"KRW\",\"TRY\":\"TRY\",\"RUB\":\"RUB\",\"INR\":\"INR\",\"BRL\":\"BRL\",\"ZAR\":\"ZAR\",\"AED\":\"AED\",\"AFN\":\"AFN\",\"ALL\":\"ALL\",\"AMD\":\"AMD\",\"ANG\":\"ANG\",\"AOA\":\"AOA\",\"ARS\":\"ARS\",\"AWG\":\"AWG\",\"AZN\":\"AZN\",\"BAM\":\"BAM\",\"BBD\":\"BBD\",\"BDT\":\"BDT\",\"BGN\":\"BGN\",\"BHD\":\"BHD\",\"BIF\":\"BIF\",\"BMD\":\"BMD\",\"BND\":\"BND\",\"BOB\":\"BOB\",\"BSD\":\"BSD\",\"BTN\":\"BTN\",\"BWP\":\"BWP\",\"BYN\":\"BYN\",\"BZD\":\"BZD\",\"CDF\":\"CDF\",\"CLF\":\"CLF\",\"CLP\":\"CLP\",\"COP\":\"COP\",\"CRC\":\"CRC\",\"CUC\":\"CUC\",\"CUP\":\"CUP\",\"CVE\":\"CVE\",\"CZK\":\"CZK\",\"DJF\":\"DJF\",\"DKK\":\"DKK\",\"DOP\":\"DOP\",\"DZD\":\"DZD\",\"EGP\":\"EGP\",\"ERN\":\"ERN\",\"ETB\":\"ETB\",\"FJD\":\"FJD\",\"FKP\":\"FKP\",\"GEL\":\"GEL\",\"GGP\":\"GGP\",\"GHS\":\"GHS\",\"GIP\":\"GIP\",\"GMD\":\"GMD\",\"GNF\":\"GNF\",\"GTQ\":\"GTQ\",\"GYD\":\"GYD\",\"HNL\":\"HNL\",\"HRK\":\"HRK\",\"HTG\":\"HTG\",\"HUF\":\"HUF\",\"IDR\":\"IDR\",\"ILS\":\"ILS\",\"IMP\":\"IMP\",\"IQD\":\"IQD\",\"IRR\":\"IRR\",\"ISK\":\"ISK\",\"JEP\":\"JEP\",\"JMD\":\"JMD\",\"JOD\":\"JOD\",\"KES\":\"KES\",\"KGS\":\"KGS\",\"KHR\":\"KHR\",\"KMF\":\"KMF\",\"KPW\":\"KPW\",\"KWD\":\"KWD\",\"KYD\":\"KYD\",\"KZT\":\"KZT\",\"LAK\":\"LAK\",\"LBP\":\"LBP\",\"LKR\":\"LKR\",\"LRD\":\"LRD\",\"LSL\":\"LSL\",\"LYD\":\"LYD\",\"MAD\":\"MAD\",\"MDL\":\"MDL\",\"MGA\":\"MGA\",\"MKD\":\"MKD\",\"MMK\":\"MMK\",\"MNT\":\"MNT\",\"MOP\":\"MOP\",\"MRO\":\"MRO\",\"MUR\":\"MUR\",\"MVR\":\"MVR\",\"MWK\":\"MWK\",\"MYR\":\"MYR\",\"MZN\":\"MZN\",\"NAD\":\"NAD\",\"NGN\":\"NGN\",\"NIO\":\"NIO\",\"NPR\":\"NPR\",\"OMR\":\"OMR\",\"PAB\":\"PAB\",\"PEN\":\"PEN\",\"PGK\":\"PGK\",\"PHP\":\"PHP\",\"PKR\":\"PKR\",\"PLN\":\"PLN\",\"PYG\":\"PYG\",\"QAR\":\"QAR\",\"RON\":\"RON\",\"RSD\":\"RSD\",\"RWF\":\"RWF\",\"SAR\":\"SAR\",\"SBD\":\"SBD\",\"SCR\":\"SCR\",\"SDG\":\"SDG\",\"SHP\":\"SHP\",\"SLL\":\"SLL\",\"SOS\":\"SOS\",\"SRD\":\"SRD\",\"SSP\":\"SSP\",\"STD\":\"STD\",\"SVC\":\"SVC\",\"SYP\":\"SYP\",\"SZL\":\"SZL\",\"THB\":\"THB\",\"TJS\":\"TJS\",\"TMT\":\"TMT\",\"TND\":\"TND\",\"TOP\":\"TOP\",\"TTD\":\"TTD\",\"TWD\":\"TWD\",\"TZS\":\"TZS\",\"UAH\":\"UAH\",\"UGX\":\"UGX\",\"UYU\":\"UYU\",\"UZS\":\"UZS\",\"VEF\":\"VEF\",\"VND\":\"VND\",\"VUV\":\"VUV\",\"WST\":\"WST\",\"XAF\":\"XAF\",\"XAG\":\"XAG\",\"XAU\":\"XAU\",\"XCD\":\"XCD\",\"XDR\":\"XDR\",\"XOF\":\"XOF\",\"XPD\":\"XPD\",\"XPF\":\"XPF\",\"XPT\":\"XPT\",\"YER\":\"YER\",\"ZMW\":\"ZMW\",\"ZWL\":\"ZWL\"}\r\n\r\n', 0, '{\"endpoint\":{\"title\": \"Webhook Endpoint\",\"value\":\"ipn.CoinbaseCommerce\"}}', NULL, '2019-09-14 13:14:22', '2021-05-21 02:02:47'),
 (24, 0, 113, 'Paypal Express', 'PaypalSdk', 1, '{\"clientId\":{\"title\":\"Paypal Client ID\",\"global\":true,\"value\":\"Ae0-tixtSV7DvLwIh3Bmu7JvHrjh5EfGdXr_cEklKAVjjezRZ747BxKILiBdzlKKyp-W8W_T7CKH1Ken\"},\"clientSecret\":{\"title\":\"Client Secret\",\"global\":true,\"value\":\"EOhbvHZgFNO21soQJT1L9Q00M3rK6PIEsdiTgXRBt2gtGtxwRer5JvKnVUGNU5oE63fFnjnYY7hq3HBA\"}}', '{\"AUD\":\"AUD\",\"BRL\":\"BRL\",\"CAD\":\"CAD\",\"CZK\":\"CZK\",\"DKK\":\"DKK\",\"EUR\":\"EUR\",\"HKD\":\"HKD\",\"HUF\":\"HUF\",\"INR\":\"INR\",\"ILS\":\"ILS\",\"JPY\":\"JPY\",\"MYR\":\"MYR\",\"MXN\":\"MXN\",\"TWD\":\"TWD\",\"NZD\":\"NZD\",\"NOK\":\"NOK\",\"PHP\":\"PHP\",\"PLN\":\"PLN\",\"GBP\":\"GBP\",\"RUB\":\"RUB\",\"SGD\":\"SGD\",\"SEK\":\"SEK\",\"CHF\":\"CHF\",\"THB\":\"THB\",\"USD\":\"$\"}', 0, NULL, NULL, '2019-09-14 13:14:22', '2021-05-20 23:01:08'),
-(25, 0, 114, 'Stripe Checkout', 'StripeV3', 1, '{\"secret_key\":{\"title\":\"Secret Key\",\"global\":true,\"value\":\"sk_test_dummy_key_to_bypass_github_scanning\"},\"publishable_key\":{\"title\":\"PUBLISHABLE KEY\",\"global\":true,\"value\":\"pk_test_dummy_key_to_bypass_github_scanning\"},\"end_point\":{\"title\":\"End Point Secret\",\"global\":true,\"value\":\"whsec_lUmit1gtxwKTveLnSe88xCSDdnPOt8g5\"}}', '{\"USD\":\"USD\",\"AUD\":\"AUD\",\"BRL\":\"BRL\",\"CAD\":\"CAD\",\"CHF\":\"CHF\",\"DKK\":\"DKK\",\"EUR\":\"EUR\",\"GBP\":\"GBP\",\"HKD\":\"HKD\",\"INR\":\"INR\",\"JPY\":\"JPY\",\"MXN\":\"MXN\",\"MYR\":\"MYR\",\"NOK\":\"NOK\",\"NZD\":\"NZD\",\"PLN\":\"PLN\",\"SEK\":\"SEK\",\"SGD\":\"SGD\"}', 0, '{\"webhook\":{\"title\": \"Webhook Endpoint\",\"value\":\"ipn.StripeV3\"}}', NULL, '2019-09-14 13:14:22', '2021-05-21 00:58:38'),
+(25, 0, 114, 'Stripe Checkout', 'StripeV3', 1, '{\"secret_key\":{\"title\":\"Secret Key\",\"global\":true,\"value\":\"sk_test_51I6GGiCGv1sRiQlEi5v1or9eR0HVbuzdMd2rW4n3DxC8UKfz66R4X6n4yYkzvI2LeAIuRU9H99ZpY7XCNFC9xMs500vBjZGkKG\"},\"publishable_key\":{\"title\":\"PUBLISHABLE KEY\",\"global\":true,\"value\":\"pk_test_51I6GGiCGv1sRiQlEOisPKrjBqQqqcFsw8mXNaZ2H2baN6R01NulFS7dKFji1NRRxuchoUTEDdB7ujKcyKYSVc0z500eth7otOM\"},\"end_point\":{\"title\":\"End Point Secret\",\"global\":true,\"value\":\"whsec_lUmit1gtxwKTveLnSe88xCSDdnPOt8g5\"}}', '{\"USD\":\"USD\",\"AUD\":\"AUD\",\"BRL\":\"BRL\",\"CAD\":\"CAD\",\"CHF\":\"CHF\",\"DKK\":\"DKK\",\"EUR\":\"EUR\",\"GBP\":\"GBP\",\"HKD\":\"HKD\",\"INR\":\"INR\",\"JPY\":\"JPY\",\"MXN\":\"MXN\",\"MYR\":\"MYR\",\"NOK\":\"NOK\",\"NZD\":\"NZD\",\"PLN\":\"PLN\",\"SEK\":\"SEK\",\"SGD\":\"SGD\"}', 0, '{\"webhook\":{\"title\": \"Webhook Endpoint\",\"value\":\"ipn.StripeV3\"}}', NULL, '2019-09-14 13:14:22', '2021-05-21 00:58:38'),
 (27, 0, 115, 'Mollie', 'Mollie', 1, '{\"mollie_email\":{\"title\":\"Mollie Email \",\"global\":true,\"value\":\"vi@gmail.com\"},\"api_key\":{\"title\":\"API KEY\",\"global\":true,\"value\":\"test_cucfwKTWfft9s337qsVfn5CC4vNkrn\"}}', '{\"AED\":\"AED\",\"AUD\":\"AUD\",\"BGN\":\"BGN\",\"BRL\":\"BRL\",\"CAD\":\"CAD\",\"CHF\":\"CHF\",\"CZK\":\"CZK\",\"DKK\":\"DKK\",\"EUR\":\"EUR\",\"GBP\":\"GBP\",\"HKD\":\"HKD\",\"HRK\":\"HRK\",\"HUF\":\"HUF\",\"ILS\":\"ILS\",\"ISK\":\"ISK\",\"JPY\":\"JPY\",\"MXN\":\"MXN\",\"MYR\":\"MYR\",\"NOK\":\"NOK\",\"NZD\":\"NZD\",\"PHP\":\"PHP\",\"PLN\":\"PLN\",\"RON\":\"RON\",\"RUB\":\"RUB\",\"SEK\":\"SEK\",\"SGD\":\"SGD\",\"THB\":\"THB\",\"TWD\":\"TWD\",\"USD\":\"USD\",\"ZAR\":\"ZAR\"}', 0, NULL, NULL, '2019-09-14 13:14:22', '2021-05-21 02:44:45'),
 (30, 0, 116, 'Cashmaal', 'Cashmaal', 1, '{\"web_id\":{\"title\":\"Web Id\",\"global\":true,\"value\":\"3748\"},\"ipn_key\":{\"title\":\"IPN Key\",\"global\":true,\"value\":\"546254628759524554647987\"}}', '{\"PKR\":\"PKR\",\"USD\":\"USD\"}', 0, '{\"webhook\":{\"title\": \"IPN URL\",\"value\":\"ipn.Cashmaal\"}}', NULL, NULL, '2021-06-22 08:05:04'),
 (36, 0, 119, 'Mercado Pago', 'MercadoPago', 1, '{\"access_token\":{\"title\":\"Access Token\",\"global\":true,\"value\":\"3Vee5S2F\"}}', '{\"USD\":\"USD\",\"CAD\":\"CAD\",\"CHF\":\"CHF\",\"DKK\":\"DKK\",\"EUR\":\"EUR\",\"GBP\":\"GBP\",\"NOK\":\"NOK\",\"PLN\":\"PLN\",\"SEK\":\"SEK\",\"AUD\":\"AUD\",\"NZD\":\"NZD\"}', 0, NULL, NULL, NULL, '2021-07-17 09:44:29'),
 (44, 0, 120, 'Authorize.net', 'Authorize', 1, '{\"login_id\":{\"title\":\"Login ID\",\"global\":true,\"value\":\"3Vee5S2F\"},\"transaction_key\":{\"title\":\"Transaction Key\",\"global\":true,\"value\":\"3Vee5S2F\"}}', '{\"USD\":\"USD\",\"CAD\":\"CAD\",\"CHF\":\"CHF\",\"DKK\":\"DKK\",\"EUR\":\"EUR\",\"GBP\":\"GBP\",\"NOK\":\"NOK\",\"PLN\":\"PLN\",\"SEK\":\"SEK\",\"AUD\":\"AUD\",\"NZD\":\"NZD\"}', 0, NULL, NULL, NULL, '2022-09-15 09:27:31'),
 (46, 0, 121, 'NMI', 'NMI', 1, '{\"api_key\":{\"title\":\"API Key\",\"global\":true,\"value\":\"2F822Rw39fx762MaV7Yy86jXGTC7sCDy\"}}', '{\"AED\":\"AED\",\"ARS\":\"ARS\",\"AUD\":\"AUD\",\"BOB\":\"BOB\",\"BRL\":\"BRL\",\"CAD\":\"CAD\",\"CHF\":\"CHF\",\"CLP\":\"CLP\",\"CNY\":\"CNY\",\"COP\":\"COP\",\"DKK\":\"DKK\",\"EUR\":\"EUR\",\"GBP\":\"GBP\",\"HKD\":\"HKD\",\"IDR\":\"IDR\",\"ILS\":\"ILS\",\"INR\":\"INR\",\"JPY\":\"JPY\",\"KRW\":\"KRW\",\"MXN\":\"MXN\",\"MYR\":\"MYR\",\"NOK\":\"NOK\",\"NZD\":\"NZD\",\"PEN\":\"PEN\",\"PHP\":\"PHP\",\"PLN\":\"PLN\",\"PYG\":\"PYG\",\"RUB\":\"RUB\",\"SEC\":\"SEC\",\"SGD\":\"SGD\",\"THB\":\"THB\",\"TRY\":\"TRY\",\"TWD\":\"TWD\",\"USD\":\"USD\",\"ZAR\":\"ZAR\"}', 0, NULL, NULL, NULL, '2022-09-10 05:30:15'),
 (49, 18, 1000, 'Onepay', 'onepay', 1, '[]', '[]', 0, NULL, '03042324661', '2023-11-03 23:19:00', '2023-11-03 23:19:07');
-
-
-
-
-
-
 
 CREATE TABLE gateway_currencies (
   id bigint NOT NULL,
@@ -496,18 +389,8 @@ CREATE TABLE gateway_currencies (
   updated_at timestamp NULL DEFAULT NULL
 );
 
-
-
-
-
 INSERT INTO gateway_currencies (id, name, currency, symbol, method_code, gateway_alias, min_amount, max_amount, percent_charge, fixed_charge, rate, image, gateway_parameter, created_at, updated_at) VALUES
 (1, 'Onepay', 'PKR', '', 1000, 'onepay', '100.00000000', '50000000.00000000', '0.00', '0.00000000', '1.00000000', NULL, NULL, '2023-11-03 23:19:00', '2023-11-03 23:19:00');
-
-
-
-
-
-
 
 CREATE TABLE general_settings (
   id bigint NOT NULL,
@@ -523,50 +406,40 @@ CREATE TABLE general_settings (
   mail_config text DEFAULT NULL COMMENT 'email configuration',
   sms_config text DEFAULT NULL,
   global_shortcodes text DEFAULT NULL,
-  kv tinyinteger NOT NULL DEFAULT 0,
-  ev tinyinteger NOT NULL DEFAULT 0 COMMENT 'email verification, 0 - dont check, 1 - check',
-  en tinyinteger NOT NULL DEFAULT 0 COMMENT 'email notification, 0 - dont send, 1 - send',
-  sv tinyinteger NOT NULL DEFAULT 0 COMMENT 'mobile verication, 0 - dont check, 1 - check',
-  sn tinyinteger NOT NULL DEFAULT 0 COMMENT 'sms notification, 0 - dont send, 1 - send',
-  force_ssl tinyinteger NOT NULL DEFAULT 0,
-  maintenance_mode tinyinteger NOT NULL DEFAULT 0,
-  secure_password tinyinteger NOT NULL DEFAULT 0,
-  agree tinyinteger NOT NULL DEFAULT 0,
-  registration tinyinteger NOT NULL DEFAULT 0 COMMENT '0: Off	, 1: On',
+  kv smallint NOT NULL DEFAULT 0,
+  ev smallint NOT NULL DEFAULT 0 COMMENT 'email verification, 0 - dont check, 1 - check',
+  en smallint NOT NULL DEFAULT 0 COMMENT 'email notification, 0 - dont send, 1 - send',
+  sv smallint NOT NULL DEFAULT 0 COMMENT 'mobile verication, 0 - dont check, 1 - check',
+  sn smallint NOT NULL DEFAULT 0 COMMENT 'sms notification, 0 - dont send, 1 - send',
+  force_ssl smallint NOT NULL DEFAULT 0,
+  maintenance_mode smallint NOT NULL DEFAULT 0,
+  secure_password smallint NOT NULL DEFAULT 0,
+  agree smallint NOT NULL DEFAULT 0,
+  registration smallint NOT NULL DEFAULT 0 COMMENT '0: Off	, 1: On',
   active_template varchar(40) DEFAULT NULL,
   system_info text DEFAULT NULL,
-  deposit_commission tinyinteger NOT NULL DEFAULT 1,
-  invest_commission tinyinteger NOT NULL DEFAULT 1,
-  invest_return_commission tinyinteger NOT NULL DEFAULT 1,
+  deposit_commission smallint NOT NULL DEFAULT 1,
+  invest_commission smallint NOT NULL DEFAULT 1,
+  invest_return_commission smallint NOT NULL DEFAULT 1,
   signup_bonus_amount decimal(11,2) DEFAULT 0.00,
-  signup_bonus_control tinyinteger NOT NULL DEFAULT 0,
-  promotional_tool tinyinteger NOT NULL DEFAULT 0,
+  signup_bonus_control smallint NOT NULL DEFAULT 0,
+  promotional_tool smallint NOT NULL DEFAULT 0,
   firebase_config text DEFAULT NULL,
   firebase_template text DEFAULT NULL,
-  push_notify tinyinteger NOT NULL DEFAULT 0,
+  push_notify smallint NOT NULL DEFAULT 0,
   off_day text DEFAULT NULL,
   last_cron timestamp DEFAULT NULL,
   b_transfer integer NOT NULL DEFAULT 0 COMMENT 'Balance Transfer Status',
   f_charge decimal(28,8) NOT NULL DEFAULT 0.00000000 COMMENT 'Fixed Charge',
   p_charge decimal(5,2) NOT NULL DEFAULT 0.00 COMMENT 'Percent Charge',
-  holiday_withdraw tinyinteger NOT NULL DEFAULT 0,
-  language_switch tinyinteger NOT NULL DEFAULT 1,
+  holiday_withdraw smallint NOT NULL DEFAULT 0,
+  language_switch smallint NOT NULL DEFAULT 1,
   created_at timestamp NULL DEFAULT NULL,
   updated_at timestamp NULL DEFAULT NULL
 );
 
-
-
-
-
 INSERT INTO general_settings (id, site_name, cur_text, cur_sym, email_from, email_template, sms_body, sms_from, base_color, secondary_color, mail_config, sms_config, global_shortcodes, kv, ev, en, sv, sn, force_ssl, maintenance_mode, secure_password, agree, registration, active_template, system_info, deposit_commission, invest_commission, invest_return_commission, signup_bonus_amount, signup_bonus_control, promotional_tool, firebase_config, firebase_template, push_notify, off_day, last_cron, b_transfer, f_charge, p_charge, holiday_withdraw, language_switch, created_at, updated_at) VALUES
-(1, 'HYIPLab', 'USD', '$', 'info@viserlab.com', '<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\r\n  <
-
-
-
-
-
-
+(1, 'HYIPLab', 'USD', '$', 'info@viserlab.com', '<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\r\n  <!
 
 CREATE TABLE holidays (
   id bigint NOT NULL,
@@ -575,12 +448,6 @@ CREATE TABLE holidays (
   created_at timestamp NULL DEFAULT NULL,
   updated_at timestamp NULL DEFAULT NULL
 );
-
-
-
-
-
-
 
 CREATE TABLE invests (
   id integer NOT NULL,
@@ -596,53 +463,31 @@ CREATE TABLE invests (
   return_rec_time integer NOT NULL DEFAULT 0,
   next_time timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   last_time timestamp NULL DEFAULT NULL,
-  status tinyinteger NOT NULL DEFAULT 1,
-  capital_status tinyinteger NOT NULL DEFAULT 0 COMMENT '1 = YES & 0 = NO',
+  status smallint NOT NULL DEFAULT 1,
+  capital_status smallint NOT NULL DEFAULT 0 COMMENT '1 = YES & 0 = NO',
   trx varchar(40) DEFAULT NULL,
   wallet_type varchar(40) DEFAULT NULL,
   created_at timestamp NULL DEFAULT NULL,
   updated_at timestamp NULL DEFAULT NULL
 );
 
-
-
-
-
-
-
 CREATE TABLE languages (
   id bigint NOT NULL,
   name varchar(40) DEFAULT NULL,
   code varchar(40) DEFAULT NULL,
-  is_default tinyinteger NOT NULL DEFAULT 0 COMMENT '0: not default language, 1: default language',
+  is_default smallint NOT NULL DEFAULT 0 COMMENT '0: not default language, 1: default language',
   created_at timestamp NULL DEFAULT NULL,
   updated_at timestamp NULL DEFAULT NULL
 );
 
-
-
-
-
 INSERT INTO languages (id, name, code, is_default, created_at, updated_at) VALUES
 (1, 'English', 'en', 1, '2020-07-06 03:47:55', '2022-04-09 03:47:04');
-
-
-
-
-
-
 
 CREATE TABLE migrations (
   id bigint NOT NULL,
   migration varchar(255) NOT NULL,
   batch integer NOT NULL
 );
-
-
-
-
-
-
 
 CREATE TABLE notification_logs (
   id bigint NOT NULL,
@@ -657,12 +502,6 @@ CREATE TABLE notification_logs (
   updated_at timestamp NULL DEFAULT NULL
 );
 
-
-
-
-
-
-
 CREATE TABLE notification_templates (
   id bigint NOT NULL,
   act varchar(40) DEFAULT NULL,
@@ -671,17 +510,13 @@ CREATE TABLE notification_templates (
   email_body text DEFAULT NULL,
   sms_body text DEFAULT NULL,
   shortcodes text DEFAULT NULL,
-  email_status tinyinteger NOT NULL DEFAULT 1,
-  sms_status tinyinteger NOT NULL DEFAULT 1,
-  firebase_status tinyinteger NOT NULL DEFAULT 0,
+  email_status smallint NOT NULL DEFAULT 1,
+  sms_status smallint NOT NULL DEFAULT 1,
+  firebase_status smallint NOT NULL DEFAULT 0,
   firebase_body text DEFAULT NULL,
   created_at timestamp NULL DEFAULT NULL,
   updated_at timestamp NULL DEFAULT NULL
 );
-
-
-
-
 
 INSERT INTO notification_templates (id, act, name, subj, email_body, sms_body, shortcodes, email_status, sms_status, firebase_status, firebase_body, created_at, updated_at) VALUES
 (1, 'BAL_ADD', 'Balance - Added', 'Your Account has been Credited', '<div><div style=\"font-family: Montserrat, sans-serif;\">{{amount}} {{site_currency}} has been added to your account .</div><div style=\"font-family: Montserrat, sans-serif;\"><br></div><div style=\"font-family: Montserrat, sans-serif;\">Transaction Number : {{trx}}</div><div style=\"font-family: Montserrat, sans-serif;\"><br></div><span style=\"color: rgb(33, 37, 41); font-family: Montserrat, sans-serif;\">Your Current Balance is :&nbsp;</span><font style=\"font-family: Montserrat, sans-serif;\"><span style=\"font-weight: bolder;\">{{post_balance}}&nbsp; {{site_currency}}&nbsp;</span></font><br></div><div><font style=\"font-family: Montserrat, sans-serif;\"><span style=\"font-weight: bolder;\"><br></span></font></div><div>Admin note:&nbsp;<span style=\"color: rgb(33, 37, 41); font-size: 12px; font-weight: 600; white-space: nowrap; text-align: var(
@@ -708,26 +543,16 @@ INSERT INTO notification_templates (id, act, name, subj, email_body, sms_body, s
 (22, 'BALANCE_TRANSFER', 'Balance Transfer', 'Balance Transfer', '<div style=\"font-family: Montserrat, sans-serif;\">Your&nbsp;<span style=\"font-weight: bolder;\">{{amount}} {{site_currency}}</span>&nbsp;transferred successfully.<span style=\"font-weight: bolder;\"><br></span></div><div style=\"font-family: Montserrat, sans-serif;\"><span style=\"font-weight: bolder;\"><br></span></div><div style=\"font-family: Montserrat, sans-serif;\"><span style=\"font-weight: bolder;\">Details of your Transfer:</span></div><div style=\"font-family: Montserrat, sans-serif;\">Amount : {{amount}} {{site_currency}}</div><div style=\"font-family: Montserrat, sans-serif;\">Charge:&nbsp;<font color=\"#FF0000\">{{charge}} {{site_currency}}</font></div><div style=\"\"><font face=\"Montserrat, sans-serif\">Wallet type: {{wallet_type}}</font></div><div style=\"\"><font face=\"Montserrat, sans-serif\">Transfer to: {{user_fullname}} (</font><span style=\"color: rgb(33, 37, 41); font-family: Montserrat, sans-serif; font-size: 1rem; text-align: var(
 (23, 'BALANCE_RECEIVE', 'Balance Receive', 'Balance Receive', '<div style=\"font-family: Montserrat, sans-serif;\">You received&nbsp;<span style=\"font-weight: bolder;\">{{amount}} {{site_currency}}</span>&nbsp;from {{sender}}.<span style=\"font-weight: bolder;\"><br></span></div><div style=\"font-family: Montserrat, sans-serif;\"><span style=\"font-weight: bolder;\"><br></span></div><div style=\"font-family: Montserrat, sans-serif;\"><span style=\"font-weight: bolder;\">Details of your Received Money:</span></div><div style=\"font-family: Montserrat, sans-serif;\">Amount : {{amount}} {{site_currency}}</div><div style=\"font-family: Montserrat, sans-serif;\">Wallet_type: {{wallet_type}}</div><div style=\"font-family: Montserrat, sans-serif;\">Transaction Number : {{trx}}</div><div style=\"font-family: Montserrat, sans-serif;\"><font size=\"5\"><span style=\"font-weight: bolder;\"><br></span></font></div><div style=\"font-family: Montserrat, sans-serif;\"><font size=\"5\">Your current Balance is&nbsp;<span style=\"font-weight: bolder;\">{{post_balance}} {{site_currency}}</span></font></div><div style=\"font-family: Montserrat, sans-serif;\"><br></div><div style=\"font-family: Montserrat, sans-serif;\"><br></div>', 'Your {{amount}} {{site_currency}} transferred successfully. Transfer to: {{user_fullname}} ({{username}})', '{\r\n    \"trx\": \"Transaction number for the interest\",\r\n    \"amount\": \"Amount inserted by the user\",\r\n    \"sender\": \"Sender username\",\r\n    \"wallet_type\": \"Wallet type\",\r\n    \"post_balance\": \"Balance of the user after this transaction\"\r\n}\r\n', 1, 1, 0, NULL, '2021-11-03 12:00:00', '2022-09-20 09:03:25');
 
-
-
-
-
-
-
 CREATE TABLE pages (
   id bigint NOT NULL,
   name varchar(40) DEFAULT NULL,
   slug varchar(40) DEFAULT NULL,
   tempname varchar(40) DEFAULT NULL COMMENT 'template name',
   secs text DEFAULT NULL,
-  is_default tinyinteger NOT NULL DEFAULT 0,
+  is_default smallint NOT NULL DEFAULT 0,
   created_at timestamp NULL DEFAULT NULL,
   updated_at timestamp NULL DEFAULT NULL
 );
-
-
-
-
 
 INSERT INTO pages (id, name, slug, tempname, secs, is_default, created_at, updated_at) VALUES
 (1, 'HOME', '/', 'templates.bit_gold.', '[\"about\",\"plan\",\"why_choose\",\"calculation\",\"how_work\",\"faq\",\"testimonial\",\"team\",\"transaction\",\"top_investor\",\"cta\",\"we_accept\",\"blog\",\"subscribe\"]', 1, '2020-07-11 06:23:58', '2022-05-15 10:32:00'),
@@ -741,23 +566,11 @@ INSERT INTO pages (id, name, slug, tempname, secs, is_default, created_at, updat
 (24, 'About', 'about', 'templates.bit_gold.', '[\"how_work\",\"about\",\"faq\",\"cta\"]', 0, '2022-08-25 04:50:42', '2022-08-25 04:52:26'),
 (25, 'Home', '/', 'templates.invester.', NULL, 1, '2022-09-20 07:12:38', '2022-09-20 07:13:53');
 
-
-
-
-
-
-
 CREATE TABLE password_resets (
   email varchar(40) DEFAULT NULL,
   token varchar(40) DEFAULT NULL,
   created_at timestamp NULL DEFAULT NULL
 );
-
-
-
-
-
-
 
 CREATE TABLE personal_access_tokens (
   id bigint NOT NULL,
@@ -771,12 +584,6 @@ CREATE TABLE personal_access_tokens (
   updated_at timestamp NULL DEFAULT NULL
 );
 
-
-
-
-
-
-
 CREATE TABLE plans (
   id bigint NOT NULL,
   name varchar(40) NOT NULL,
@@ -784,33 +591,23 @@ CREATE TABLE plans (
   maximum decimal(28,8) NOT NULL DEFAULT 0.00000000,
   fixed_amount decimal(28,8) NOT NULL DEFAULT 0.00000000,
   interest decimal(28,8) NOT NULL DEFAULT 0.00000000,
-  interest_type tinyinteger DEFAULT 0 COMMENT '1 = ''%'' / 0 =''currency''',
+  interest_type smallint DEFAULT 0 COMMENT '1 = ''%'' / 0 =''currency''',
   time varchar(40) NOT NULL,
   time_name varchar(40) DEFAULT NULL,
-  status tinyinteger NOT NULL DEFAULT 1,
-  featured tinyinteger NOT NULL DEFAULT 0,
-  capital_back tinyinteger DEFAULT 0,
-  lifetime tinyinteger DEFAULT 0,
+  status smallint NOT NULL DEFAULT 1,
+  featured smallint NOT NULL DEFAULT 0,
+  capital_back smallint DEFAULT 0,
+  lifetime smallint DEFAULT 0,
   repeat_time varchar(40) DEFAULT NULL,
   created_at timestamp NULL DEFAULT NULL,
   updated_at timestamp NULL DEFAULT NULL
 );
-
-
-
-
 
 INSERT INTO plans (id, name, minimum, maximum, fixed_amount, interest, interest_type, time, time_name, status, featured, capital_back, lifetime, repeat_time, created_at, updated_at) VALUES
 (1, 'VIP 1', '0.00000000', '0.00000000', '1500.00000000', '24.00000000', 0, '24', 'Day', 1, 1, 0, 0, '24', '2023-11-03 22:05:59', '2023-11-03 23:12:11'),
 (2, 'Vip 2', '0.00000000', '0.00000000', '325.00000000', '56.00000000', 1, '1', 'hourly', 1, 1, 1, 0, '32', '2023-11-03 22:06:25', '2023-11-03 23:12:22'),
 (3, 'Vip 3', '0.00000000', '0.00000000', '355.00000000', '353.00000000', 0, '24', 'Day', 1, 1, 0, 0, '35', '2023-11-03 22:06:48', '2023-11-03 23:12:34'),
 (4, 'VIP 4', '0.00000000', '0.00000000', '8000.00000000', '55.00000000', 0, '24', 'Day', 1, 1, 0, 0, '32', '2023-11-03 23:13:14', '2023-11-03 23:13:14');
-
-
-
-
-
-
 
 CREATE TABLE promotion_tools (
   id bigint NOT NULL,
@@ -820,27 +617,15 @@ CREATE TABLE promotion_tools (
   updated_at timestamp NULL DEFAULT NULL
 );
 
-
-
-
-
-
-
 CREATE TABLE referrals (
   id bigint NOT NULL,
   commission_type varchar(40) DEFAULT NULL,
   level integer NOT NULL DEFAULT 0,
   percent decimal(5,2) NOT NULL DEFAULT 0.00,
-  status tinyinteger NOT NULL DEFAULT 1,
+  status smallint NOT NULL DEFAULT 1,
   created_at timestamp NULL DEFAULT NULL,
   updated_at timestamp NULL DEFAULT NULL
 );
-
-
-
-
-
-
 
 CREATE TABLE subscribers (
   id bigint NOT NULL,
@@ -849,12 +634,6 @@ CREATE TABLE subscribers (
   updated_at timestamp NULL DEFAULT NULL
 );
 
-
-
-
-
-
-
 CREATE TABLE support_attachments (
   id bigint NOT NULL,
   support_message_id integer DEFAULT NULL,
@@ -862,12 +641,6 @@ CREATE TABLE support_attachments (
   created_at timestamp NULL DEFAULT NULL,
   updated_at timestamp NULL DEFAULT NULL
 );
-
-
-
-
-
-
 
 CREATE TABLE support_messages (
   id bigint NOT NULL,
@@ -878,12 +651,6 @@ CREATE TABLE support_messages (
   updated_at timestamp NULL DEFAULT NULL
 );
 
-
-
-
-
-
-
 CREATE TABLE support_tickets (
   id bigint NOT NULL,
   user_id integer DEFAULT 0,
@@ -891,18 +658,12 @@ CREATE TABLE support_tickets (
   email varchar(40) DEFAULT NULL,
   ticket varchar(40) DEFAULT NULL,
   subject varchar(255) DEFAULT NULL,
-  status tinyinteger NOT NULL DEFAULT 0 COMMENT '0: Open, 1: Answered, 2: Replied, 3: Closed',
-  priority tinyinteger NOT NULL DEFAULT 0 COMMENT '1 = Low, 2 = medium, 3 = heigh',
+  status smallint NOT NULL DEFAULT 0 COMMENT '0: Open, 1: Answered, 2: Replied, 3: Closed',
+  priority smallint NOT NULL DEFAULT 0 COMMENT '1 = Low, 2 = medium, 3 = heigh',
   last_reply timestamp DEFAULT NULL,
   created_at timestamp NULL DEFAULT NULL,
   updated_at timestamp NULL DEFAULT NULL
 );
-
-
-
-
-
-
 
 CREATE TABLE time_settings (
   id integer NOT NULL,
@@ -912,19 +673,9 @@ CREATE TABLE time_settings (
   updated_at timestamp NULL DEFAULT NULL
 );
 
-
-
-
-
 INSERT INTO time_settings (id, name, time, created_at, updated_at) VALUES
 (1, 'Day', '24', '2023-11-03 22:05:23', '2023-11-03 22:05:23'),
 (2, 'hourly', '1', '2023-11-03 22:05:35', '2023-11-03 22:05:35');
-
-
-
-
-
-
 
 CREATE TABLE transactions (
   id bigint NOT NULL,
@@ -941,20 +692,10 @@ CREATE TABLE transactions (
   updated_at timestamp NULL DEFAULT NULL
 );
 
-
-
-
-
 INSERT INTO transactions (id, user_id, amount, charge, post_balance, trx_type, trx, details, remark, wallet_type, created_at, updated_at) VALUES
 (1, 1, '5.00000000', '0.00000000', '5.00000000', '+', 'DACD9XJDRDJO', 'You have got registration bonus', 'registration_bonus', 'deposit_wallet', '2023-11-03 19:41:33', '2023-11-03 19:41:33'),
 (2, 1, '3354.00000000', '0.00000000', '3354.00000000', '+', 'FBO1QV11P7EV', '46', 'balance_add', 'interest_wallet', '2023-11-04 07:52:28', '2023-11-04 07:52:28'),
 (3, 1, '100.00000000', '0.00000000', '3254.00000000', '-', 'QE6Q8C8AXVMQ', '100.00 PKR Withdraw Via Jazzcash', 'withdraw', 'interest_wallet', '2023-11-04 08:08:04', '2023-11-04 08:08:04');
-
-
-
-
-
-
 
 CREATE TABLE users (
   id bigint NOT NULL,
@@ -970,16 +711,16 @@ CREATE TABLE users (
   password varchar(255) NOT NULL,
   image varchar(255) DEFAULT NULL,
   address text DEFAULT NULL COMMENT 'contains full address',
-  status tinyinteger NOT NULL DEFAULT 1 COMMENT '0: banned, 1: active',
+  status smallint NOT NULL DEFAULT 1 COMMENT '0: banned, 1: active',
   kyc_data text DEFAULT NULL,
-  kv tinyinteger NOT NULL DEFAULT 0 COMMENT '0: KYC Unverified, 2: KYC pending, 1: KYC verified',
-  ev tinyinteger NOT NULL DEFAULT 0 COMMENT '0: email unverified, 1: email verified',
-  sv tinyinteger NOT NULL DEFAULT 0 COMMENT '0: mobile unverified, 1: mobile verified',
-  profile_complete tinyinteger NOT NULL DEFAULT 0,
+  kv smallint NOT NULL DEFAULT 0 COMMENT '0: KYC Unverified, 2: KYC pending, 1: KYC verified',
+  ev smallint NOT NULL DEFAULT 0 COMMENT '0: email unverified, 1: email verified',
+  sv smallint NOT NULL DEFAULT 0 COMMENT '0: mobile unverified, 1: mobile verified',
+  profile_complete smallint NOT NULL DEFAULT 0,
   ver_code varchar(40) DEFAULT NULL COMMENT 'stores verification code',
   ver_code_send_at timestamp DEFAULT NULL COMMENT 'verification send time',
-  ts tinyinteger NOT NULL DEFAULT 0 COMMENT '0: 2fa off, 1: 2fa on',
-  tv tinyinteger NOT NULL DEFAULT 1 COMMENT '0: 2fa unverified, 1: 2fa verified',
+  ts smallint NOT NULL DEFAULT 0 COMMENT '0: 2fa off, 1: 2fa on',
+  tv smallint NOT NULL DEFAULT 1 COMMENT '0: 2fa unverified, 1: 2fa verified',
   tsc varchar(255) DEFAULT NULL,
   ban_reason varchar(255) DEFAULT NULL,
   remember_token varchar(255) DEFAULT NULL,
@@ -987,18 +728,8 @@ CREATE TABLE users (
   updated_at timestamp NULL DEFAULT NULL
 );
 
-
-
-
-
 INSERT INTO users (id, firstname, lastname, username, email, country_code, mobile, ref_by, deposit_wallet, interest_wallet, password, image, address, status, kyc_data, kv, ev, sv, profile_complete, ver_code, ver_code_send_at, ts, tv, tsc, ban_reason, remember_token, created_at, updated_at) VALUES
 (1, 'myd', 'cost', '03042324661', 'aliabbasnadeem538@gmail.com', NULL, NULL, 0, '5.00000000', '3254.00000000', '$2y$10$payPbwDtbVrw0x9HdPXjZei8XgMrZwXOO1qNWkYiT/mhdSiyhswYG', NULL, '{\"country\":null,\"address\":null,\"state\":null,\"zip\":null,\"city\":null}', 1, NULL, 1, 1, 1, 1, NULL, NULL, 0, 1, NULL, NULL, NULL, '2023-11-03 19:41:33', '2023-11-04 08:08:04');
-
-
-
-
-
-
 
 CREATE TABLE user_logins (
   id bigint NOT NULL,
@@ -1015,21 +746,11 @@ CREATE TABLE user_logins (
   updated_at timestamp NULL DEFAULT NULL
 );
 
-
-
-
-
 INSERT INTO user_logins (id, user_id, user_ip, city, country, country_code, longitude, latitude, browser, os, created_at, updated_at) VALUES
 (1, 1, '154.80.104.200', '', '', '', '', '', 'Handheld Browser', 'Android', '2023-11-03 19:41:33', '2023-11-03 19:41:33'),
 (2, 1, '154.80.124.101', '', '', '', '', '', 'Handheld Browser', 'Android', '2023-11-03 21:58:28', '2023-11-03 21:58:28'),
 (3, 1, '154.80.107.160', '', '', '', '', '', 'Handheld Browser', 'Android', '2023-11-04 07:11:45', '2023-11-04 07:11:45'),
 (4, 1, '154.80.98.65', '', '', '', '', '', 'Handheld Browser', 'Android', '2023-11-04 12:18:46', '2023-11-04 12:18:46');
-
-
-
-
-
-
 
 CREATE TABLE withdrawals (
   id bigint NOT NULL,
@@ -1043,25 +764,15 @@ CREATE TABLE withdrawals (
   final_amount decimal(28,8) NOT NULL DEFAULT 0.00000000,
   after_charge decimal(28,8) NOT NULL DEFAULT 0.00000000,
   withdraw_information text DEFAULT NULL,
-  status tinyinteger NOT NULL DEFAULT 0 COMMENT '1=>success, 2=>pending, 3=>cancel,  ',
+  status smallint NOT NULL DEFAULT 0 COMMENT '1=>success, 2=>pending, 3=>cancel,  ',
   admin_feedback text DEFAULT NULL,
   created_at timestamp NULL DEFAULT NULL,
   updated_at timestamp NULL DEFAULT NULL
 );
 
-
-
-
-
 INSERT INTO withdrawals (id, method_id, user_id, amount, currency, rate, charge, trx, final_amount, after_charge, withdraw_information, status, admin_feedback, created_at, updated_at) VALUES
 (1, 1, 1, '100.00000000', 'PKR', '1.00000000', '0.00000000', 'CZXRNVZ7HE95', '100.00000000', '100.00000000', NULL, 0, NULL, '2023-11-04 07:53:48', '2023-11-04 07:53:48'),
 (2, 1, 1, '100.00000000', 'PKR', '1.00000000', '0.00000000', 'QE6Q8C8AXVMQ', '100.00000000', '100.00000000', '[{\"name\":\"Account Name\",\"type\":\"text\",\"value\":\"Ahahh\"},{\"name\":\"Account Number\",\"type\":\"text\",\"value\":\"Sjsjjs\"}]', 2, NULL, '2023-11-04 08:01:02', '2023-11-04 08:08:04');
-
-
-
-
-
-
 
 CREATE TABLE withdraw_methods (
   id bigint NOT NULL,
@@ -1074,415 +785,26 @@ CREATE TABLE withdraw_methods (
   percent_charge decimal(5,2) DEFAULT 0.00,
   currency varchar(40) DEFAULT NULL,
   description text DEFAULT NULL,
-  status tinyinteger NOT NULL DEFAULT 1,
+  status smallint NOT NULL DEFAULT 1,
   created_at timestamp NULL DEFAULT NULL,
   updated_at timestamp NULL DEFAULT NULL
 );
 
-
-
-
-
 INSERT INTO withdraw_methods (id, form_id, name, min_limit, max_limit, fixed_charge, rate, percent_charge, currency, description, status, created_at, updated_at) VALUES
 (1, 19, 'Jazzcash', '100.00000000', '50000000.00000000', '0.00000000', '1.00000000', '0.00', 'PKR', '<b>Enter Account Number Or Name&nbsp;</b>', 1, '2023-11-04 07:51:49', '2023-11-04 07:54:28');
-
-
-
-
-
-
-
 
 ALTER TABLE admins
   ADD PRIMARY KEY (id),
   ADD UNIQUE KEY email (email,username);
-
-
-
-
-ALTER TABLE admin_notifications
-  ADD PRIMARY KEY (id);
-
-
-
-
-ALTER TABLE admin_password_resets
-  ADD PRIMARY KEY (id);
-
-
-
-
-ALTER TABLE deposits
-  ADD PRIMARY KEY (id);
-
-
-
-
-ALTER TABLE device_tokens
-  ADD PRIMARY KEY (id);
-
-
-
-
-ALTER TABLE extensions
-  ADD PRIMARY KEY (id);
-
-
-
-
-ALTER TABLE forms
-  ADD PRIMARY KEY (id);
-
-
-
-
-ALTER TABLE frontends
-  ADD PRIMARY KEY (id);
-
-
-
-
-ALTER TABLE gateways
-  ADD PRIMARY KEY (id);
-
-
-
-
-ALTER TABLE gateway_currencies
-  ADD PRIMARY KEY (id);
-
-
-
-
-ALTER TABLE general_settings
-  ADD PRIMARY KEY (id);
-
-
-
-
-ALTER TABLE holidays
-  ADD PRIMARY KEY (id);
-
-
-
-
-ALTER TABLE invests
-  ADD PRIMARY KEY (id);
-
-
-
-
-ALTER TABLE languages
-  ADD PRIMARY KEY (id);
-
-
-
-
-ALTER TABLE migrations
-  ADD PRIMARY KEY (id);
-
-
-
-
-ALTER TABLE notification_logs
-  ADD PRIMARY KEY (id);
-
-
-
-
-ALTER TABLE notification_templates
-  ADD PRIMARY KEY (id);
-
-
-
-
-ALTER TABLE pages
-  ADD PRIMARY KEY (id);
-
-
-
 
 ALTER TABLE personal_access_tokens
   ADD PRIMARY KEY (id),
   ADD UNIQUE KEY personal_access_tokens_token_unique (token),
   ADD KEY personal_access_tokens_tokenable_type_tokenable_id_index (tokenable_type,tokenable_id);
 
-
-
-
-ALTER TABLE plans
-  ADD PRIMARY KEY (id);
-
-
-
-
-ALTER TABLE promotion_tools
-  ADD PRIMARY KEY (id);
-
-
-
-
-ALTER TABLE referrals
-  ADD PRIMARY KEY (id);
-
-
-
-
-ALTER TABLE subscribers
-  ADD PRIMARY KEY (id);
-
-
-
-
-ALTER TABLE support_attachments
-  ADD PRIMARY KEY (id);
-
-
-
-
-ALTER TABLE support_messages
-  ADD PRIMARY KEY (id);
-
-
-
-
-ALTER TABLE support_tickets
-  ADD PRIMARY KEY (id);
-
-
-
-
-ALTER TABLE time_settings
-  ADD PRIMARY KEY (id);
-
-
-
-
-ALTER TABLE transactions
-  ADD PRIMARY KEY (id);
-
-
-
-
 ALTER TABLE users
   ADD PRIMARY KEY (id),
   ADD UNIQUE KEY username (username,email);
 
-
-
-
-ALTER TABLE user_logins
-  ADD PRIMARY KEY (id);
-
-
-
-
-ALTER TABLE withdrawals
-  ADD PRIMARY KEY (id);
-
-
-
-
-ALTER TABLE withdraw_methods
-  ADD PRIMARY KEY (id);
-
-
-
-
-
-
-
-
-ALTER TABLE admins
-  MODIFY id bigint NOT NULL , ;
-
-
-
-
-ALTER TABLE admin_notifications
-  MODIFY id bigint NOT NULL , ;
-
-
-
-
-ALTER TABLE admin_password_resets
-  MODIFY id bigint NOT NULL ;
-
-
-
-
-ALTER TABLE deposits
-  MODIFY id bigint NOT NULL , ;
-
-
-
-
-ALTER TABLE device_tokens
-  MODIFY id bigint NOT NULL ;
-
-
-
-
-ALTER TABLE extensions
-  MODIFY id bigint NOT NULL , ;
-
-
-
-
-ALTER TABLE forms
-  MODIFY id bigint NOT NULL , ;
-
-
-
-
-ALTER TABLE frontends
-  MODIFY id bigint NOT NULL , ;
-
-
-
-
-ALTER TABLE gateways
-  MODIFY id bigint NOT NULL , ;
-
-
-
-
-ALTER TABLE gateway_currencies
-  MODIFY id bigint NOT NULL , ;
-
-
-
-
-ALTER TABLE general_settings
-  MODIFY id bigint NOT NULL , ;
-
-
-
-
-ALTER TABLE holidays
-  MODIFY id bigint NOT NULL ;
-
-
-
-
-ALTER TABLE invests
-  MODIFY id integer NOT NULL ;
-
-
-
-
-ALTER TABLE languages
-  MODIFY id bigint NOT NULL , ;
-
-
-
-
-ALTER TABLE migrations
-  MODIFY id bigint NOT NULL ;
-
-
-
-
-ALTER TABLE notification_logs
-  MODIFY id bigint NOT NULL ;
-
-
-
-
-ALTER TABLE notification_templates
-  MODIFY id bigint NOT NULL , ;
-
-
-
-
-ALTER TABLE pages
-  MODIFY id bigint NOT NULL , ;
-
-
-
-
-ALTER TABLE personal_access_tokens
-  MODIFY id bigint NOT NULL ;
-
-
-
-
-ALTER TABLE plans
-  MODIFY id bigint NOT NULL , ;
-
-
-
-
-ALTER TABLE promotion_tools
-  MODIFY id bigint NOT NULL ;
-
-
-
-
-ALTER TABLE referrals
-  MODIFY id bigint NOT NULL ;
-
-
-
-
-ALTER TABLE subscribers
-  MODIFY id bigint NOT NULL ;
-
-
-
-
-ALTER TABLE support_attachments
-  MODIFY id bigint NOT NULL ;
-
-
-
-
-ALTER TABLE support_messages
-  MODIFY id bigint NOT NULL ;
-
-
-
-
-ALTER TABLE support_tickets
-  MODIFY id bigint NOT NULL ;
-
-
-
-
-ALTER TABLE time_settings
-  MODIFY id integer NOT NULL , ;
-
-
-
-
-ALTER TABLE transactions
-  MODIFY id bigint NOT NULL , ;
-
-
-
-
-ALTER TABLE users
-  MODIFY id bigint NOT NULL , ;
-
-
-
-
-ALTER TABLE user_logins
-  MODIFY id bigint NOT NULL , ;
-
-
-
-
-ALTER TABLE withdrawals
-  MODIFY id bigint NOT NULL , ;
-
-
-
-
-ALTER TABLE withdraw_methods
-  MODIFY id bigint NOT NULL , ;
 COMMIT;
 
-/*
-/*
-/*
