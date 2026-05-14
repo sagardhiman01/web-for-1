@@ -58,11 +58,14 @@ Route::controller('SiteController')->group(function () {
     Route::get('plan', 'plan')->name('plan');
     Route::post('planCalculator', 'planCalculator')->name('planCalculator');
 
+    Route::get('income-types', 'incomeTypes')->name('income.types');
+
     Route::post('/subscribe', 'subscribe')->name('subscribe');
 
     Route::get('placeholder-image/{size}', 'placeholderImage')->name('placeholder.image');
     Route::post('/planCalculator', 'planCalculator')->name('planCalculator');
 
+    Route::get('/whitepaper', 'whitepaper')->name('whitepaper');
     Route::get('/{slug}', 'pages')->name('pages');
     Route::get('/', 'index')->name('home');
 });

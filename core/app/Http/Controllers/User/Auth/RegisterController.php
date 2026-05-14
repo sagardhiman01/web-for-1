@@ -247,6 +247,15 @@ class RegisterController extends Controller
             notify($parentUser, 'REFERRAL_JOIN', [
                 'ref_username' => $user->username
             ]);
+
+            // Level Reward Check for Uplines (up to 10 levels)
+            $currentUpline = $parentUser;
+            $depth = 0;
+            while ($currentUpline && $depth < 10) {
+                $currentUpline->checkLevelRewards();
+                $currentUpline = $currentUpline->referrer;
+                $depth++;
+            }
         }
 
         return to_route('user.home');

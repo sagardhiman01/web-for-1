@@ -14,6 +14,14 @@
                     <div class="card card-bg">
                         <div class="card-body">
                             <div class="form-group">
+                                <label class="form-label">@lang('Select Wallet')</label>
+                                <select class="form-select form-control form--select" name="wallet" required>
+                                    <option value="deposit_wallet">@lang('Deposit Wallet')</option>
+                                    <option value="nft_wallet">@lang('NFT Deposit Wallet (NFT Only)')</option>
+                                </select>
+                                <small class="text-muted mt-1 d-block"><i class="las la-info-circle"></i> @lang('NFT Wallet balance can only be used to purchase NFTs.')</small>
+                            </div>
+                            <div class="form-group">
                                 <label class="form-label">@lang('Select Gateway')</label>
                                 <select class="form-select form-control form--select" name="gateway" required>
                                     <option value="">@lang('Select One')</option>
@@ -32,8 +40,8 @@
                             <div class="mt-3 preview-details d-none">
                                 <ul class="list-group">
                                     <li class="list-group-item d-flex justify-content-between">
-                                        <span>@lang('Limit')</span>
-                                        <span><span class="min fw-bold">0</span> {{__($general->cur_text)}} - <span class="max fw-bold">0</span> {{__($general->cur_text)}}</span>
+                                        <span>@lang('Minimum Limit')</span>
+                                        <span><span class="min fw-bold">0</span> {{__($general->cur_text)}}</span>
                                     </li>
                                     <li class="list-group-item d-flex justify-content-between">
                                         <span>@lang('Charge')</span>

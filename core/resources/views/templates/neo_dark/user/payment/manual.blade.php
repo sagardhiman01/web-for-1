@@ -32,7 +32,7 @@
                                         </div>
                                     @endif
 
-                                    <div class="my-4">
+                                    <div class="manual-desc my-4">
                                         <p>@php echo  $data->gateway->description @endphp</p>
                                     </div>
 

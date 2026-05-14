@@ -42,6 +42,18 @@ class SiteController extends Controller
         return view($this->activeTemplate . 'pages', compact('pageTitle', 'sections'));
     }
 
+    public function whitepaper()
+    {
+        $pageTitle = "Whitepaper";
+        return view($this->activeTemplate . 'whitepaper', compact('pageTitle'));
+    }
+
+    public function incomeTypes()
+    {
+        $pageTitle = "Income Types";
+        return view($this->activeTemplate . 'income_types_page', compact('pageTitle'));
+    }
+
     public function contact()
     {
         $pageTitle = "Contact Us";

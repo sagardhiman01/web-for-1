@@ -208,107 +208,177 @@
                 <div class="col-lg-12">
                     <div class="dashboard-main">
                         <div class="row mt-30 mb-5">
-
-                            <div class="col-lg-3 col-md-6 mb-30">
-                                <div class="stat-item">
-                                    <i class="las la-piggy-bank base--color"></i>
-                                    <h6 class="caption text-shadow">@lang('Deposit Wallet')</h6>
-                                    <span
-                                        class="total__amount">{{ $general->cur_sym }}{{ showAmount($user->deposit_wallet) }}</span>
-
-                                    <div class="d-flex justify-content-center mt-3">
-                                        <a href="{{ route('user.transactions') }}?wallet=deposit_wallet"
-                                            class="btn btn-primary btn-small d-block text-center style--two">@lang('View report')</a>
+                            
+                            <!-- Investment Level Card -->
+                            <div class="col-lg-12 mb-30">
+                                <div class="stat-item" style="background: linear-gradient(135deg, rgba(79, 209, 197, 0.1) 0%, rgba(45, 212, 191, 0.05) 100%); border: 1px solid rgba(79, 209, 197, 0.2); padding: 30px;">
+                                    <div class="d-flex align-items-center justify-content-between flex-wrap">
+                                        <div class="d-flex align-items-center">
+                                            <div style="width: 70px; height: 70px; background: rgba(79, 209, 197, 0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 20px; border: 2px solid #4FD1C5;">
+                                                <i class="las la-trophy base--color" style="font-size: 35px;"></i>
+                                            </div>
+                                            <div>
+                                                <h4 class="mb-1 text-white">@lang('Core Level'): {{ $user->rank > 0 ? 'Tier ' . $user->rank : 'Newbie' }}</h4>
+                                                <p class="text-muted mb-0">@lang('Grow your team to unlock higher rewards')</p>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex flex-wrap gap-4 mt-3 mt-lg-0">
+                                            <div class="text-center">
+                                                <h5 class="base--color mb-0">{{ $directCount }}</h5>
+                                                <small class="text-muted">@lang('Direct Members')</small>
+                                            </div>
+                                            <div class="text-center">
+                                                <h5 class="base--color mb-0">{{ $indirectCount }}</h5>
+                                                <small class="text-muted">@lang('Indirect Members')</small>
+                                            </div>
+                                        </div>
                                     </div>
+                                    
+                                    @php
+                                        $nextLevels = [
+                                            1 => ['d' => 10, 'i' => 5, 'r' => 50],
+                                            2 => ['d' => 20, 'i' => 20, 'r' => 100],
+                                            3 => ['d' => 40, 'i' => 80, 'r' => 200],
+                                            4 => ['d' => 80, 'i' => 150, 'r' => 400],
+                                            5 => ['d' => 200, 'i' => 500, 'r' => 1000]
+                                        ];
+                                        $currentLvl = $user->rank;
+                                        $nextLvl = $currentLvl < 5 ? $currentLvl + 1 : 5;
+                                        $req = $nextLevels[$nextLvl];
+                                        $dPerc = min(100, ($directCount / $req['d']) * 100);
+                                        $iPerc = min(100, ($indirectCount / $req['i']) * 100);
+                                    @endphp
 
+                                    @if($currentLvl < 5)
+                                    <div class="mt-4">
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <small class="text-white">@lang('Next Reward'): <span class="base--color">${{ $req['r'] }}</span></small>
+                                            <small class="text-muted">@lang('Progress to Tier') {{ $nextLvl }}</small>
+                                        </div>
+                                        <div class="row align-items-center">
+                                            <div class="col-md-6">
+                                                <small class="d-block mb-1">@lang('Direct'): {{ $directCount }}/{{ $req['d'] }}</small>
+                                                <div class="progress" style="height: 6px; background: rgba(255,255,255,0.1);">
+                                                    <div class="progress-bar bg--base" style="width: {{ $dPerc }}%"></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mt-3 mt-md-0">
+                                                <small class="d-block mb-1">@lang('Indirect'): {{ $indirectCount }}/{{ $req['i'] }}</small>
+                                                <div class="progress" style="height: 6px; background: rgba(255,255,255,0.1);">
+                                                    <div class="progress-bar" style="width: {{ $iPerc }}%; background-color: #F6E05E !important;"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @else
+                                        <div class="mt-4 text-center">
+                                            <span class="badge badge--success" style="padding: 10px 20px; font-size: 14px;">@lang('Max Level Achieved!')</span>
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
 
-                            <div class="col-lg-3 col-md-6 mb-30">
-                                <div class="stat-item">
-                                    <i class="las la-piggy-bank base--color"></i>
-                                    <h6 class="caption text-shadow">@lang('Interest Wallet')</h6>
-                                    <span
-                                        class="total__amount">{{ $general->cur_sym }}{{ showAmount($user->interest_wallet) }}</span>
-                                    <div class="d-flex justify-content-center mt-3">
-                                        <a href="{{ route('user.transactions') }}?wallet=interest_wallet"
-                                            class="btn btn-primary btn-small d-block text-center style--two">@lang('View report')</a>
+
+                            <div class="col-lg-6">
+                                <div class="row">
+                                    <div class="col-12 mb-30">
+                                        <div class="stat-item">
+                                            <i class="las la-piggy-bank base--color"></i>
+                                            <h6 class="caption text-shadow">@lang('Deposit Wallet')</h6>
+                                            <span class="total__amount">{{ $general->cur_sym }}{{ showAmount($user->deposit_wallet) }}</span>
+                                            <div class="d-flex justify-content-center mt-3">
+                                                <a href="{{ route('user.transactions') }}?wallet=deposit_wallet" class="btn btn-primary btn-small d-block text-center style--two">@lang('View report')</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 mb-30">
+                                        <div class="stat-wrapper deposit">
+                                            <div class="stat__header">
+                                                <div class="left">
+                                                    <div class="icon"><i class="las la-chart-area"></i></div>
+                                                    <h3 class="caption">@lang('Deposit Summary')</h3>
+                                                </div>
+                                            </div>
+                                            <div class="item-wrapper">
+                                                <div class="stat-item-two box-shadow-two">
+                                                    <h5 class="caption text-shadow">@lang('Total Deposit')</h5>
+                                                    <span class="total__amount base--color">{{ $general->cur_sym }}{{ showAmount($totalDeposit) }}</span>
+                                                </div>
+                                                <div class="stat-item-two box-shadow-two">
+                                                    <h5 class="caption text-shadow">@lang('Last Deposit')</h5>
+                                                    <span class="total__amount base--color">{{ $general->cur_sym }}{{ showAmount(@$lastDeposit->amount ?? 0) }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="col-lg-3 col-md-6 mb-30">
+                            <div class="col-lg-6">
+                                <div class="row">
+                                    <div class="col-12 mb-30">
+                                        <div class="stat-item">
+                                            <i class="las la-wallet base--color"></i>
+                                            <h6 class="caption text-shadow">@lang('Interest Wallet')</h6>
+                                            <span class="total__amount">{{ $general->cur_sym }}{{ showAmount($user->interest_wallet) }}</span>
+                                            <div class="d-flex justify-content-center mt-3">
+                                                <a href="{{ route('user.transactions') }}?wallet=interest_wallet" class="btn btn-primary btn-small d-block text-center style--two">@lang('View report')</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 mb-30">
+                                        <div class="stat-wrapper withdraw">
+                                            <div class="stat__header">
+                                                <div class="left">
+                                                    <div class="icon"><i class="las la-credit-card"></i></div>
+                                                    <h3 class="caption">@lang('Withdraw Summary')</h3>
+                                                </div>
+                                            </div>
+                                            <div class="item-wrapper">
+                                                <div class="stat-item-two box-shadow-two">
+                                                    <h5 class="caption text-shadow">@lang('Total Withdraw')</h5>
+                                                    <span class="total__amount base--color">{{ $general->cur_sym }}{{ showAmount($totalWithdraw) }}</span>
+                                                </div>
+                                                <div class="stat-item-two box-shadow-two">
+                                                    <h5 class="caption text-shadow">@lang('Last Withdraw')</h5>
+                                                    <span class="total__amount base--color">{{ $general->cur_sym }}{{ showAmount(@$lastWithdraw->amount ?? 0) }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-md-6 mb-30">
+                                <div class="stat-item">
+                                    <i class="las la-robot base--color"></i>
+                                    <h6 class="caption text-shadow">@lang('NFT Wallet')</h6>
+                                    <span class="total__amount">{{ $general->cur_sym }}{{ showAmount($user->nft_wallet) }}</span>
+                                    <div class="d-flex justify-content-center mt-3">
+                                        <a href="{{ route('user.transactions') }}?wallet=nft_wallet" class="btn btn-primary btn-small d-block text-center style--two">@lang('View report')</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-md-6 mb-30">
                                 <div class="stat-item">
                                     <i class="las la-credit-card base--color"></i>
                                     <h6 class="caption text-shadow">@lang('Total Invest')</h6>
-                                    <span
-                                        class="total__amount">{{ $general->cur_sym }}{{ showAmount($totalInvest) }}</span>
+                                    <span class="total__amount">{{ $general->cur_sym }}{{ showAmount($totalInvest) }}</span>
                                     <div class="d-flex justify-content-center mt-3">
-                                        <a href="{{ route('user.transactions') }}?remark=invest"
-                                            class="btn btn-primary btn-small d-block text-center style--two">@lang('View report')</a>
+                                        <a href="{{ route('user.transactions') }}?remark=invest" class="btn btn-primary btn-small d-block text-center style--two">@lang('View report')</a>
                                     </div>
-                                </div><!-- stat-item end -->
+                                </div>
                             </div>
 
-                            <div class="col-lg-3 col-md-6 mb-30">
+                            <div class="col-lg-4 col-md-6 mb-30">
                                 <div class="stat-item">
                                     <i class="las la-ticket-alt base--color"></i>
                                     <h6 class="caption text-shadow">@lang('Total Ticket')</h6>
                                     <span class="total__amount">{{ $totalTicket }} </span>
                                     <div class="d-flex justify-content-center mt-3">
-                                        <a href="{{ route('ticket.index') }}"
-                                            class="btn btn-primary btn-small d-block text-center style--two">@lang('View Report')</a>
+                                        <a href="{{ route('ticket.index') }}" class="btn btn-primary btn-small d-block text-center style--two">@lang('View Report')</a>
                                     </div>
-                                </div><!-- stat-item end -->
-                            </div>
-
-                            <div class="col-lg-6">
-                                <div class="stat-wrapper deposit">
-                                    <div class="stat__header">
-                                        <div class="left">
-                                            <div class="icon"><i class="las la-chart-area"></i></div>
-                                            <h3 class="caption">@lang('Deposit')</h3>
-                                        </div>
-                                        <div class="right"><i class="flaticon-next"></i></div>
-                                    </div>
-                                    <div class="item-wrapper">
-                                        <div class="stat-item-two box-shadow-two">
-                                            <h5 class="caption text-shadow">@lang('Total Deposit')</h5>
-                                            <span
-                                                class="total__amount base--color">{{ $general->cur_sym }}{{ showAmount($totalDeposit) }}</span>
-                                        </div><!-- stat-item-two end -->
-                                        <div class="stat-item-two box-shadow-two">
-                                            <h5 class="caption text-shadow">@lang('Last Deposit')</h5>
-                                            <span
-                                                class="total__amount base--color">{{ $general->cur_sym }}{{ showAmount(@$lastDeposit->amount ?? 0) }}</span>
-                                        </div><!-- stat-item-two end -->
-
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-6 mt-lg-0 mt-5">
-                                <div class="stat-wrapper withdraw">
-                                    <div class="stat__header">
-                                        <div class="left">
-                                            <div class="icon"><i class="las la-credit-card"></i></div>
-                                            <h3 class="caption">@lang('Withdraw')</h3>
-                                        </div>
-                                        <div class="right"><i class="flaticon-next"></i></div>
-                                    </div>
-                                    <div class="item-wrapper">
-                                        <div class="stat-item-two box-shadow-two">
-                                            <h5 class="caption text-shadow">@lang('Total Withdraw')</h5>
-                                            <span
-                                                class="total__amount base--color">{{ $general->cur_sym }}{{ showAmount($totalWithdraw) }}</span>
-                                        </div><!-- stat-item-two end -->
-                                        <div class="stat-item-two box-shadow-two">
-                                            <h5 class="caption text-shadow">@lang('Last Withdraw')</h5>
-                                            <span
-                                                class="total__amount base--color">{{ $general->cur_sym }}{{ showAmount(@$lastWithdraw->amount ?? 0) }}</span>
-                                        </div><!-- stat-item-two end -->
-
-                                    </div><!-- item-wrapper end -->
                                 </div>
                             </div>
 

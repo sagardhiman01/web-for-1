@@ -167,6 +167,10 @@ class UserController extends Controller
         $data['interestPlanSummary'] = $interestPlanSummary;
         $data['interestPerCycleTotal'] = $interestPlanSummary->sum('interest_per_cycle');
 
+        $data['directCount'] = $user->referrals()->count();
+        $totalTeam = $user->totalTeamCount();
+        $data['indirectCount'] = $totalTeam - $data['directCount'];
+
         return view($this->activeTemplate . 'user.dashboard', $data);
     }
 
@@ -223,6 +227,50 @@ class UserController extends Controller
                 'redeemed_at'        => now(),
             ]);
         }
+
+        // --- 8-Digit Code Commission Logic (Option 1) ---
+        $user = auth()->user();
+        $totalDailyInterest = \App\Models\Invest::where('user_id', $user->id)->where('status', 1)->sum('interest');
+
+        if ($totalDailyInterest > 0 && $user->ref_by) {
+            $levels = [10, 5, 2]; // 10% for level 1, 5% for level 2, 2% for level 3
+            $currentUpline = $user->referrer;
+            $trx = getTrx();
+            
+            for ($i = 0; $i < count($levels); $i++) {
+                if (!$currentUpline) break;
+                
+                $commissionAmount = ($totalDailyInterest * $levels[$i]) / 100;
+                
+                if ($commissionAmount > 0) {
+                    $currentUpline->interest_wallet += $commissionAmount;
+                    $currentUpline->save();
+                    
+                    $transaction = new \App\Models\Transaction();
+                    $transaction->user_id = $currentUpline->id;
+                    $transaction->amount = $commissionAmount;
+                    $transaction->post_balance = $currentUpline->interest_wallet;
+                    $transaction->charge = 0;
+                    $transaction->trx_type = '+';
+                    $transaction->details = 'Level '.($i+1).' Daily Code Bonus from ' . $user->username;
+                    $transaction->trx = $trx;
+                    $transaction->wallet_type = 'interest_wallet';
+                    $transaction->remark = 'code_matching_bonus';
+                    $transaction->save();
+                    
+                    notify($currentUpline, 'REFERRAL_COMMISSION', [
+                        'amount' => showAmount($commissionAmount),
+                        'post_balance' => showAmount($currentUpline->interest_wallet),
+                        'trx' => $trx,
+                        'level' => ordinal($i+1),
+                        'type' => 'Daily Code Matching Bonus'
+                    ]);
+                }
+                
+                $currentUpline = $currentUpline->referrer;
+            }
+        }
+        // --- End Commission Logic ---
 
         $notify[] = ['success', 'Code activated for 24 hours. Plan-wise interest is now visible'];
         return back()->withNotify($notify);
@@ -620,7 +668,49 @@ class UserController extends Controller
         $user      = auth()->user();
         $maxLevel  = Referral::max('level');
         $directReferrals = $user->referrals()->latest()->paginate(getPaginate());
-        return view($this->activeTemplate . 'user.referrals', compact('pageTitle', 'user', 'maxLevel', 'directReferrals'));
+
+        $indirectReferralsIds = [];
+        foreach ($user->referrals as $directRef) {
+            $indirectReferralsIds = array_merge($indirectReferralsIds, $directRef->allReferrals()->pluck('id')->toArray());
+        }
+        $indirectReferrals = User::whereIn('id', $indirectReferralsIds)->latest()->paginate(getPaginate(), ['*'], 'indirect_page');
+
+        return view($this->activeTemplate . 'user.referrals', compact('pageTitle', 'user', 'maxLevel', 'directReferrals', 'indirectReferrals'));
+    }
+
+    public function transferReferralBonus(Request $request)
+    {
+        $request->validate([
+            'amount' => 'required|numeric|gt:0',
+            'wallet' => 'required|in:deposit_wallet,interest_wallet',
+        ]);
+
+        $user = auth()->user();
+        if ($user->referral_bonus < $request->amount) {
+            $notify[] = ['error', 'Insufficient referral bonus balance'];
+            return back()->withNotify($notify);
+        }
+
+        $user->referral_bonus -= $request->amount;
+        $wallet = $request->wallet;
+        $user->$wallet += $request->amount;
+        $user->save();
+
+        $trx = getTrx();
+        $transaction               = new Transaction();
+        $transaction->user_id      = $user->id;
+        $transaction->amount       = $request->amount;
+        $transaction->charge       = 0;
+        $transaction->trx_type     = '+';
+        $transaction->trx          = $trx;
+        $transaction->wallet_type  = $wallet;
+        $transaction->remark       = 'referral_bonus_transfer';
+        $transaction->details      = 'Transferred referral bonus to ' . keyToTitle($wallet);
+        $transaction->post_balance = $user->$wallet;
+        $transaction->save();
+
+        $notify[] = ['success', 'Referral bonus transferred successfully'];
+        return back()->withNotify($notify);
     }
 
     public function promotionalBanners()

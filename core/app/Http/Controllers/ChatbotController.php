@@ -90,7 +90,7 @@ class ChatbotController extends Controller
             return $this->withdrawReply($user);
         }
 
-        if ($this->containsAny($text, ['about', 'company', 'address', 'california', 'usa', 'us', 'bitcoin trade', 'bitcoin trading', 'start date', 'since', '2023', 'march 2023'])) {
+        if ($this->containsAny($text, ['about', 'company', 'address', 'california', 'usa', 'us', 'bitcoin trade', 'bitcoin trading', 'start date', 'since', '2026', 'march 2026'])) {
             return $this->companyReply();
         }
 
@@ -266,7 +266,7 @@ class ChatbotController extends Controller
 
     private function companyReply(): string
     {
-        return "Core Asset Investing company info:\n1. Company start date: March 2023\n2. Location: California, United States (USA)\n3. Business model: Bitcoin-focused trading strategies with risk management\n4. User returns are credited according to the active investment plan terms shown on dashboard.";
+        return "Core Asset Investing company info:\n1. Company start date: March 2026\n2. Location: California, United States (USA)\n3. Business model: Bitcoin-focused trading strategies with risk management\n4. User returns are credited according to the active investment plan terms shown on dashboard.";
     }
 
     private function containsAny(string $haystack, array $keywords): bool

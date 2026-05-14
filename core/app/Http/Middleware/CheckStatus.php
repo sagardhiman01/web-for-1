@@ -18,7 +18,7 @@ class CheckStatus
     {
         if (Auth::check()) {
             $user = auth()->user();
-            if ($user->status && $user->ev && $user->sv && $user->tv) {
+            if ($user->status && $user->ev && $user->sv && ($user->tv || auth()->guard('admin')->check())) {
                 return $next($request);
             } else {
                 if ($request->is('api/*')) {

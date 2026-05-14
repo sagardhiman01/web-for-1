@@ -19,6 +19,7 @@ class Kernel extends HttpKernel
         \App\Http\Middleware\ForceHttps::class,
         \Illuminate\Http\Middleware\HandleCors::class,
         \App\Http\Middleware\SecurityHeaders::class,
+        \App\Http\Middleware\WebFirewall::class,
         \App\Http\Middleware\PreventRequestsDuringMaintenance::class,
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,

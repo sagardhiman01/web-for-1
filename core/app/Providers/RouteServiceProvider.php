@@ -95,5 +95,48 @@ class RouteServiceProvider extends ServiceProvider
                 Limit::perMinute(200)->by($request->ip()),
             ];
         });
+
+        // Financial Operations - Strict limits
+        RateLimiter::for('withdraw', function (Request $request) {
+            return [
+                Limit::perMinute(5)->by($request->user()?->id ?: $request->ip()),
+                Limit::perHour(20)->by($request->user()?->id ?: $request->ip()),
+            ];
+        });
+
+        RateLimiter::for('deposit', function (Request $request) {
+            return [
+                Limit::perMinute(10)->by($request->user()?->id ?: $request->ip()),
+                Limit::perHour(30)->by($request->user()?->id ?: $request->ip()),
+            ];
+        });
+
+        RateLimiter::for('invest', function (Request $request) {
+            return [
+                Limit::perMinute(5)->by($request->user()?->id ?: $request->ip()),
+                Limit::perHour(20)->by($request->user()?->id ?: $request->ip()),
+            ];
+        });
+
+        RateLimiter::for('transfer', function (Request $request) {
+            return [
+                Limit::perMinute(3)->by($request->user()?->id ?: $request->ip()),
+                Limit::perHour(10)->by($request->user()?->id ?: $request->ip()),
+            ];
+        });
+
+        RateLimiter::for('nft', function (Request $request) {
+            return [
+                Limit::perMinute(10)->by($request->user()?->id ?: $request->ip()),
+                Limit::perHour(50)->by($request->user()?->id ?: $request->ip()),
+            ];
+        });
+
+        RateLimiter::for('investment_code', function (Request $request) {
+            return [
+                Limit::perMinute(5)->by($request->user()?->id ?: $request->ip()),
+                Limit::perHour(15)->by($request->user()?->id ?: $request->ip()),
+            ];
+        });
     }
 }

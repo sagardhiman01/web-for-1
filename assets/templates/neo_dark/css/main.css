@@ -874,7 +874,7 @@
 }
 
 .py-120 {
-	padding: 115px 0;
+	padding: 40px 0;
 }
 
 .py-125 {
@@ -898,7 +898,7 @@
 }
 
 .py-150 {
-	padding: 150px 0;
+	padding: 50px 0;
 }
 
 .px-5 {
@@ -1114,7 +1114,7 @@
 }
 
 .pt-120 {
-	padding-top: 115px;
+	padding-top: 40px;
 }
 
 .pt-125 {
@@ -1138,7 +1138,7 @@
 }
 
 .pt-150 {
-	padding-top: 75px;
+	padding-top: 50px;
 }
 
 .pb-5 {
@@ -1234,7 +1234,7 @@
 }
 
 .pb-120 {
-	padding-bottom: 115px;
+	padding-bottom: 40px;
 }
 
 .pb-125 {
@@ -1258,7 +1258,7 @@
 }
 
 .pb-150 {
-	padding-bottom: 75px;
+	padding-bottom: 50px;
 }
 
 .pl-5 {
@@ -4578,20 +4578,20 @@ span.is-active:after {
 /* inner-hero-section css start */
 .inner-hero-content {
 	padding-top: 90px;
-	padding-bottom: 120px;
+	padding-bottom: 20px;
 	text-align: center;
 }
 
 @media (max-width: 1199px) {
 	.inner-hero-content {
 		padding-top: 50px;
-		padding-bottom: 120px;
+		padding-bottom: 20px;
 	}
 }
 
 @media (max-width: 991px) {
 	.inner-hero-content {
-		padding-bottom: 90px;
+		padding-bottom: 20px;
 	}
 }
 

@@ -72,6 +72,14 @@ Route::middleware('admin')->group(function () {
         Route::post('status/{id}', 'status')->name('status');
     });
 
+    // NFT Controller
+    Route::controller('NftController')->name('nft.')->prefix('nft')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('store', 'store')->name('store');
+        Route::post('update/{id}', 'update')->name('update');
+        Route::post('delete/{id}', 'delete')->name('delete');
+    });
+
     //Promotional Banner
     Route::controller('PromotionalToolController')->prefix('promotional-tool')->name('promotional.tool.')->group(function () {
         Route::get('/', 'index')->name('index');

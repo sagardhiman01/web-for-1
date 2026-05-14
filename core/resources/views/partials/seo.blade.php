@@ -38,4 +38,8 @@
     <meta property="og:url" content="{{ url()->current() }}">
     {{--<!-- Twitter Meta Tags -->--}}
     <meta name="twitter:card" content="summary_large_image">
+@else
+    <meta name="description" content="Core Asset Investing - Professional NFT and Crypto Investment Platform. Earn daily profits with secure assets.">
+    <meta name="keywords" content="investment, crypto, nft, daily profit, secure earnings, core asset">
+    <link rel="shortcut icon" href="{{ getImage(getFilePath('logoIcon') . '/favicon.png') }}" type="image/x-icon">
 @endif

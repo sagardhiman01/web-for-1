@@ -133,7 +133,7 @@ class WithdrawController extends Controller
 
         $this->validate($request, [
             'method_code'      => 'required',
-            'amount'           => 'required|numeric',
+            'amount'           => 'required|numeric|gt:0',
         ]);
         $method = WithdrawMethod::where('id', $request->method_code)->where('status', 1)->firstOrFail();
         $user   = auth()->user();
@@ -217,48 +217,59 @@ class WithdrawController extends Controller
             }
         }
 
-        if ($withdraw->amount > $user->interest_wallet) {
-            $notify[] = ['error', 'Your request amount is larger then your current balance.'];
-            return back()->withNotify($notify);
-        }
+        return \Illuminate\Support\Facades\DB::transaction(function () use ($withdraw, $userData) {
+            $user = User::where('id', auth()->id())->lockForUpdate()->first();
+            $lockedWithdraw = Withdrawal::where('id', $withdraw->id)->where('status', 0)->lockForUpdate()->first();
 
-        $withdraw->status               = 2;
-        $withdraw->withdraw_information = $userData;
-        $withdraw->save();
-        $user->interest_wallet -= $withdraw->amount;
-        $user->save();
+            if (!$lockedWithdraw) {
+                $notify[] = ['error', 'Withdrawal already processed'];
+                return to_route('user.withdraw.history')->withNotify($notify);
+            }
 
-        $transaction               = new Transaction();
-        $transaction->user_id      = $withdraw->user_id;
-        $transaction->amount       = $withdraw->amount;
-        $transaction->post_balance = $user->interest_wallet;
-        $transaction->charge       = $withdraw->charge;
-        $transaction->trx_type     = '-';
-        $transaction->details      = showAmount($withdraw->final_amount) . ' ' . $withdraw->currency . ' Withdraw Via ' . $withdraw->method->name;
-        $transaction->trx          = $withdraw->trx;
-        $transaction->wallet_type  = 'interest_wallet';
-        $transaction->remark       = 'withdraw';
-        $transaction->save();
+            if ($lockedWithdraw->amount > $user->interest_wallet) {
+                $notify[] = ['error', 'Your request amount is larger then your current balance.'];
+                return back()->withNotify($notify);
+            }
 
-        $adminNotification            = new AdminNotification();
-        $adminNotification->user_id   = $user->id;
-        $adminNotification->title     = 'New withdraw request from ' . $user->username;
-        $adminNotification->click_url = urlPath('admin.withdraw.details', $withdraw->id);
-        $adminNotification->save();
+            $lockedWithdraw->status               = 2; // Pending
+            $lockedWithdraw->withdraw_information = $userData;
+            $lockedWithdraw->save();
+            
+            $user->interest_wallet -= $lockedWithdraw->amount;
+            $user->save();
 
-        notify($user, 'WITHDRAW_REQUEST', [
-            'method_name'     => $withdraw->method->name,
-            'method_currency' => $withdraw->currency,
-            'method_amount'   => showAmount($withdraw->final_amount),
-            'amount'          => showAmount($withdraw->amount),
-            'charge'          => showAmount($withdraw->charge),
-            'rate'            => showAmount($withdraw->rate),
-            'trx'             => $withdraw->trx,
-            'post_balance'    => showAmount($user->interest_wallet),
-        ]);
+            $transaction               = new Transaction();
+            $transaction->user_id      = $lockedWithdraw->user_id;
+            $transaction->amount       = $lockedWithdraw->amount;
+            $transaction->post_balance = $user->interest_wallet;
+            $transaction->charge       = $lockedWithdraw->charge;
+            $transaction->trx_type     = '-';
+            $transaction->details      = showAmount($lockedWithdraw->final_amount) . ' ' . $lockedWithdraw->currency . ' Withdraw Via ' . $lockedWithdraw->method->name;
+            $transaction->trx          = $lockedWithdraw->trx;
+            $transaction->wallet_type  = 'interest_wallet';
+            $transaction->remark       = 'withdraw';
+            $transaction->save();
 
-        $notify[] = ['success', 'Withdraw request sent successfully'];
-        return to_route('user.withdraw.history')->withNotify($notify);
+            $adminNotification            = new AdminNotification();
+            $adminNotification->user_id   = $user->id;
+            $adminNotification->title     = 'New withdraw request from ' . $user->username;
+            $adminNotification->click_url = urlPath('admin.withdraw.details', $lockedWithdraw->id);
+            $adminNotification->save();
+
+            notify($user, 'WITHDRAW_REQUEST', [
+                'method_name'     => $lockedWithdraw->method->name,
+                'method_currency' => $lockedWithdraw->currency,
+                'method_amount'   => showAmount($lockedWithdraw->final_amount),
+                'amount'          => showAmount($lockedWithdraw->amount),
+                'charge'          => showAmount($lockedWithdraw->charge),
+                'rate'            => showAmount($lockedWithdraw->rate),
+                'trx'             => $lockedWithdraw->trx,
+                'post_balance'    => showAmount($user->interest_wallet),
+            ]);
+
+            $notify[] = ['success', 'Withdraw request sent successfully'];
+            return to_route('user.withdraw.history')->withNotify($notify);
+        });
     }
 
     private function normalizeWithdrawInformation($withdrawInformation): array

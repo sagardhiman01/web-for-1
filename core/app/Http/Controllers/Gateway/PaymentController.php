@@ -1,7 +1,9 @@
 <?php
+
 namespace App\Http\Controllers\Gateway;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\User\UserController;
 use App\Lib\FormProcessor;
 use App\Lib\HyipLab;
 use App\Models\AdminNotification;
@@ -15,12 +17,11 @@ use Illuminate\Http\Request;
 
 class PaymentController extends Controller
 {
-
     public function deposit()
     {
         $gatewayCurrency = GatewayCurrency::whereHas('method', function ($gate) {
             $gate->where('status', 1);
-        })->with('method')->orderby('name')->get();
+        })->with('method')->orderby('method_code')->get();
         $pageTitle = 'Deposit Methods';
         return view($this->activeTemplate . 'user.payment.deposit', compact('gatewayCurrency', 'pageTitle'));
     }
@@ -31,7 +32,9 @@ class PaymentController extends Controller
             'amount'      => 'required|numeric|gt:0',
             'method_code' => 'required',
             'currency'    => 'required',
+            'wallet'      => 'required|in:deposit_wallet,nft_wallet',
         ]);
+
 
         $gate = GatewayCurrency::whereHas('method', function ($gate) {
             $gate->where('status', 1);
@@ -45,12 +48,13 @@ class PaymentController extends Controller
             $notify[] = ['error', 'Please follow deposit limit'];
             return back()->withNotify($notify);
         }
-        $data = self::insertDeposit($gate, $request->amount);
+
+        $data = self::insertDeposit($gate, $request->amount, null, $request->wallet);
         session()->put('Track', $data->trx);
         return to_route('user.deposit.confirm');
     }
 
-    public static function insertDeposit($gateway, $amount, $investPlan = null)
+    public static function insertDeposit($gateway, $amount, $investPlan = null, $wallet = 'deposit_wallet')
     {
         $user      = auth()->user();
         $charge    = $gateway->fixed_charge + ($amount * $gateway->percent_charge / 100);
@@ -71,56 +75,10 @@ class PaymentController extends Controller
         $data->btc_amo         = 0;
         $data->btc_wallet      = "";
         $data->trx             = getTrx();
+        $data->wallet_type      = $wallet;
         $data->save();
 
         return $data;
-    }
-
-    public function appDepositConfirm($hash)
-    {
-        try {
-            $id = decrypt($hash);
-        } catch (\Exception$ex) {
-            return "Sorry, invalid URL.";
-        }
-        $data = Deposit::where('id', $id)->where('status', 0)->orderBy('id', 'DESC')->firstOrFail();
-        $user = User::findOrFail($data->user_id);
-        auth()->login($user);
-        session()->put('Track', $data->trx);
-        return to_route('user.deposit.confirm');
-    }
-
-    public function depositConfirm()
-    {
-        $track   = session()->get('Track');
-        $deposit = Deposit::where('trx', $track)->where('status', 0)->orderBy('id', 'DESC')->with('gateway')->firstOrFail();
-
-        if ($deposit->method_code >= 1000) {
-            return to_route('user.deposit.manual.confirm');
-        }
-
-        $dirName = $deposit->gateway->alias;
-        $new     = __NAMESPACE__ . '\\' . $dirName . '\\ProcessController';
-
-        $data = $new::process($deposit);
-        $data = json_decode($data);
-
-        if (isset($data->error)) {
-            $notify[] = ['error', $data->message];
-            return to_route(gatewayRedirectUrl())->withNotify($notify);
-        }
-        if (isset($data->redirect)) {
-            return redirect($data->redirect_url);
-        }
-
-        // for Stripe V3
-        if (@$data->session) {
-            $deposit->btc_wallet = $data->session->id;
-            $deposit->save();
-        }
-
-        $pageTitle = 'Payment Confirm';
-        return view($this->activeTemplate . $data->view, compact('data', 'pageTitle', 'deposit'));
     }
 
     public static function userDataUpdate($deposit, $isManual = null)
@@ -129,19 +87,20 @@ class PaymentController extends Controller
             $deposit->status = 1;
             $deposit->save();
 
-            $user = User::find($deposit->user_id);
-            $user->deposit_wallet += $deposit->amount;
+            $user = User::where('id', $deposit->user_id)->lockForUpdate()->first();
+            $wallet = $deposit->wallet_type ?? 'deposit_wallet';
+            $user->$wallet += $deposit->amount;
             $user->save();
 
             $transaction               = new Transaction();
             $transaction->user_id      = $deposit->user_id;
             $transaction->amount       = $deposit->amount;
-            $transaction->post_balance = $user->deposit_wallet;
+            $transaction->post_balance = $user->$wallet;
             $transaction->charge       = $deposit->charge;
             $transaction->trx_type     = '+';
             $transaction->details      = 'Deposit Via ' . $deposit->gatewayCurrency()->name;
             $transaction->trx          = $deposit->trx;
-            $transaction->wallet_type  = 'deposit_wallet';
+            $transaction->wallet_type  = $wallet;
             $transaction->remark       = 'deposit';
             $transaction->save();
 
@@ -165,17 +124,91 @@ class PaymentController extends Controller
             ]);
 
             $general = GeneralSetting::first();
-            if ($general->deposit_commission) {
+            if ($general->deposit_commission == 1) {
                 HyipLab::levelCommission($user, $deposit->amount, 'deposit_commission', $deposit->trx, $general);
             }
+
+            // Custom Referral Bonus Logic (10% to direct referrer)
+            if ($user->ref_by) {
+                $referrer = User::find($user->ref_by);
+                if ($referrer) {
+                    $refBonus = $deposit->amount * 0.10; // 10%
+                    $referrer->referral_bonus += $refBonus; // Store in holding wallet
+                    $referrer->save();
+                    
+                    $refTrx = new Transaction();
+                    $refTrx->user_id = $referrer->id;
+                    $refTrx->amount = $refBonus;
+                    $refTrx->post_balance = $referrer->referral_bonus;
+                    $refTrx->charge = 0;
+                    $refTrx->trx_type = '+';
+                    $refTrx->details = '10% Referral Bonus from ' . $user->username . ' deposit';
+                    $refTrx->trx = getTrx();
+                    $refTrx->wallet_type = 'referral_bonus';
+                    $refTrx->remark = 'referral_commission';
+                    $refTrx->save();
+                }
+            }
+
+            // Custom Self Bonus Logic (5% to the depositor)
+            $selfBonus = $deposit->amount * 0.05; // 5%
+            $user->interest_wallet += $selfBonus;
+            $user->save();
+
+            $selfTrx = new Transaction();
+            $selfTrx->user_id = $user->id;
+            $selfTrx->amount = $selfBonus;
+            $selfTrx->post_balance = $user->interest_wallet;
+            $selfTrx->charge = 0;
+            $selfTrx->trx_type = '+';
+            $selfTrx->details = '5% Self Bonus on Deposit';
+            $selfTrx->trx = getTrx();
+            $selfTrx->wallet_type = 'interest_wallet';
+            $selfTrx->remark = 'deposit_bonus';
+            $selfTrx->save();
 
             if ($deposit->plan_id) {
                 $plan = Plan::where('status', 1)->findOrFail($deposit->plan_id);
                 $hyip = new HyipLab($user, $plan);
                 $hyip->invest($deposit->amount, 'deposit_wallet');
             }
-
         }
+    }
+
+    public function depositConfirm()
+    {
+        $track = session()->get('Track');
+        $deposit = Deposit::where('trx', $track)->where('status', 0)->with('gateway')->firstOrFail();
+
+        if ($deposit->method_code >= 1000) {
+            return to_route('user.deposit.manual.confirm');
+        }
+
+
+        $dirName = $deposit->gateway->alias;
+        $new = __NAMESPACE__ . '\\' . $dirName . '\\ProcessController';
+
+        $data = $new::process($deposit);
+        $data = json_decode($data);
+
+
+        if (isset($data->error)) {
+            $notify[] = ['error', $data->message];
+            return to_route(gatewayRedirectUrl())->withNotify($notify);
+        }
+        if (isset($data->redirect)) {
+            return redirect($data->redirect_url);
+        }
+
+        // for webview
+        if ($deposit->btc_amo > 0 || $deposit->method_code == 502 || $deposit->method_code == 503 || $deposit->method_code == 504) {
+            $info = json_decode($deposit->detail);
+            $deposit->btc_wallet = $info->address;
+            $deposit->save();
+        }
+
+        $pageTitle = 'Payment Confirm';
+        return view($this->activeTemplate . $data->view, compact('data', 'pageTitle', 'deposit'));
     }
 
     public function manualDepositConfirm()
@@ -233,5 +266,4 @@ class PaymentController extends Controller
         $notify[] = ['success', 'You have deposit request has been taken'];
         return to_route('user.deposit.history')->withNotify($notify);
     }
-
 }

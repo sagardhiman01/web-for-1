@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#0f172a">
+    <title>Treasure NFT - Download App</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0f172a;
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .bg-glow {
+            position: fixed; top: -200px; left: 50%; transform: translateX(-50%);
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(79,209,197,0.15) 0%, transparent 70%);
+            pointer-events: none; z-index: 0;
+        }
+        .bg-glow-2 {
+            position: fixed; bottom: -300px; right: -100px;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(246,224,94,0.1) 0%, transparent 70%);
+            pointer-events: none; z-index: 0;
+        }
+
+        .container {
+            max-width: 480px; margin: 0 auto; padding: 20px;
+            position: relative; z-index: 1;
+        }
+
+        .header {
+            text-align: center; padding: 40px 0 20px;
+        }
+        .app-icon {
+            width: 100px; height: 100px; border-radius: 24px;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border: 2px solid rgba(79,209,197,0.4);
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 8px 32px rgba(79,209,197,0.2);
+            font-size: 2.2rem; font-weight: 900;
+            background: linear-gradient(135deg, #4FD1C5, #3182CE);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .app-icon img {
+            width: 70px; height: 70px; object-fit: contain;
+        }
+
+        .app-name {
+            font-size: 1.8rem; font-weight: 800;
+            background: linear-gradient(135deg, #fff, #a0aec0);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .app-tagline {
+            color: #64748b; font-size: 0.95rem; margin-top: 6px;
+        }
+
+        .rating-row {
+            display: flex; align-items: center; justify-content: center;
+            gap: 8px; margin-top: 15px;
+        }
+        .stars { color: #F6E05E; font-size: 0.9rem; }
+        .rating-text { color: #94a3b8; font-size: 0.85rem; }
+
+        .download-btn {
+            display: block; width: 100%; padding: 16px; border: none; border-radius: 14px;
+            font-size: 1.1rem; font-weight: 700; cursor: pointer;
+            background: linear-gradient(135deg, #4FD1C5 0%, #3182CE 100%);
+            color: #fff; margin-top: 25px; text-align: center; text-decoration: none;
+            box-shadow: 0 4px 20px rgba(79,209,197,0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .download-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(79,209,197,0.5); }
+        .download-btn:active { transform: scale(0.98); }
+
+        .pwa-btn {
+            display: block; width: 100%; padding: 14px; border: 2px solid rgba(79,209,197,0.4); border-radius: 14px;
+            font-size: 1rem; font-weight: 600; cursor: pointer;
+            background: rgba(79,209,197,0.08); color: #4FD1C5;
+            margin-top: 12px; text-align: center; text-decoration: none;
+            transition: all 0.2s;
+        }
+        .pwa-btn:hover { background: rgba(79,209,197,0.15); border-color: #4FD1C5; }
+
+        .info-text {
+            text-align: center; color: #475569; font-size: 0.8rem; margin-top: 10px;
+        }
+
+        .features {
+            margin-top: 35px;
+        }
+        .features h3 {
+            font-size: 1.1rem; font-weight: 700; margin-bottom: 16px; color: #e2e8f0; text-align: center;
+        }
+        .feature-card {
+            display: flex; align-items: flex-start; gap: 14px;
+            padding: 16px; border-radius: 14px;
+            background: rgba(30,41,59,0.6); border: 1px solid rgba(255,255,255,0.06);
+            margin-bottom: 10px; transition: border-color 0.2s;
+        }
+        .feature-card:hover { border-color: rgba(79,209,197,0.3); }
+        .feature-icon {
+            width: 42px; height: 42px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; font-size: 1.1rem;
+        }
+        .fi-teal { background: rgba(79,209,197,0.15); color: #4FD1C5; }
+        .fi-gold { background: rgba(246,224,94,0.15); color: #F6E05E; }
+        .fi-green { background: rgba(104,211,145,0.15); color: #68D391; }
+        .fi-purple { background: rgba(159,122,234,0.15); color: #9F7AEA; }
+
+        .feature-text h4 { font-size: 0.95rem; font-weight: 600; color: #e2e8f0; }
+        .feature-text p { font-size: 0.82rem; color: #64748b; margin-top: 3px; line-height: 1.4; }
+
+        .screenshots {
+            margin-top: 35px;
+        }
+        .screenshots h3 {
+            font-size: 1.1rem; font-weight: 700; margin-bottom: 16px; color: #e2e8f0; text-align: center;
+        }
+        .screenshot-scroll {
+            display: flex; gap: 12px; overflow-x: auto;
+            padding-bottom: 10px; scroll-snap-type: x mandatory;
+        }
+        .screenshot-scroll::-webkit-scrollbar { height: 4px; }
+        .screenshot-scroll::-webkit-scrollbar-thumb { background: rgba(79,209,197,0.3); border-radius: 4px; }
+        .ss-card {
+            flex-shrink: 0; width: 200px; height: 360px;
+            border-radius: 20px; overflow: hidden;
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            border: 1px solid rgba(255,255,255,0.08);
+            scroll-snap-align: start;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 24px 16px; text-align: center;
+        }
+        .ss-card i { font-size: 2.5rem; color: #4FD1C5; margin-bottom: 16px; }
+        .ss-card h5 { font-size: 0.95rem; font-weight: 700; color: #fff; margin-bottom: 8px; }
+        .ss-card p { font-size: 0.78rem; color: #64748b; line-height: 1.4; }
+
+        .stats-row {
+            display: grid; grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px; margin-top: 30px;
+        }
+        .stat-box {
+            text-align: center; padding: 16px 10px; border-radius: 14px;
+            background: rgba(30,41,59,0.6); border: 1px solid rgba(255,255,255,0.06);
+        }
+        .stat-box .num {
+            font-size: 1.4rem; font-weight: 800;
+            background: linear-gradient(135deg, #4FD1C5, #68D391);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .stat-box .label { font-size: 0.72rem; color: #64748b; margin-top: 4px; }
+
+        .footer {
+            text-align: center; padding: 30px 0; margin-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .footer p { color: #475569; font-size: 0.8rem; }
+        .footer a { color: #4FD1C5; text-decoration: none; }
+
+        .install-guide {
+            margin-top: 30px; padding: 20px; border-radius: 14px;
+            background: rgba(79,209,197,0.05); border: 1px solid rgba(79,209,197,0.2);
+        }
+        .install-guide h3 { font-size: 1rem; font-weight: 700; color: #4FD1C5; margin-bottom: 14px; text-align: center; }
+        .step { display: flex; gap: 12px; margin-bottom: 12px; }
+        .step-num {
+            width: 28px; height: 28px; border-radius: 50%;
+            background: rgba(79,209,197,0.15); color: #4FD1C5;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.8rem; font-weight: 700; flex-shrink: 0;
+        }
+        .step-text { font-size: 0.85rem; color: #94a3b8; line-height: 1.5; }
+        .step-text strong { color: #e2e8f0; }
+
+        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+        .float-anim { animation: float 3s ease-in-out infinite; }
+    </style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+<div class="bg-glow-2"></div>
+
+<div class="container">
+
+    <div class="header">
+        <div class="app-icon float-anim">
+            <img src="assets/images/logoIcon/logo.png" alt="App Icon" onerror="this.style.display='none'; this.parentElement.textContent='TNT';">
+        </div>
+        <div class="app-name">Treasure NFT</div>
+        <div class="app-tagline">Web3 Algorithmic Trading Platform</div>
+        <div class="rating-row">
+            <span class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></span>
+            <span class="rating-text">4.8 &bull; 12K+ Downloads</span>
+        </div>
+    </div>
+
+    <div class="stats-row">
+        <div class="stat-box">
+            <div class="num">20+</div>
+            <div class="label">NFT Strategies</div>
+        </div>
+        <div class="stat-box">
+            <div class="num">5%</div>
+            <div class="label">Daily Returns</div>
+        </div>
+        <div class="stat-box">
+            <div class="num">24/7</div>
+            <div class="label">AI Trading</div>
+        </div>
+    </div>
+
+    <a href="#" class="download-btn" id="installBtn" onclick="installPWA(event)">
+        <i class="fas fa-download"></i> &nbsp; Install App
+    </a>
+    <a href="/user/login" class="pwa-btn">
+        <i class="fas fa-globe"></i> &nbsp; Open in Browser
+    </a>
+    <p class="info-text">Works on Android, iOS & Desktop. No app store needed.</p>
+
+    <div class="features">
+        <h3>Why Treasure NFT?</h3>
+
+        <div class="feature-card">
+            <div class="feature-icon fi-teal"><i class="fas fa-robot"></i></div>
+            <div class="feature-text">
+                <h4>AI-Powered Trading</h4>
+                <p>Advanced algorithms trade 24/7, generating consistent returns on your deployed capital.</p>
+            </div>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon fi-gold"><i class="fas fa-gem"></i></div>
+            <div class="feature-text">
+                <h4>Exclusive NFT Assets</h4>
+                <p>Reserve and own unique digital assets from $50 to $10,000 with guaranteed profit cycles.</p>
+            </div>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon fi-green"><i class="fas fa-users"></i></div>
+            <div class="feature-text">
+                <h4>Referral Rewards</h4>
+                <p>Earn 10% commission on direct referrals + 2% code income from indirect team deposits.</p>
+            </div>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon fi-purple"><i class="fas fa-shield-halved"></i></div>
+            <div class="feature-text">
+                <h4>Secure & Transparent</h4>
+                <p>Blockchain-verified transactions with full deposit protection and instant withdrawals.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="screenshots">
+        <h3>App Preview</h3>
+        <div class="screenshot-scroll">
+            <div class="ss-card">
+                <i class="fas fa-chart-line"></i>
+                <h5>Dashboard</h5>
+                <p>Real-time portfolio tracking with live profit graphs and balance overview.</p>
+            </div>
+            <div class="ss-card">
+                <i class="fas fa-store"></i>
+                <h5>NFT Marketplace</h5>
+                <p>Browse 20+ exclusive NFT trading strategies with different VIP levels.</p>
+            </div>
+            <div class="ss-card">
+                <i class="fas fa-wallet"></i>
+                <h5>Instant Deposits</h5>
+                <p>Multiple payment gateways. Fund your account in seconds.</p>
+            </div>
+            <div class="ss-card">
+                <i class="fas fa-people-group"></i>
+                <h5>Team Building</h5>
+                <p>Grow your network and earn passive income through referrals.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="install-guide">
+        <h3><i class="fas fa-mobile-screen-button"></i> &nbsp;How to Install</h3>
+        <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-text">Tap <strong>"Install App"</strong> button above. If prompted, tap <strong>"Add to Home Screen"</strong>.</div>
+        </div>
+        <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-text"><strong>Android Chrome:</strong> Tap the <strong>⋮ menu → Install app</strong> or <strong>"Add to Home Screen"</strong>.</div>
+        </div>
+        <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-text"><strong>iPhone Safari:</strong> Tap the <strong>Share button → Add to Home Screen</strong>.</div>
+        </div>
+        <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-text">App icon will appear on your phone. <strong>Open it like a normal app!</strong></div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2026 Treasure NFT. All rights reserved.<br><a href="/user/login">Login</a> &bull; <a href="/user/register">Register</a></p>
+    </div>
+</div>
+
+<script>
+    let deferredPrompt;
+    const installBtn = document.getElementById('installBtn');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        installBtn.innerHTML = '<i class="fas fa-download"></i> &nbsp; Install App Now';
+    });
+
+    function installPWA(e) {
+        e.preventDefault();
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    installBtn.innerHTML = '<i class="fas fa-check-circle"></i> &nbsp; App Installed!';
+                    installBtn.style.background = 'linear-gradient(135deg, #68D391, #38A169)';
+                }
+                deferredPrompt = null;
+            });
+        } else {
+            // Fallback: redirect to the web app
+            window.location.href = '/user/login';
+        }
+    }
+
+    window.addEventListener('appinstalled', () => {
+        installBtn.innerHTML = '<i class="fas fa-check-circle"></i> &nbsp; App Installed!';
+        installBtn.style.background = 'linear-gradient(135deg, #68D391, #38A169)';
+        deferredPrompt = null;
+    });
+
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js');
+    }
+</script>
+
+</body>
+</html>

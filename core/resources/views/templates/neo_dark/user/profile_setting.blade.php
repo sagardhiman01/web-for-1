@@ -143,6 +143,12 @@
         border-color: #ff9933;
         box-shadow: 0 0 0 2px rgba(255, 153, 51, 0.3);
     }
+    
+    .list-group-item {
+        background-color: transparent !important;
+        border-color: rgba(255, 255, 255, 0.1);
+        color: #fff;
+    }
 </style>
 @endpush
 

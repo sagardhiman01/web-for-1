@@ -15,11 +15,11 @@
                 </li>
 
                 <li class="sidebar-menu-item sidebar-dropdown">
-                    <a href="javascript:void(0)" class="{{menuActive(['admin.time.index*', 'admin.plan.index*'],3)}}">
+                    <a href="javascript:void(0)" class="{{menuActive(['admin.time.index*', 'admin.plan.index*', 'admin.nft.index*'],3)}}">
                         <i class="menu-icon las la-clipboard-check"></i>
-                        <span class="menu-title">@lang('Plan Manage')</span>
+                        <span class="menu-title">@lang('Plan & NFT Manage')</span>
                     </a>
-                    <div class="sidebar-submenu {{menuActive(['admin.time.index*','admin.plan.index*'],2)}} ">
+                    <div class="sidebar-submenu {{menuActive(['admin.time.index*','admin.plan.index*', 'admin.nft.index*'],2)}} ">
                         <ul>
                             <li class="sidebar-menu-item {{menuActive('admin.time.index')}} ">
                                 <a href="{{route('admin.time.index')}}" class="nav-link">
@@ -31,6 +31,12 @@
                                 <a href="{{route('admin.plan.index')}}" class="nav-link">
                                     <i class="menu-icon las la-dot-circle"></i>
                                     <span class="menu-title">@lang('Plan Manage')</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-menu-item {{menuActive('admin.nft.index')}}">
+                                <a href="{{route('admin.nft.index')}}" class="nav-link">
+                                    <i class="menu-icon las la-robot"></i>
+                                    <span class="menu-title">@lang('NFT Manage')</span>
                                 </a>
                             </li>
                         </ul>

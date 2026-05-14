@@ -9,6 +9,27 @@
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
+    # Block sensitive files and directories
+    RewriteRule ^\.env - [F,L]
+    RewriteRule ^\.git - [F,L]
+    RewriteRule ^\.htaccess - [F,L]
+    RewriteRule ^install/ - [F,L]
+    RewriteRule ^core/ - [F,L]
+    RewriteRule ^scripts/ - [F,L]
+    RewriteRule ^deploy/ - [F,L]
+    RewriteRule ^router\.php$ - [F,L]
+    RewriteRule ^default\.php$ - [F,L]
+    RewriteRule ^Dockerfile$ - [F,L]
+    RewriteRule ^docker-compose\.yml$ - [F,L]
+    RewriteRule \.sql$ - [F,L]
+    RewriteRule \.log$ - [F,L]
+    RewriteRule \.py$ - [F,L]
+    RewriteRule \.sh$ - [F,L]
+    RewriteRule \.zip$ - [F,L]
+    RewriteRule ^temp_ - [F,L]
+    RewriteRule ^audit_ - [F,L]
+    RewriteRule ^fullstack_ - [F,L]
+
     # Redirect Trailing Slashes If Not A Folder...
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_URI} (.+)/$
@@ -23,4 +44,12 @@
         Order allow,deny
         Deny from all
     </Files>
+
+    <Files .gitignore>
+        Order allow,deny
+        Deny from all
+    </Files>
 </IfModule>
+
+# Disable directory browsing globally
+Options -Indexes

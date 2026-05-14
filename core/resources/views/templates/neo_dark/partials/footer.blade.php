@@ -12,7 +12,7 @@
                 <div class="footer-widget">
                     <div class="about__widget">
                         <a href="{{route('home')}}" class="mb-3 mb-sm-4">
-                            <img src="{{ getImage(getFilePath('logoIcon') .'/logo.png') }}" alt="footer"
+                            <img src="{{ getImage(getFilePath('logoIcon') .'/logo.png') }}" alt="Core Asset Investing Logo"
                                  class="max-250">
                         </a>
                         <p class="mt-3">{{ __(@$footer->data_values->content) }}</p>
@@ -26,6 +26,7 @@
 
                         </ul>
                         <ul class="privacy-links">
+                            <li><a href="{{ route('whitepaper') }}" class="base--color">@lang('Whitepaper')</a></li>
                             @foreach($links as $link)
                                 <li><a href="{{ route('policy.pages',[slug($link->data_values->title),$link->id]) }}" class="base--color">@lang     ($link->data_values->title)</a></li>
                             @endforeach

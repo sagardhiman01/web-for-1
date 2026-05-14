@@ -22,7 +22,7 @@
                                 <li><a href="{{ route('user.deposit.index') }}">@lang('Deposit')</a></li>
                                 <li><a href="{{ route('user.withdraw') }}">@lang('Withdraw')</a></li>
                                 @if ($general->b_transfer)
-                                    <li><a href="{{ route('user.transfer.balance') }}">@lang('Transfer Balance')</a></li>
+                                    <!-- <li><a href="{{ route('user.transfer.balance') }}">@lang('Transfer Balance')</a></li> -->
                                 @endif
                                 <li><a href="{{ route('user.transactions') }}">@lang('Transactions')</a></li>
                             </ul>

@@ -30,7 +30,7 @@
             <nav class="navbar navbar-expand-xl align-items-center">
 
                 <a href="{{ route('home') }}" class="site-logo site-title">
-                    <img src="{{ getImage(getFilePath('logoIcon').'/logo.png') }}" alt="logo">
+                    <img src="{{ getImage(getFilePath('logoIcon').'/logo.png') }}" alt="Core Asset Investing">
                 </a>
                 <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -47,6 +47,8 @@
                             <li><a href="{{ route('pages',[$data->slug]) }}">{{ __($data->name) }}</a></li>
                         @endforeach
                         <li><a href="{{route('plan')}}">{{trans('Plan')}}</a></li>
+                        <li><a href="{{ route('whitepaper') }}">@lang('Whitepaper')</a></li>
+                        <li><a href="{{ route('income.types') }}">@lang('Income Types')</a></li>
                         <li><a href="{{ route('blogs') }}">@lang('Blog')</a></li>
                         <li><a href="{{ route('contact') }}">@lang('Contact')</a></li>
 

@@ -48,7 +48,7 @@ Route::middleware('auth')->name('user.')->group(function () {
 
             Route::controller('UserController')->group(function(){
                 Route::get('dashboard', 'home')->name('home');
-                Route::post('dashboard/investment-code', 'redeemInvestmentCode')->name('investment.code.redeem');
+                Route::post('dashboard/investment-code', 'redeemInvestmentCode')->name('investment.code.redeem')->middleware('throttle:investment_code');
                 Route::get('currency-list', 'currencyList')->name('currency.list');
                 Route::get('currency-list/prices/live', 'currencyPrices')->name('currency.prices');
                 Route::get('currency-list/chart/{coinId}', 'currencyChart')->name('currency.chart');
@@ -70,12 +70,12 @@ Route::middleware('auth')->name('user.')->group(function () {
                 Route::get('attachment-download/{fil_hash}','attachmentDownload')->name('attachment.download');
 
                 Route::get('referrals','referrals')->name('referrals');
-
+                Route::post('referrals/transfer','transferReferralBonus')->name('referral.transfer');
                 Route::get('promotional-banners','promotionalBanners')->name('promotional.banner');
 
                 //Balance Transfer
                 Route::get('transfer-balance','transferBalance')->name('transfer.balance');
-                Route::post('transfer-balance','transferBalanceSubmit');
+                Route::post('transfer-balance','transferBalanceSubmit')->middleware('throttle:transfer');
 
                 Route::post('find-user','findUser')->name('findUser');
 
@@ -91,7 +91,7 @@ Route::middleware('auth')->name('user.')->group(function () {
 
 
             // Withdraw
-            Route::controller('WithdrawController')->prefix('withdraw')->name('withdraw')->group(function(){
+            Route::controller('WithdrawController')->prefix('withdraw')->name('withdraw')->middleware('throttle:withdraw')->group(function(){
                 Route::middleware('kyc')->group(function(){
                     Route::get('/', 'withdrawMoney');
                     Route::get('address', 'withdrawAddress')->name('.address');
@@ -106,14 +106,25 @@ Route::middleware('auth')->name('user.')->group(function () {
 
             //Investment
             Route::controller('InvestController')->prefix('invest')->name('invest.')->group(function(){
-                Route::post('/','invest')->name('submit');
+                Route::post('/','invest')->name('submit')->middleware('throttle:invest');
                 Route::get('statistics','statistics')->name('statistics');
                 Route::get('log','log')->name('log');
             });
+
+            // NFT Trading (TreasureFun Model)
+            Route::controller('NftController')->prefix('nft')->name('nft.')->group(function(){
+                Route::get('/', 'index')->name('index');
+                Route::get('marketplace', 'marketplace')->name('marketplace');
+                Route::post('reserve/{id}', 'reserve')->name('reserve')->middleware('throttle:nft');
+                Route::post('buy/{id}', 'buy')->name('buy')->middleware('throttle:nft');
+                Route::get('my-collection', 'collection')->name('collection');
+                Route::get('details/{id}', 'nftDetails')->name('details');
+            });
         });
 
+
         // Payment
-        Route::middleware('registration.complete')->prefix('deposit')->name('deposit.')->controller('Gateway\PaymentController')->group(function(){
+        Route::middleware(['registration.complete', 'throttle:deposit'])->prefix('deposit')->name('deposit.')->controller('Gateway\PaymentController')->group(function(){
             Route::any('/', 'deposit')->name('index');
             Route::post('insert', 'depositInsert')->name('insert');
             Route::get('confirm', 'depositConfirm')->name('confirm');

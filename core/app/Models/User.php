@@ -79,6 +79,13 @@ class User extends Authenticatable
         );
     }
 
+    public function balance(): Attribute
+    {
+        return new Attribute(
+            get: fn () => $this->deposit_wallet + $this->interest_wallet,
+        );
+    }
+
     public static function generateReferralCode(): string
     {
         do {
@@ -86,6 +93,62 @@ class User extends Authenticatable
         } while (self::where('referral_code', $code)->exists());
 
         return $code;
+    }
+
+    public function totalTeamCount()
+    {
+        $count = 0;
+        $referrals = $this->referrals;
+        foreach ($referrals as $user) {
+            $count += 1 + $user->totalTeamCount();
+        }
+        return $count;
+    }
+
+    public function checkLevelRewards()
+    {
+        $directCount = $this->referrals()->count();
+        $totalTeam = $this->totalTeamCount();
+        $indirectCount = $totalTeam - $directCount;
+        
+        $levels = [
+            1 => ['direct' => 10, 'indirect' => 5, 'reward' => 50],
+            2 => ['direct' => 20, 'indirect' => 20, 'reward' => 100],
+            3 => ['direct' => 40, 'indirect' => 80, 'reward' => 200],
+            4 => ['direct' => 80, 'indirect' => 150, 'reward' => 400],
+            5 => ['direct' => 200, 'indirect' => 500, 'reward' => 1000],
+        ];
+
+        $achieved = json_decode($this->achieved_rewards ?? '[]', true);
+        $newRank = $this->rank;
+
+        foreach ($levels as $lvl => $data) {
+            if ($directCount >= $data['direct'] && $indirectCount >= $data['indirect']) {
+                if (!in_array($lvl, $achieved)) {
+                    // Reward user
+                    $this->deposit_wallet += $data['reward'];
+                    $achieved[] = $lvl;
+                    $newRank = $lvl;
+                    
+                    // Log transaction
+                    $transaction = new Transaction();
+                    $transaction->user_id = $this->id;
+                    $transaction->amount = $data['reward'];
+                    $transaction->post_balance = $this->deposit_wallet;
+                    $transaction->charge = 0;
+                    $transaction->trx_type = '+';
+                    $transaction->details = "Level $lvl Referral Reward Achieved";
+                    $transaction->trx = getTrx();
+                    $transaction->wallet_type = 'deposit_wallet';
+                    $transaction->remark = 'level_reward';
+                    $transaction->save();
+                }
+            }
+        }
+
+        $this->achieved_rewards = json_encode($achieved);
+        $this->rank = $newRank;
+        $this->save();
     }
 
     // SCOPES
