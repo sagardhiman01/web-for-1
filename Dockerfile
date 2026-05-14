@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y \
     unzip \
     curl \
     git \
+    postgresql-client \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install pdo pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd zip
 
