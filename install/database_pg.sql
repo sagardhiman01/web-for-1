@@ -6,7 +6,7 @@ SET standard_conforming_strings = ON;
 BEGIN;
 
 CREATE TABLE admins (
-  id bigint NOT NULL,
+  id bigserial NOT NULL,
   name varchar(40) DEFAULT NULL,
   email varchar(40) DEFAULT NULL,
   username varchar(40) DEFAULT NULL,
@@ -22,7 +22,7 @@ INSERT INTO admins (id, name, email, username, email_verified_at, image, passwor
 (1, 'Super Admin', 'aliabbasnadeem538@gmail.com', 'admin', NULL, '6238276ac25d11647847274.png', '$2y$10$9FlJPX2MB1a4KABCy7Od8eMbgwGMMc01Tvtj/vNyHcwHUpeHZ3gKG', 'n6tTiXhsWBeDaybOJ4y4q1oEbls5TedEBsAMpMpPUXjIQv63fQ3ro8vr9Dsv', NULL, '2023-11-04 12:01:37');
 
 CREATE TABLE admin_notifications (
-  id bigint NOT NULL,
+  id bigserial NOT NULL,
   user_id integer NOT NULL DEFAULT 0,
   title varchar(255) DEFAULT NULL,
   is_read smallint NOT NULL DEFAULT 0,
@@ -38,7 +38,7 @@ INSERT INTO admin_notifications (id, user_id, title, is_read, click_url, created
 (4, 1, 'New withdraw request from 03042324661', 0, '/admin/withdraw/details/2', '2023-11-04 08:08:04', '2023-11-04 08:08:04');
 
 CREATE TABLE admin_password_resets (
-  id bigint NOT NULL,
+  id bigserial NOT NULL,
   email varchar(40) DEFAULT NULL,
   token varchar(40) DEFAULT NULL,
   status smallint NOT NULL DEFAULT 1,
@@ -46,7 +46,7 @@ CREATE TABLE admin_password_resets (
 );
 
 CREATE TABLE deposits (
-  id bigint NOT NULL,
+  id bigserial NOT NULL,
   user_id integer NOT NULL DEFAULT 0,
   plan_id integer NOT NULL DEFAULT 0,
   method_code integer NOT NULL DEFAULT 0,
@@ -75,7 +75,7 @@ INSERT INTO deposits (id, user_id, plan_id, method_code, amount, method_currency
 (5, 1, 0, 1000, '500.00000000', 'PKR', '0.00000000', '1.00000000', '500.00000000', NULL, '0', '', 'UXNFUXU7JX3C', 0, 0, 0, NULL, '2023-11-04 12:19:27', '2023-11-04 12:19:27');
 
 CREATE TABLE device_tokens (
-  id bigint NOT NULL,
+  id bigserial NOT NULL,
   user_id integer NOT NULL DEFAULT 0,
   is_app smallint NOT NULL DEFAULT 0,
   token text NOT NULL,
@@ -84,7 +84,7 @@ CREATE TABLE device_tokens (
 );
 
 CREATE TABLE extensions (
-  id bigint NOT NULL,
+  id bigserial NOT NULL,
   act varchar(40) DEFAULT NULL,
   name varchar(40) DEFAULT NULL,
   description text DEFAULT NULL,
@@ -105,7 +105,7 @@ INSERT INTO extensions (id, act, name, description, image, script, shortcode, su
 (5, 'fb-comment', 'Facebook Comment ', 'Key location is shown bellow', 'Facebook.png', '<div id="fb-root"></div><script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v4.0&appId={{app_key}}&autoLogAppEvents=1"></script>', '{"app_key":{"title":"App Key","value":""}}', 'na', 0, '2019-10-18 23:16:05', '2022-10-06 03:02:22');
 
 CREATE TABLE forms (
-  id bigint NOT NULL,
+  id bigserial NOT NULL,
   act varchar(40) DEFAULT NULL,
   form_data text DEFAULT NULL,
   created_at timestamp NULL DEFAULT NULL,
@@ -132,7 +132,7 @@ INSERT INTO forms (id, act, form_data, created_at, updated_at) VALUES
 (19, 'withdraw_method', '{"account_name":{"name":"Account Name","label":"account_name","is_required":"required","extensions":"","options":[],"type":"text"},"account_number":{"name":"Account Number","label":"account_number","is_required":"required","extensions":null,"options":[],"type":"text"}}', '2023-11-04 07:51:49', '2023-11-04 07:54:28');
 
 CREATE TABLE frontends (
-  id bigint NOT NULL,
+  id bigserial NOT NULL,
   data_keys varchar(40) DEFAULT NULL,
   data_values text DEFAULT NULL,
   template_name varchar(40) DEFAULT NULL,
@@ -332,7 +332,7 @@ INSERT INTO frontends (id, data_keys, data_values, template_name, created_at, up
 (411, 'preloader.content', '{"has_image":"1","image_one":"633efa583f0551665071704.png","image_two":"633efa584317d1665071704.png"}', 'neo_dark', '2022-10-06 09:55:04', '2022-10-06 09:55:04');
 
 CREATE TABLE gateways (
-  id bigint NOT NULL,
+  id bigserial NOT NULL,
   form_id integer NOT NULL DEFAULT 0,
   code integer DEFAULT NULL,
   name varchar(40) DEFAULT NULL,
@@ -375,7 +375,7 @@ INSERT INTO gateways (id, form_id, code, name, alias, status, gateway_parameters
 (49, 18, 1000, 'Onepay', 'onepay', 1, '[]', '[]', 0, NULL, '03042324661', '2023-11-03 23:19:00', '2023-11-03 23:19:07');
 
 CREATE TABLE gateway_currencies (
-  id bigint NOT NULL,
+  id bigserial NOT NULL,
   name varchar(40) DEFAULT NULL,
   currency varchar(40) DEFAULT NULL,
   symbol varchar(40) DEFAULT NULL,
@@ -396,7 +396,7 @@ INSERT INTO gateway_currencies (id, name, currency, symbol, method_code, gateway
 (1, 'Onepay', 'PKR', '', 1000, 'onepay', '100.00000000', '50000000.00000000', '0.00', '0.00000000', '1.00000000', NULL, NULL, '2023-11-03 23:19:00', '2023-11-03 23:19:00');
 
 CREATE TABLE general_settings (
-  id bigint NOT NULL,
+  id bigserial NOT NULL,
   site_name varchar(40) DEFAULT NULL,
   cur_text varchar(40) DEFAULT NULL,
   cur_sym varchar(40) DEFAULT NULL,
@@ -445,7 +445,7 @@ INSERT INTO general_settings (id, site_name, cur_text, cur_sym, email_from, emai
 (1, 'HYIPLab', 'USD', '$', 'info@viserlab.com', '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">   <!
 
 CREATE TABLE holidays (
-  id bigint NOT NULL,
+  id bigserial NOT NULL,
   title varchar(40) DEFAULT NULL,
   date date DEFAULT NULL,
   created_at timestamp NULL DEFAULT NULL,
@@ -475,7 +475,7 @@ CREATE TABLE invests (
 );
 
 CREATE TABLE languages (
-  id bigint NOT NULL,
+  id bigserial NOT NULL,
   name varchar(40) DEFAULT NULL,
   code varchar(40) DEFAULT NULL,
   is_default smallint NOT NULL DEFAULT 0,
@@ -487,13 +487,13 @@ INSERT INTO languages (id, name, code, is_default, created_at, updated_at) VALUE
 (1, 'English', 'en', 1, '2020-07-06 03:47:55', '2022-04-09 03:47:04');
 
 CREATE TABLE migrations (
-  id bigint NOT NULL,
+  id bigserial NOT NULL,
   migration varchar(255) NOT NULL,
   batch integer NOT NULL
 );
 
 CREATE TABLE notification_logs (
-  id bigint NOT NULL,
+  id bigserial NOT NULL,
   user_id integer NOT NULL DEFAULT 0,
   sender varchar(40) DEFAULT NULL,
   sent_from varchar(40) DEFAULT NULL,
@@ -506,7 +506,7 @@ CREATE TABLE notification_logs (
 );
 
 CREATE TABLE notification_templates (
-  id bigint NOT NULL,
+  id bigserial NOT NULL,
   act varchar(40) DEFAULT NULL,
   name varchar(40) DEFAULT NULL,
   subj varchar(255) DEFAULT NULL,
@@ -547,7 +547,7 @@ INSERT INTO notification_templates (id, act, name, subj, email_body, sms_body, s
 (23, 'BALANCE_RECEIVE', 'Balance Receive', 'Balance Receive', '<div style="font-family: Montserrat, sans-serif;">You received&nbsp;<span style="font-weight: bolder;">{{amount}} {{site_currency}}</span>&nbsp;from {{sender}}.<span style="font-weight: bolder;"><br></span></div><div style="font-family: Montserrat, sans-serif;"><span style="font-weight: bolder;"><br></span></div><div style="font-family: Montserrat, sans-serif;"><span style="font-weight: bolder;">Details of your Received Money:</span></div><div style="font-family: Montserrat, sans-serif;">Amount : {{amount}} {{site_currency}}</div><div style="font-family: Montserrat, sans-serif;">Wallet_type: {{wallet_type}}</div><div style="font-family: Montserrat, sans-serif;">Transaction Number : {{trx}}</div><div style="font-family: Montserrat, sans-serif;"><font size="5"><span style="font-weight: bolder;"><br></span></font></div><div style="font-family: Montserrat, sans-serif;"><font size="5">Your current Balance is&nbsp;<span style="font-weight: bolder;">{{post_balance}} {{site_currency}}</span></font></div><div style="font-family: Montserrat, sans-serif;"><br></div><div style="font-family: Montserrat, sans-serif;"><br></div>', 'Your {{amount}} {{site_currency}} transferred successfully. Transfer to: {{user_fullname}} ({{username}})', '{     "trx": "Transaction number for the interest",     "amount": "Amount inserted by the user",     "sender": "Sender username",     "wallet_type": "Wallet type",     "post_balance": "Balance of the user after this transaction" } ', 1, 1, 0, NULL, '2021-11-03 12:00:00', '2022-09-20 09:03:25');
 
 CREATE TABLE pages (
-  id bigint NOT NULL,
+  id bigserial NOT NULL,
   name varchar(40) DEFAULT NULL,
   slug varchar(40) DEFAULT NULL,
   tempname varchar(40) DEFAULT NULL,
@@ -576,9 +576,9 @@ CREATE TABLE password_resets (
 );
 
 CREATE TABLE personal_access_tokens (
-  id bigint NOT NULL,
+  id bigserial NOT NULL,
   tokenable_type varchar(255) NOT NULL,
-  tokenable_id bigint NOT NULL,
+  tokenable_id bigserial NOT NULL,
   name varchar(255) NOT NULL,
   token varchar(64) NOT NULL,
   abilities text DEFAULT NULL,
@@ -588,7 +588,7 @@ CREATE TABLE personal_access_tokens (
 );
 
 CREATE TABLE plans (
-  id bigint NOT NULL,
+  id bigserial NOT NULL,
   name varchar(40) NOT NULL,
   minimum decimal(28,8) NOT NULL DEFAULT 0.00000000,
   maximum decimal(28,8) NOT NULL DEFAULT 0.00000000,
@@ -613,7 +613,7 @@ INSERT INTO plans (id, name, minimum, maximum, fixed_amount, interest, interest_
 (4, 'VIP 4', '0.00000000', '0.00000000', '8000.00000000', '55.00000000', 0, '24', 'Day', 1, 1, 0, 0, '32', '2023-11-03 23:13:14', '2023-11-03 23:13:14');
 
 CREATE TABLE promotion_tools (
-  id bigint NOT NULL,
+  id bigserial NOT NULL,
   name varchar(40) DEFAULT NULL,
   banner varchar(255) DEFAULT NULL,
   created_at timestamp NULL DEFAULT NULL,
@@ -621,7 +621,7 @@ CREATE TABLE promotion_tools (
 );
 
 CREATE TABLE referrals (
-  id bigint NOT NULL,
+  id bigserial NOT NULL,
   commission_type varchar(40) DEFAULT NULL,
   level integer NOT NULL DEFAULT 0,
   percent decimal(5,2) NOT NULL DEFAULT 0.00,
@@ -631,14 +631,14 @@ CREATE TABLE referrals (
 );
 
 CREATE TABLE subscribers (
-  id bigint NOT NULL,
+  id bigserial NOT NULL,
   email varchar(40) DEFAULT NULL,
   created_at timestamp NULL DEFAULT NULL,
   updated_at timestamp NULL DEFAULT NULL
 );
 
 CREATE TABLE support_attachments (
-  id bigint NOT NULL,
+  id bigserial NOT NULL,
   support_message_id integer DEFAULT NULL,
   attachment varchar(255) DEFAULT NULL,
   created_at timestamp NULL DEFAULT NULL,
@@ -646,7 +646,7 @@ CREATE TABLE support_attachments (
 );
 
 CREATE TABLE support_messages (
-  id bigint NOT NULL,
+  id bigserial NOT NULL,
   support_ticket_id integer NOT NULL DEFAULT 0,
   admin_id integer NOT NULL DEFAULT 0,
   message text DEFAULT NULL,
@@ -655,7 +655,7 @@ CREATE TABLE support_messages (
 );
 
 CREATE TABLE support_tickets (
-  id bigint NOT NULL,
+  id bigserial NOT NULL,
   user_id integer DEFAULT 0,
   name varchar(40) DEFAULT NULL,
   email varchar(40) DEFAULT NULL,
@@ -681,7 +681,7 @@ INSERT INTO time_settings (id, name, time, created_at, updated_at) VALUES
 (2, 'hourly', '1', '2023-11-03 22:05:35', '2023-11-03 22:05:35');
 
 CREATE TABLE transactions (
-  id bigint NOT NULL,
+  id bigserial NOT NULL,
   user_id integer NOT NULL DEFAULT 0,
   amount decimal(28,8) NOT NULL DEFAULT 0.00000000,
   charge decimal(28,8) NOT NULL DEFAULT 0.00000000,
@@ -701,7 +701,7 @@ INSERT INTO transactions (id, user_id, amount, charge, post_balance, trx_type, t
 (3, 1, '100.00000000', '0.00000000', '3254.00000000', '-', 'QE6Q8C8AXVMQ', '100.00 PKR Withdraw Via Jazzcash', 'withdraw', 'interest_wallet', '2023-11-04 08:08:04', '2023-11-04 08:08:04');
 
 CREATE TABLE users (
-  id bigint NOT NULL,
+  id bigserial NOT NULL,
   firstname varchar(40) DEFAULT NULL,
   lastname varchar(40) DEFAULT NULL,
   username varchar(40) NOT NULL,
@@ -735,7 +735,7 @@ INSERT INTO users (id, firstname, lastname, username, email, country_code, mobil
 (1, 'myd', 'cost', '03042324661', 'aliabbasnadeem538@gmail.com', NULL, NULL, 0, '5.00000000', '3254.00000000', '$2y$10$payPbwDtbVrw0x9HdPXjZei8XgMrZwXOO1qNWkYiT/mhdSiyhswYG', NULL, '{"country":null,"address":null,"state":null,"zip":null,"city":null}', 1, NULL, 1, 1, 1, 1, NULL, NULL, 0, 1, NULL, NULL, NULL, '2023-11-03 19:41:33', '2023-11-04 08:08:04');
 
 CREATE TABLE user_logins (
-  id bigint NOT NULL,
+  id bigserial NOT NULL,
   user_id integer NOT NULL DEFAULT 0,
   user_ip varchar(40) DEFAULT NULL,
   city varchar(40) DEFAULT NULL,
@@ -756,7 +756,7 @@ INSERT INTO user_logins (id, user_id, user_ip, city, country, country_code, long
 (4, 1, '154.80.98.65', '', '', '', '', '', 'Handheld Browser', 'Android', '2023-11-04 12:18:46', '2023-11-04 12:18:46');
 
 CREATE TABLE withdrawals (
-  id bigint NOT NULL,
+  id bigserial NOT NULL,
   method_id integer NOT NULL DEFAULT 0,
   user_id integer NOT NULL DEFAULT 0,
   amount decimal(28,8) NOT NULL DEFAULT 0.00000000,
@@ -778,7 +778,7 @@ INSERT INTO withdrawals (id, method_id, user_id, amount, currency, rate, charge,
 (2, 1, 1, '100.00000000', 'PKR', '1.00000000', '0.00000000', 'QE6Q8C8AXVMQ', '100.00000000', '100.00000000', '[{"name":"Account Name","type":"text","value":"Ahahh"},{"name":"Account Number","type":"text","value":"Sjsjjs"}]', 2, NULL, '2023-11-04 08:01:02', '2023-11-04 08:08:04');
 
 CREATE TABLE withdraw_methods (
-  id bigint NOT NULL,
+  id bigserial NOT NULL,
   form_id integer NOT NULL DEFAULT 0,
   name varchar(40) DEFAULT NULL,
   min_limit decimal(28,8) DEFAULT 0.00000000,
@@ -798,16 +798,45 @@ INSERT INTO withdraw_methods (id, form_id, name, min_limit, max_limit, fixed_cha
 
 ALTER TABLE admins
   ADD PRIMARY KEY (id),
-  ADD UNIQUE KEY email (email,username);
+  ADD CONSTRAINT admins_email_username_unique UNIQUE (email, username);
 
 ALTER TABLE personal_access_tokens
   ADD PRIMARY KEY (id),
-  ADD UNIQUE KEY personal_access_tokens_token_unique (token),
-  ADD KEY personal_access_tokens_tokenable_type_tokenable_id_index (tokenable_type,tokenable_id);
+  ADD CONSTRAINT personal_access_tokens_token_unique UNIQUE (token);
+CREATE INDEX personal_access_tokens_tokenable_type_tokenable_id_index ON personal_access_tokens (tokenable_type, tokenable_id);
 
 ALTER TABLE users
   ADD PRIMARY KEY (id),
-  ADD UNIQUE KEY username (username,email);
+  ADD CONSTRAINT users_username_email_unique UNIQUE (username, email);
+
+CREATE TABLE migrations (
+  id serial PRIMARY KEY,
+  migration varchar(255) NOT NULL,
+  batch integer NOT NULL
+);
+
+INSERT INTO migrations (migration, batch) VALUES 
+('2014_10_12_000000_create_users_table', 1),
+('2014_10_12_100000_create_password_resets_table', 1),
+('2019_08_19_000000_create_failed_jobs_table', 1),
+('2019_12_14_000001_create_personal_access_tokens_table', 1),
+('2022_02_26_061836_create_forms_table', 1);
+
+DO $$ 
+DECLARE
+  seq record;
+BEGIN
+  FOR seq IN 
+    SELECT sequence_name FROM information_schema.sequences
+  LOOP
+    BEGIN
+      EXECUTE 'SELECT setval(' || quote_literal(seq.sequence_name) || ', COALESCE((SELECT MAX(id) FROM ' || quote_ident(replace(seq.sequence_name, '_id_seq', '')) || '), 1))';
+    EXCEPTION WHEN undefined_table THEN
+      -- ignore if the table doesn't match the pattern exactly
+    END;
+  END LOOP;
+END;
+$$;
 
 COMMIT;
 
