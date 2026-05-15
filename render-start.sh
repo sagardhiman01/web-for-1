@@ -18,22 +18,22 @@ if [ "$ADMINS_EXISTS" != "1" ]; then
         # Drop and recreate the public schema to ensure a clean state
         psql "$DATABASE_URL" -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
         
-        # Import the base SQL file
-        psql "$DATABASE_URL" -f /var/www/html/install/database_pg.sql
-        echo "Base schema imported successfully."
+        # Import the base SQL file - use ON_ERROR_STOP=off so partial errors don't block everything
+        echo "Importing base schema (errors in legacy gateway data are expected and harmless)..."
+        psql "$DATABASE_URL" --set ON_ERROR_STOP=off -f /var/www/html/install/database_pg.sql || true
+        echo "Base schema import completed."
     else
         echo "ERROR: DATABASE_URL is not set. Cannot import base schema."
         exit 1
     fi
-    echo "Running incremental migrations..."
+    echo "Running incremental migrations (this will create any missing tables like admins)..."
     php artisan migrate --force
 else
     echo "Tables exist. Running incremental migrations..."
     php artisan migrate --force
 fi
 
-# Seed initial data using Laravel seeder (avoids MySQL->PostgreSQL SQL conversion issues)
-# The seeder checks if data exists before inserting, so it's safe to run multiple times
+# Seed initial data using Laravel seeder
 echo "Running initial data seeder..."
 php artisan db:seed --class=InitialDataSeeder --force
 

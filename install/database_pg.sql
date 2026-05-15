@@ -464,7 +464,7 @@ CREATE TABLE invests (
   hours varchar(40) NOT NULL,
   time_name varchar(40) NOT NULL,
   return_rec_time integer NOT NULL DEFAULT 0,
-  next_time timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  next_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   last_time timestamp NULL DEFAULT NULL,
   status smallint NOT NULL DEFAULT 1,
   capital_status smallint NOT NULL DEFAULT 0,
