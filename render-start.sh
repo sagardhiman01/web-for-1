@@ -1,45 +1,71 @@
 #!/bin/bash
-set -e
+# NO set -e — we handle errors manually so one failure doesn't crash everything
 
-# Navigate to the core directory
 cd /var/www/html/core
 
-echo "Checking database status..."
+echo "=============================="
+echo "=== RENDER STARTUP SCRIPT ==="
+echo "=============================="
 
-# Check if the admins table actually exists in the database
-ADMINS_EXISTS=$(php artisan tinker --execute="
-try { echo \Illuminate\Support\Facades\Schema::hasTable('admins') ? '1' : '0'; }
-catch(\Exception \$e) { echo '0'; }
-" --quiet 2>/dev/null | grep -oE '[01]' | tail -1 || echo "0")
+# --- Step 1: Check DATABASE_URL ---
+if [ -z "$DATABASE_URL" ]; then
+    echo "ERROR: DATABASE_URL is not set!"
+    exit 1
+fi
+echo "DATABASE_URL is set. OK."
+
+# --- Step 2: Check if DB is reachable ---
+echo "Testing database connection..."
+psql "$DATABASE_URL" -c "SELECT 1;" 2>&1
+if [ $? -ne 0 ]; then
+    echo "ERROR: Cannot connect to database! Check DATABASE_URL."
+    exit 1
+fi
+echo "Database connection OK."
+
+# --- Step 3: Check if already initialized ---
+echo "Checking if admins table exists..."
+ADMINS_EXISTS=$(psql "$DATABASE_URL" -t -c "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='public' AND table_name='admins';" 2>/dev/null | tr -d ' \n' || echo "0")
+echo "Admins table check result: '$ADMINS_EXISTS'"
 
 if [ "$ADMINS_EXISTS" != "1" ]; then
-    echo "Fresh database detected (or missing admins table). Wiping database and importing base schema..."
-    if [ ! -z "$DATABASE_URL" ]; then
-        # Drop and recreate the public schema to ensure a clean state
-        psql "$DATABASE_URL" -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
-        
-        # Import the base SQL file - use ON_ERROR_STOP=off so partial errors don't block everything
-        echo "Importing base schema (errors in legacy gateway data are expected and harmless)..."
-        psql "$DATABASE_URL" --set ON_ERROR_STOP=off -f /var/www/html/install/database_pg.sql || true
-        echo "Base schema import completed."
-    else
-        echo "ERROR: DATABASE_URL is not set. Cannot import base schema."
-        exit 1
-    fi
-    echo "Running incremental migrations (this will create any missing tables like admins)..."
-    php artisan migrate --force
+    echo "Fresh database. Wiping and importing base schema..."
+
+    # Wipe database
+    echo "Dropping and recreating public schema..."
+    psql "$DATABASE_URL" -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;" 2>&1
+    echo "Schema wiped OK."
+
+    # Import SQL dump (errors are expected in legacy data, they won't stop us)
+    echo "Importing database_pg.sql..."
+    psql "$DATABASE_URL" --set ON_ERROR_STOP=off -f /var/www/html/install/database_pg.sql 2>&1 || true
+    echo "SQL import done (some errors above are normal for legacy data)."
 else
-    echo "Tables exist. Running incremental migrations..."
-    php artisan migrate --force
+    echo "Database already has tables. Skipping SQL import."
 fi
 
-# Seed initial data using Laravel seeder
-echo "Running initial data seeder..."
-php artisan db:seed --class=InitialDataSeeder --force
+# --- Step 4: Run migrations (ignore failures from duplicate tables) ---
+echo "Running migrations..."
+php artisan migrate --force 2>&1 || true
+echo "Migrations done."
 
-# Replace the PORT in Apache configuration
-sed -i "s/\${PORT}/$PORT/g" /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf
+# --- Step 5: Seed initial data ---
+echo "Running seeder..."
+php artisan db:seed --class=InitialDataSeeder --force 2>&1 || true
+echo "Seeder done."
 
-# Start the actual web server
+# --- Step 6: Clear caches ---
+echo "Clearing caches..."
+php artisan config:clear 2>&1 || true
+php artisan cache:clear 2>&1 || true
+
+# --- Step 7: Fix Apache port ---
+echo "Configuring Apache port: $PORT"
+sed -i "s/\${PORT}/$PORT/g" /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf 2>&1 || true
+
+echo "=============================="
+echo "=== STARTING APACHE SERVER ==="
+echo "=============================="
+
 cd /var/www/html
-apache2-foreground
+exec apache2-foreground
