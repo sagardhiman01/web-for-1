@@ -1,7 +1,10 @@
 #!/bin/bash
+set -e
 
 # Navigate to the core directory
 cd /var/www/html/core
+
+echo "Checking database status..."
 
 # Check if the admins table actually exists in the database
 # If migrations table has records but real tables don't exist,
@@ -9,7 +12,7 @@ cd /var/www/html/core
 ADMINS_EXISTS=$(php artisan tinker --execute="
 try { echo \Illuminate\Support\Facades\Schema::hasTable('admins') ? '1' : '0'; }
 catch(\Exception \$e) { echo '0'; }
-" --quiet 2>/dev/null | grep -oE '[01]' | tail -1)
+" --quiet 2>/dev/null | grep -oE '[01]' | tail -1 || echo "0")
 
 if [ "$ADMINS_EXISTS" != "1" ]; then
     echo "Fresh database detected (or stale migrations). Running migrate:fresh..."
