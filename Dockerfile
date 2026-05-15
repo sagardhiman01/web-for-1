@@ -29,7 +29,7 @@ WORKDIR /var/www/html
 COPY . /var/www/html/
 
 # Install PHP dependencies
-RUN cd /var/www/html/core && composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-reqs
+RUN cd /var/www/html/core && COMPOSER_MEMORY_LIMIT=-1 composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-reqs
 
 # Set permissions for Laravel
 RUN chown -R www-data:www-data /var/www/html \
@@ -40,7 +40,7 @@ RUN chown -R www-data:www-data /var/www/html \
 RUN echo '<Directory /var/www/html>\n\
     AllowOverride All\n\
     Require all granted\n\
-</Directory>' > /etc/apache2/conf-available/override.conf \
+    </Directory>' > /etc/apache2/conf-available/override.conf \
     && a2enconf override
 
 # Use PORT environment variable if available, otherwise 80
