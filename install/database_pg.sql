@@ -437,7 +437,7 @@ CREATE TABLE general_settings (
 );
 
 INSERT INTO general_settings (id, site_name, cur_text, cur_sym, email_from, email_template, sms_body, sms_from, base_color, secondary_color, mail_config, sms_config, global_shortcodes, kv, ev, en, sv, sn, force_ssl, maintenance_mode, secure_password, agree, registration, active_template, system_info, deposit_commission, invest_commission, invest_return_commission, signup_bonus_amount, signup_bonus_control, promotional_tool, firebase_config, firebase_template, push_notify, off_day, last_cron, b_transfer, f_charge, p_charge, holiday_withdraw, language_switch, created_at, updated_at) VALUES
-(1, 'HYIPLab', 'USD', '$', 'info@viserlab.com', '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">   <!
+(1, 'HYIPLab', 'USD', '$', 'info@viserlab.com', '', NULL, NULL, '0083ff', 'd5373f', NULL, NULL, NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 'basic', NULL, 1, 1, 1, 0.00, 0, 0, NULL, NULL, 0, NULL, NULL, 0, '0.00000000', 0.00, 0, 1, '2020-07-04 23:42:52', '2024-01-01 00:00:00');
 
 CREATE TABLE holidays (
   id bigserial NOT NULL,

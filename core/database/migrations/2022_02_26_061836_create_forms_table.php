@@ -13,12 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('forms', function (Blueprint $table) {
-            $table->id();
-            $table->string('act',40)->nullable();
-            $table->text('form_data')->nullable();
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('forms')) {
+            Schema::create('forms', function (Blueprint $table) {
+                $table->id();
+                $table->string('act',40)->nullable();
+                $table->text('form_data')->nullable();
+                $table->timestamps();
+            });
+        }
     }
 
     /**
