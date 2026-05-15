@@ -7,18 +7,28 @@ cd /var/www/html/core
 echo "Checking database status..."
 
 # Check if the admins table actually exists in the database
-# If migrations table has records but real tables don't exist,
-# we must do migrate:fresh to wipe the stale migrations table and start clean
 ADMINS_EXISTS=$(php artisan tinker --execute="
 try { echo \Illuminate\Support\Facades\Schema::hasTable('admins') ? '1' : '0'; }
 catch(\Exception \$e) { echo '0'; }
 " --quiet 2>/dev/null | grep -oE '[01]' | tail -1 || echo "0")
 
 if [ "$ADMINS_EXISTS" != "1" ]; then
-    echo "Fresh database detected (or stale migrations). Running migrate:fresh..."
-    php artisan migrate:fresh --force
+    echo "Fresh database detected (or missing admins table). Wiping database and importing base schema..."
+    if [ ! -z "$DATABASE_URL" ]; then
+        # Drop and recreate the public schema to ensure a clean state
+        psql "$DATABASE_URL" -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
+        
+        # Import the base SQL file
+        psql "$DATABASE_URL" -f /var/www/html/install/database_pg.sql
+        echo "Base schema imported successfully."
+    else
+        echo "ERROR: DATABASE_URL is not set. Cannot import base schema."
+        exit 1
+    fi
+    echo "Running incremental migrations..."
+    php artisan migrate --force
 else
-    echo "Tables exist. Running incremental migrate..."
+    echo "Tables exist. Running incremental migrations..."
     php artisan migrate --force
 fi
 
