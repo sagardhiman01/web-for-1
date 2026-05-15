@@ -7,6 +7,25 @@ echo "=============================="
 echo "=== RENDER STARTUP SCRIPT ==="
 echo "=============================="
 
+# --- Force correct env variables (override .env file settings) ---
+export DB_CONNECTION=pgsql
+export CACHE_DRIVER=array
+export SESSION_DRIVER=array
+export LOG_CHANNEL=stderr
+
+# --- Fix storage permissions ---
+echo "Fixing storage permissions..."
+chmod -R 775 /var/www/html/core/storage 2>/dev/null || true
+chown -R www-data:www-data /var/www/html/core/storage 2>/dev/null || true
+chmod -R 775 /var/www/html/core/bootstrap/cache 2>/dev/null || true
+chown -R www-data:www-data /var/www/html/core/bootstrap/cache 2>/dev/null || true
+mkdir -p /var/www/html/core/storage/logs 2>/dev/null || true
+chmod 775 /var/www/html/core/storage/logs 2>/dev/null || true
+touch /var/www/html/core/storage/logs/laravel.log 2>/dev/null || true
+chmod 664 /var/www/html/core/storage/logs/laravel.log 2>/dev/null || true
+chown www-data:www-data /var/www/html/core/storage/logs/laravel.log 2>/dev/null || true
+echo "Permissions fixed."
+
 # --- Step 1: Check DATABASE_URL ---
 if [ -z "$DATABASE_URL" ]; then
     echo "ERROR: DATABASE_URL is not set!"
