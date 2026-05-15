@@ -1,9 +1,4 @@
-\set ON_ERROR_STOP off
 SET standard_conforming_strings = ON;
-
-
-
-BEGIN;
 
 CREATE TABLE admins (
   id bigserial NOT NULL,
@@ -838,5 +833,4 @@ BEGIN
 END;
 $$;
 
-COMMIT;
 
