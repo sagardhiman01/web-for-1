@@ -31,10 +31,25 @@ COPY . /var/www/html/
 # Install PHP dependencies
 RUN cd /var/www/html/core && COMPOSER_MEMORY_LIMIT=-1 composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-reqs
 
-# Set permissions for Laravel
-RUN chown -R www-data:www-data /var/www/html \
+# Fix storage & cache directories — must exist and be writable
+RUN mkdir -p /var/www/html/core/storage/logs \
+    && mkdir -p /var/www/html/core/storage/framework/cache \
+    && mkdir -p /var/www/html/core/storage/framework/sessions \
+    && mkdir -p /var/www/html/core/storage/framework/views \
+    && mkdir -p /var/www/html/core/bootstrap/cache \
+    && touch /var/www/html/core/storage/logs/laravel.log \
+    && chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/core/storage \
-    && chmod -R 775 /var/www/html/core/bootstrap/cache
+    && chmod -R 775 /var/www/html/core/bootstrap/cache \
+    && chmod 664 /var/www/html/core/storage/logs/laravel.log
+
+# Force correct DB connection — PostgreSQL not MySQL
+ENV DB_CONNECTION=pgsql
+ENV DB_PORT=5432
+ENV CACHE_DRIVER=array
+ENV SESSION_DRIVER=array
+ENV LOG_CHANNEL=stderr
+ENV PURCHASECODE=activated
 
 # Update Apache configuration to allow overrides
 RUN echo '<Directory /var/www/html>\n\
@@ -44,7 +59,6 @@ RUN echo '<Directory /var/www/html>\n\
     && a2enconf override
 
 # Use PORT environment variable if available, otherwise 80
-# Render sets the PORT env variable automatically
 RUN sed -i 's/80/${PORT}/g' /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf
 
 # Make the start script executable
