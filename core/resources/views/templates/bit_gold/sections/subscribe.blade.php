@@ -5,10 +5,10 @@ $subscribeContent = getContent('subscribe.content', true);
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-10">
-                <div class="subscribe-wrapper bg_img" data-background="{{ getImage('assets/images/frontend/subscribe/' . @$subscribeContent->data_values->image, '1920x1281') }}">
+                <div class="subscribe-wrapper bg_img" data-background="{{ getImage('assets/images/frontend/subscribe/' . @$subscribeContent?->data_values->image, '1920x1281') }}">
                     <div class="row align-items-center">
                         <div class="col-lg-5">
-                            <h2 class="title">{{ __(@$subscribeContent->data_values->heading) }}</h2>
+                            <h2 class="title">{{ __(@$subscribeContent?->data_values->heading) }}</h2>
                         </div>
                         <div class="col-lg-7 mt-lg-0 mt-4">
                             <form class="subscribe-form" method="post">

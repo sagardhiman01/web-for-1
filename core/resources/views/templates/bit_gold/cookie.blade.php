@@ -3,7 +3,7 @@
 <section class="pt-120 pb-120">
     <div class="container">
         @php
-            echo $cookie->data_values->description
+            echo $cookie?->data_values->description
         @endphp
     </div>
 </section>

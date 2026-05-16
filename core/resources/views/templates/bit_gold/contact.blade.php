@@ -10,11 +10,11 @@
         <div class="contact-wrapper">
             <div class="row">
                 <div class="col-lg-6 contact-thumb bg_img"
-                    data-background="{{ getImage('assets/images/frontend/contact/'.@$contactContent->data_values->image,'1920x1280') }}">
+                    data-background="{{ getImage('assets/images/frontend/contact/'.@$contactContent?->data_values->image,'1920x1280') }}">
                 </div>
                 <div class="col-lg-6 contact-form-wrapper">
-                    <h2 class="font-weight-bold mb-2">{{ __(@$contactContent->data_values->heading) }}</h2>
-                    <p class="font-weight-bold">{{ __(@$contactContent->data_values->sub_heading) }}</p>
+                    <h2 class="font-weight-bold mb-2">{{ __(@$contactContent?->data_values->heading) }}</h2>
+                    <p class="font-weight-bold">{{ __(@$contactContent?->data_values->sub_heading) }}</p>
                     <form action="{{ route('contact') }}" method="post" class="contact-form verify-gcaptcha mt-4">
                         @csrf
                         <div class="row">
@@ -50,10 +50,10 @@
                     @foreach($contactElements as $contactElement)
                         <div class="col-md-4 col-sm-6 mb-30">
                             <div class="contact-item">
-                                @php echo $contactElement->data_values->icon @endphp
-                                    <h5 class="mt-2">{{ __(@$contactElement->data_values->title) }}</h5>
+                                @php echo $contactElement?->data_values->icon @endphp
+                                    <h5 class="mt-2">{{ __(@$contactElement?->data_values->title) }}</h5>
                                     <div class="mt-4">
-                                        <p>{{ __(@$contactElement->data_values->content) }}</p>
+                                        <p>{{ __(@$contactElement?->data_values->content) }}</p>
                                     </div>
                             </div><!-- contact-item end -->
                         </div>

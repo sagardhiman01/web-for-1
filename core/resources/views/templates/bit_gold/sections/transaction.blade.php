@@ -19,8 +19,8 @@
     <div class="row justify-content-center">
       <div class="col-lg-6 text-center">
         <div class="section-header">
-          <h2 class="section-title"><span class="font-weight-normal">{{ __(@$transactionContent->data_values->heading_w) }}</span> <b class="base--color">{{ __(@$transactionContent->data_values->heading_c) }}</b></h2>
-          <p>{{ __(@$transactionContent->data_values->sub_heading) }}</p>
+          <h2 class="section-title"><span class="font-weight-normal">{{ __(@$transactionContent?->data_values->heading_w) }}</span> <b class="base--color">{{ __(@$transactionContent?->data_values->heading_c) }}</b></h2>
+          <p>{{ __(@$transactionContent?->data_values->sub_heading) }}</p>
         </div>
       </div>
     </div><!-- row end -->
@@ -48,15 +48,15 @@
                   </tr>
                 </thead>
                 <tbody>
-                  @foreach($deposits as $data)
+                  @forelse($deposits ?? [] as $data)
                   <tr>
-                    @if(@$data->data_values)
+                    @if(@$data?->data_values)
                     <td data-label="@lang('Name')">
-                        {{__(@$data->data_values->name)}}
+                        {{__(@$data?->data_values->name)}}
                     </td>
-                    <td data-label="@lang('Date')">{{@$data->data_values->date}}</td>
-                    <td data-label="@lang('Amount')">{{@$data->data_values->amount}} {{ $general->cur_text }}</td>
-                    <td data-label="@lang('Gateway')">{{__(@$data->data_values->gateway)}}</td>
+                    <td data-label="@lang('Date')">{{@$data?->data_values->date}}</td>
+                    <td data-label="@lang('Amount')">{{@$data?->data_values->amount}} {{ $general->cur_text }}</td>
+                    <td data-label="@lang('Gateway')">{{__(@$data?->data_values->gateway)}}</td>
                     @else
                       <td data-label="@lang('Name')">
                           {{ __(@$data->user->fullname) }}
@@ -66,7 +66,8 @@
                       <td data-label="@lang('Gateway')">{{__($data->gateway->name)}}</td>
                     @endif
                   </tr>
-                  @endforeach
+                  @empty
+                  @endforelse
                 </tbody>
               </table>
             </div>
@@ -83,13 +84,13 @@
                   </tr>
                 </thead>
                 <tbody>
-                   @foreach($withdrawals as $data)
+                   @forelse($withdrawals ?? [] as $data)
                   <tr>
-                    @if(@$data->data_values)
-                        <td data-label="@lang('Name')">{{__(@$data->data_values->name)}}</td>
-                        <td data-label="@lang('Date')">{{@$data->data_values->date}}</td>
-                        <td data-label="@lang('Amount')">{{@$data->data_values->amount}} {{ $general->cur_text }}</td>
-                        <td data-label="@lang('Method')">{{__(@$data->data_values->gateway)}}</td>
+                    @if(@$data?->data_values)
+                        <td data-label="@lang('Name')">{{__(@$data?->data_values->name)}}</td>
+                        <td data-label="@lang('Date')">{{@$data?->data_values->date}}</td>
+                        <td data-label="@lang('Amount')">{{@$data?->data_values->amount}} {{ $general->cur_text }}</td>
+                        <td data-label="@lang('Method')">{{__(@$data?->data_values->gateway)}}</td>
                     @else
                         <td data-label="@lang('Name')">{{ __($data->user->fullname) }}</td>
                         <td data-label="@lang('Date')">{{showDateTime($data->created_at,'Y-m-d')}}</td>
@@ -97,7 +98,8 @@
                         <td data-label="@lang('Method')">{{__($data->method->name)}}</td>
                     @endif
                   </tr>
-                  @endforeach
+                  @empty
+                  @endforelse
                 </tbody>
               </table>
             </div>

@@ -6,15 +6,15 @@
     @endphp
 
 
-    <div class="account-section bg_img" data-background="{{ getImage('assets/images/frontend/register/' . @$registerContent->data_values->section_bg) }}">
+    <div class="account-section bg_img" data-background="{{ getImage('assets/images/frontend/register/' . @$registerContent?->data_values->section_bg) }}">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-7">
                     <div class="account-card">
-                        <div class="account-card__header bg_img overlay--one" data-background="{{ getImage('assets/images/frontend/register/' . @$registerContent->data_values->card_bg) }}">
-                            <h2 class="section-title">{{ __(@$registerContent->data_values->heading_w) }} <span class="base--color">{{ __(@$registerContent->data_values->heading_c) }}</span>
+                        <div class="account-card__header bg_img overlay--one" data-background="{{ getImage('assets/images/frontend/register/' . @$registerContent?->data_values->card_bg) }}">
+                            <h2 class="section-title">{{ __(@$registerContent?->data_values->heading_w) }} <span class="base--color">{{ __(@$registerContent?->data_values->heading_c) }}</span>
                             </h2>
-                            <p>{{ __(@$registerContent->data_values->sub_heading) }}</p>
+                            <p>{{ __(@$registerContent?->data_values->sub_heading) }}</p>
                         </div>
                         <div class="account-card__body">
                             <form action="{{ route('user.register') }}" method="POST" class="verify-gcaptcha">
@@ -109,7 +109,7 @@
                                         <input class="form-check-input" type="checkbox" id="agree" @checked(old('agree')) name="agree" required>
                                         <label class="form-check-label" for="agree">@lang('I agree with')</label> <span>
                                             @foreach ($policyPages as $policy)
-                                                <a href="{{ route('policy.pages', [slug($policy->data_values->title), $policy->id]) }}">{{ __($policy->data_values->title) }}</a>
+                                                <a href="{{ route('policy.pages', [slug($policy?->data_values->title), $policy->id]) }}">{{ __($policy?->data_values->title) }}</a>
                                                 @if (!$loop->last)
                                                     ,
                                                 @endif

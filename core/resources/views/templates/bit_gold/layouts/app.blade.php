@@ -36,8 +36,8 @@
     @stack('fbComment')
     <div class="preloader">
         <div class="preloader__imges">
-            <img src="{{ getImage('assets/images/frontend/preloader/' . @$preloader->data_values->image_one, '120x120') }}" class="preloader__img one" alt="@lang('No Image')">
-            <img src="{{ getImage('assets/images/frontend/preloader/' . @$preloader->data_values->image_two, '120x120') }}" class="preloader__img two" alt="@lang('No Image')">
+            <img src="{{ getImage('assets/images/frontend/preloader/' . @$preloader?->data_values->image_one, '120x120') }}" class="preloader__img one" alt="@lang('No Image')">
+            <img src="{{ getImage('assets/images/frontend/preloader/' . @$preloader?->data_values->image_two, '120x120') }}" class="preloader__img two" alt="@lang('No Image')">
         </div>
     </div>
 
@@ -65,13 +65,13 @@
         $cookie = App\Models\Frontend::where('data_keys', 'cookie.data')->first();
         
     @endphp
-    @if ($cookie->data_values->status == 1 && !\Cookie::get('gdpr_cookie'))
+    @if ($cookie?->data_values->status == 1 && !\Cookie::get('gdpr_cookie'))
         <!-- cookies dark version start -->
         <div class="cookies-card text-center hide">
             <div class="cookies-card__icon bg--base">
                 <i class="las la-cookie-bite"></i>
             </div>
-            <p class="mt-4 cookies-card__content">{{ $cookie->data_values->short_desc }} <a href="{{ route('cookie.policy') }}" class="text-primary" target="_blank">@lang('learn more')</a></p>
+            <p class="mt-4 cookies-card__content">{{ $cookie?->data_values->short_desc }} <a href="{{ route('cookie.policy') }}" class="text-primary" target="_blank">@lang('learn more')</a></p>
             <div class="cookies-card__btn mt-4">
                 <a href="javascript:void(0)" class="btn btn--base text-white w-100 policy">@lang('Allow')</a>
             </div>

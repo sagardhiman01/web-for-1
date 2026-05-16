@@ -5,14 +5,14 @@
 @endphp
 
 <!-- account section start -->
-<div class="account-section bg_img" data-background="{{ getImage('assets/images/frontend/login/'.@$loginContent->data_values->section_bg) }}">
+<div class="account-section bg_img" data-background="{{ getImage('assets/images/frontend/login/'.@$loginContent?->data_values->section_bg) }}">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-xl-5 col-lg-7">
                 <div class="account-card">
-                    <div class="account-card__header bg_img overlay--one" data-background="{{ getImage('assets/images/frontend/login/'.@$loginContent->data_values->card_bg) }}">
-                        <h2 class="section-title">{{ __(@$loginContent->data_values->heading_w) }} <span class="base--color">{{ __(@$loginContent->data_values->heading_c) }}</span></h2>
-                        <p>{{ __(@$loginContent->data_values->sub_heading) }}</p>
+                    <div class="account-card__header bg_img overlay--one" data-background="{{ getImage('assets/images/frontend/login/'.@$loginContent?->data_values->card_bg) }}">
+                        <h2 class="section-title">{{ __(@$loginContent?->data_values->heading_w) }} <span class="base--color">{{ __(@$loginContent?->data_values->heading_c) }}</span></h2>
+                        <p>{{ __(@$loginContent?->data_values->sub_heading) }}</p>
                     </div>
                     <div class="account-card__body">
                         <form method="POST" action="{{ route('user.login') }}"

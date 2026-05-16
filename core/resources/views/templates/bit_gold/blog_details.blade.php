@@ -7,20 +7,20 @@
             <div class="col-lg-8 col-md-8">
                 <div class="blog-details-wrapper">
                     <div class="blog-details__thumb">
-                        <img src="{{ getImage('assets/images/frontend/blog/'.$blog->data_values->image,'920x480') }}"
+                        <img src="{{ getImage('assets/images/frontend/blog/'.$blog?->data_values->image,'920x480') }}"
                             alt="image">
                     </div><!-- blog-details__thumb end -->
                     <div class="blog-details__content">
-                        <h4 class="blog-details__title">{{ __($blog->data_values->title) }}</h4>
-                        <p>{{ strip_tags($blog->data_values->description) }}</p>
+                        <h4 class="blog-details__title">{{ __($blog?->data_values->title) }}</h4>
+                        <p>{{ strip_tags($blog?->data_values->description) }}</p>
                     </div><!-- blog-details__content end -->
                     <div class="blog-details__footer">
                         <h4 class="caption">@lang('Share This Post')</h4>
                         <ul class="social__links">
                             <li><a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(url()->current()) }}"><i
                                         class="fab fa-facebook-f"></i></a></li>
-                            <li><a href="https://twitter.com/intent/tweet?text={{ __($blog->data_values->title) }}&amp;url={{urlencode(url()->current())}}"><i class="fab fa-twitter"></i></a></li>
-                            <li><a href="http://www.linkedin.com/shareArticle?mini=true&amp;url={{ urlencode(url()->current()) }}&amp;title={{ __($blog->data_values->title) }}&amp;summary=dit is de linkedin summary"><i
+                            <li><a href="https://twitter.com/intent/tweet?text={{ __($blog?->data_values->title) }}&amp;url={{urlencode(url()->current())}}"><i class="fab fa-twitter"></i></a></li>
+                            <li><a href="http://www.linkedin.com/shareArticle?mini=true&amp;url={{ urlencode(url()->current()) }}&amp;title={{ __($blog?->data_values->title) }}&amp;summary=dit is de linkedin summary"><i
                                         class="fab fa-linkedin"></i></a></li>
                         </ul>
                     </div><!-- blog-details__footer end -->
@@ -39,11 +39,11 @@
                             @foreach($blogs as $k=> $data)
                                 <li class="small-post">
                                     <div class="small-post__thumb"><img
-                                            src="{{ getImage('assets/images/frontend/blog/thumb_'.$data->data_values->image,'460x240') }}"
+                                            src="{{ getImage('assets/images/frontend/blog/thumb_'.$data?->data_values->image,'460x240') }}"
                                             alt="@lang('image')"></div>
                                     <div class="small-post__content">
                                         <h5 class="post__title"><a
-                                                href="{{ route('blog.details',[slug($data->data_values->title),$data->id]) }}">{{ __($data->data_values->title) }}</a>
+                                                href="{{ route('blog.details',[slug($data?->data_values->title),$data->id]) }}">{{ __($data?->data_values->title) }}</a>
                                         </h5>
                                     </div>
                                 </li>
