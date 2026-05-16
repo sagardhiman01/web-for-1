@@ -21,7 +21,7 @@
         $cookie = App\Models\Frontend::where('data_keys', 'cookie.data')->first();
         
     @endphp
-    @if ($cookie->data_values->status == 1 && !\Cookie::get('gdpr_cookie'))
+    @if ($cookie?->data_values?->status == 1 && !\Cookie::get('gdpr_cookie'))
 
     @endif
 
