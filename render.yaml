@@ -26,7 +26,7 @@ services:
       - key: CACHE_DRIVER
         value: array
       - key: SESSION_DRIVER
-        value: array
+        value: file
       - key: LOG_CHANNEL
         value: stderr
       - key: DATABASE_URL
