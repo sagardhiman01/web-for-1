@@ -93,7 +93,7 @@ class AppServiceProvider extends ServiceProvider
                 ]);
             });
 
-            if ($general->force_ssl) {
+            if ($general->force_ssl || env('FORCE_HTTPS') === 'true' || env('FORCE_HTTPS') === true) {
                 \URL::forceScheme('https');
             }
         } catch (\Throwable $e) {
