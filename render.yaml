@@ -21,6 +21,8 @@ services:
         value: "true"
       - key: FORCE_HTTPS
         value: "true"
+      - key: TRUSTED_PROXIES
+        value: "*"
       - key: PURCHASECODE
         value: activated
       - key: CACHE_DRIVER
