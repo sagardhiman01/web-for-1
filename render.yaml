@@ -18,7 +18,9 @@ services:
       - key: APP_URL
         value: https://web-for-1.onrender.com
       - key: SESSION_SECURE_COOKIE
-        value: "true"
+        value: "false"
+      - key: SESSION_SAME_SITE
+        value: lax
       - key: FORCE_HTTPS
         value: "true"
       - key: TRUSTED_PROXIES
