@@ -1,13 +1,13 @@
 @php
 
     $latestDeposit = \App\Models\Deposit::with('user', 'gateway')->where('status', 1)->latest()->limit(10)->get();
-    $fakeDeposit = \App\Models\Frontend::where('data_keys','transaction.element')->whereJsonContains('data_values->trx_type','deposit')->limit(10)->get();
+    $fakeDeposit = \App\Models\Frontend::where('data_keys','transaction.element')->where('data_values','LIKE','%\"trx_type\":\"deposit\"%')->limit(10)->get();
     $deposits =  $latestDeposit->merge($fakeDeposit);
     $deposits = $deposits->sortByDesc('created_at')->take(10);
 
 
     $latestWithdraw = \App\Models\Withdrawal::with('user', 'method')->where('status', 1)->latest()->limit(10)->get();
-    $fakeWithdraw = \App\Models\Frontend::where('data_keys','transaction.element')->whereJsonContains('data_values->trx_type','withdraw')->limit(10)->get();
+    $fakeWithdraw = \App\Models\Frontend::where('data_keys','transaction.element')->where('data_values','LIKE','%\"trx_type\":\"withdraw\"%')->limit(10)->get();
 
     $withdrawals =  $latestWithdraw->merge($fakeWithdraw);
     $withdrawals = $withdrawals->sortByDesc('created_at')->take(10);
