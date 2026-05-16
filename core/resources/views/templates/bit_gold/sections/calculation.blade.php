@@ -51,6 +51,13 @@
                     var selectedPlan = $('#changePlan').find(':selected');
                     var planId = selectedPlan.val();
                     var data = selectedPlan.data();
+                    
+                    if (!data || data.fixed_amount === undefined) {
+                        $('.invest-input').val('');
+                        $('.invest-range').text('');
+                        return;
+                    }
+
                     var fixedAmount = parseFloat(data.fixed_amount).toFixed(2);
                     var minimumAmount = parseFloat(data.minimum_amount).toFixed(2);
                     var maximumAmount = parseFloat(data.maximum_amount).toFixed(2);
