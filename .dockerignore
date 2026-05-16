@@ -1,0 +1,5 @@
+.git
+/core/vendor
+/core/node_modules
+.env
+*.log
