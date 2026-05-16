@@ -1,7 +1,7 @@
 @php
     $topInvestor = \App\Models\Invest::with('user')
         ->selectRaw('SUM(amount) as totalAmount, user_id')
-        ->orderBy('totalAmount', 'desc')
+        ->orderByRaw('SUM(amount) desc')
         ->groupBy('user_id')
         ->limit(8)
         ->get();
