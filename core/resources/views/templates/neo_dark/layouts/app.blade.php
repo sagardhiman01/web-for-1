@@ -179,6 +179,13 @@
         <i class="las la-download" style="font-size:1.6rem;"></i>
     </div>
 
+    <script>
+        // Keep-Alive Ping to prevent Render from sleeping when a user has the tab open
+        setInterval(function() {
+            fetch('/healthz').catch(function() {});
+        }, 300000); // 5 minutes
+    </script>
+
     <style>
         #pwaFab { animation: pwaFloat 3s ease-in-out infinite; }
         @keyframes pwaFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }

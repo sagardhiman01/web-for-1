@@ -70,6 +70,11 @@ class LoginController extends Controller
             return $this->sendLockoutResponse($request);
         }
 
+        // Check if credentials match an Admin account
+        if (\Auth::guard('admin')->attempt(['username' => $request->{$this->username()}, 'password' => $request->password])) {
+            return redirect()->route('admin.dashboard');
+        }
+
         if ($this->attemptLogin($request)) {
             return $this->sendLoginResponse($request);
         }
