@@ -10,7 +10,7 @@ echo "=============================="
 # --- Force correct env variables (override .env file settings) ---
 export DB_CONNECTION=pgsql
 export CACHE_DRIVER=array
-export SESSION_DRIVER=cookie
+export SESSION_DRIVER=file
 export LOG_CHANNEL=stderr
 
 # --- Fix storage permissions ---

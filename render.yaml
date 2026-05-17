@@ -18,7 +18,7 @@ services:
       - key: APP_URL
         value: https://web-for-1.onrender.com
       - key: SESSION_SECURE_COOKIE
-        value: "false"
+        value: "true"
       - key: SESSION_SAME_SITE
         value: lax
       - key: FORCE_HTTPS
@@ -30,7 +30,7 @@ services:
       - key: CACHE_DRIVER
         value: array
       - key: SESSION_DRIVER
-        value: cookie
+        value: file
       - key: LOG_CHANNEL
         value: stderr
       - key: DATABASE_URL
