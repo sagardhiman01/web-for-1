@@ -33,7 +33,9 @@ class AdminController extends Controller
         $widget['mobile_unverified_users'] = User::mobileUnverified()->count();
 
         // user Browsing, Country, Operating Log
-        $userLoginData = UserLogin::where('created_at', '>=', Carbon::now()->subDay(30))->get(['browser', 'os', 'country']);
+        $userLoginData = \Cache::remember('admin_dashboard_user_login_data', 600, function() {
+            return UserLogin::where('created_at', '>=', Carbon::now()->subDay(30))->get(['browser', 'os', 'country']);
+        });
 
         $chart['user_browser_counter'] = $userLoginData->groupBy('browser')->map(function ($item, $key) {
             return collect($item)->count();
@@ -56,21 +58,25 @@ class AdminController extends Controller
         $withdrawals['total_withdraw_charge']   = Withdrawal::approved()->sum('charge');
 
         $trxReport['date'] = collect([]);
-        $plusTrx           = Transaction::where('trx_type', '+')->where('created_at', '>=', Carbon::now()->subDays(30))
-            ->selectRaw("SUM(amount) as amount, $dateFormat as date")
-            ->orderBy('date')
-            ->groupBy('date')
-            ->get();
+        $plusTrx = \Cache::remember('admin_dashboard_plus_trx', 300, function() use ($dateFormat) {
+            return Transaction::where('trx_type', '+')->where('created_at', '>=', Carbon::now()->subDays(30))
+                ->selectRaw("SUM(amount) as amount, $dateFormat as date")
+                ->orderBy('date')
+                ->groupBy('date')
+                ->get();
+        });
 
         $plusTrx->map(function ($trxData) use ($trxReport) {
             $trxReport['date']->push($trxData->date);
         });
 
-        $minusTrx = Transaction::where('trx_type', '-')->where('created_at', '>=', Carbon::now()->subDays(30))
-            ->selectRaw("SUM(amount) as amount, $dateFormat as date")
-            ->orderBy('date')
-            ->groupBy('date')
-            ->get();
+        $minusTrx = \Cache::remember('admin_dashboard_minus_trx', 300, function() use ($dateFormat) {
+            return Transaction::where('trx_type', '-')->where('created_at', '>=', Carbon::now()->subDays(30))
+                ->selectRaw("SUM(amount) as amount, $dateFormat as date")
+                ->orderBy('date')
+                ->groupBy('date')
+                ->get();
+        });
 
         $minusTrx->map(function ($trxData) use ($trxReport) {
             $trxReport['date']->push($trxData->date);
@@ -83,22 +89,26 @@ class AdminController extends Controller
         $report['deposit_month_amount']  = collect([]);
         $report['withdraw_month_amount'] = collect([]);
 
-        $depositsMonth = Deposit::where('created_at', '>=', Carbon::now()->subYear())
-            ->where('status', 1)
-            ->selectRaw("SUM( CASE WHEN status = 1 THEN amount END) as depositAmount")
-            ->selectRaw("$monthFormat as months")
-            ->orderByRaw("MIN(created_at) asc")
-            ->groupBy('months')->get();
+        $depositsMonth = \Cache::remember('admin_dashboard_deposits_month', 300, function() use ($monthFormat) {
+            return Deposit::where('created_at', '>=', Carbon::now()->subYear())
+                ->where('status', 1)
+                ->selectRaw("SUM( CASE WHEN status = 1 THEN amount END) as depositAmount")
+                ->selectRaw("$monthFormat as months")
+                ->orderByRaw("MIN(created_at) asc")
+                ->groupBy('months')->get();
+        });
 
         $depositsMonth->map(function ($depositData) use ($report) {
             $report['months']->push($depositData->months);
             $report['deposit_month_amount']->push(getAmount($depositData->depositAmount));
         });
-        $withdrawalMonth = Withdrawal::where('created_at', '>=', Carbon::now()->subYear())->where('status', 1)
-            ->selectRaw("SUM( CASE WHEN status = 1 THEN amount END) as withdrawAmount")
-            ->selectRaw("$monthFormat as months")
-            ->orderByRaw("MIN(created_at) asc")
-            ->groupBy('months')->get();
+        $withdrawalMonth = \Cache::remember('admin_dashboard_withdrawals_month', 300, function() use ($monthFormat) {
+            return Withdrawal::where('created_at', '>=', Carbon::now()->subYear())->where('status', 1)
+                ->selectRaw("SUM( CASE WHEN status = 1 THEN amount END) as withdrawAmount")
+                ->selectRaw("$monthFormat as months")
+                ->orderByRaw("MIN(created_at) asc")
+                ->groupBy('months')->get();
+        });
         $withdrawalMonth->map(function ($withdrawData) use ($report) {
             if (!in_array($withdrawData->months, $report['months']->toArray())) {
                 $report['months']->push($withdrawData->months);

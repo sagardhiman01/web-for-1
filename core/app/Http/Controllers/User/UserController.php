@@ -34,36 +34,44 @@ class UserController extends Controller
         $data['totalTicket']           = SupportTicket::where('user_id', $userId)->count();
         $data['transactions']          = Transaction::where('user_id', $userId)->latest('id')->limit(8)->get();
 
-        $depositStats = Deposit::where('user_id', $userId)
-            ->selectRaw('COALESCE(SUM(amount),0) as requested_deposits')
-            ->selectRaw('COALESCE(SUM(CASE WHEN status != 0 THEN amount ELSE 0 END),0) as submitted_deposits')
-            ->selectRaw('COALESCE(SUM(CASE WHEN status = 1 THEN amount ELSE 0 END),0) as successful_deposits')
-            ->selectRaw('COALESCE(SUM(CASE WHEN status = 0 THEN amount ELSE 0 END),0) as initiated_deposits')
-            ->selectRaw('COALESCE(SUM(CASE WHEN status = 2 AND method_code >= 1000 THEN amount ELSE 0 END),0) as pending_deposits')
-            ->selectRaw('COALESCE(SUM(CASE WHEN status = 3 AND method_code >= 1000 THEN amount ELSE 0 END),0) as rejected_deposits')
-            ->first();
+        $depositStats = \Cache::remember("user_deposit_stats_{$userId}", 120, function() use ($userId) {
+            return Deposit::where('user_id', $userId)
+                ->selectRaw('COALESCE(SUM(amount),0) as requested_deposits')
+                ->selectRaw('COALESCE(SUM(CASE WHEN status != 0 THEN amount ELSE 0 END),0) as submitted_deposits')
+                ->selectRaw('COALESCE(SUM(CASE WHEN status = 1 THEN amount ELSE 0 END),0) as successful_deposits')
+                ->selectRaw('COALESCE(SUM(CASE WHEN status = 0 THEN amount ELSE 0 END),0) as initiated_deposits')
+                ->selectRaw('COALESCE(SUM(CASE WHEN status = 2 AND method_code >= 1000 THEN amount ELSE 0 END),0) as pending_deposits')
+                ->selectRaw('COALESCE(SUM(CASE WHEN status = 3 AND method_code >= 1000 THEN amount ELSE 0 END),0) as rejected_deposits')
+                ->first();
+        });
 
-        $withdrawStats = Withdrawal::where('user_id', $userId)
-            ->selectRaw('COALESCE(SUM(amount),0) as requested_withdrawals')
-            ->selectRaw('COALESCE(SUM(CASE WHEN status != 0 THEN amount ELSE 0 END),0) as submitted_withdrawals')
-            ->selectRaw('COALESCE(SUM(CASE WHEN status = 1 THEN amount ELSE 0 END),0) as successful_withdrawals')
-            ->selectRaw('COALESCE(SUM(CASE WHEN status = 2 THEN amount ELSE 0 END),0) as pending_withdrawals')
-            ->selectRaw('COALESCE(SUM(CASE WHEN status = 3 THEN amount ELSE 0 END),0) as rejected_withdrawals')
-            ->selectRaw('COALESCE(SUM(CASE WHEN status = 0 THEN amount ELSE 0 END),0) as initiated_withdrawals')
-            ->first();
+        $withdrawStats = \Cache::remember("user_withdraw_stats_{$userId}", 120, function() use ($userId) {
+            return Withdrawal::where('user_id', $userId)
+                ->selectRaw('COALESCE(SUM(amount),0) as requested_withdrawals')
+                ->selectRaw('COALESCE(SUM(CASE WHEN status != 0 THEN amount ELSE 0 END),0) as submitted_withdrawals')
+                ->selectRaw('COALESCE(SUM(CASE WHEN status = 1 THEN amount ELSE 0 END),0) as successful_withdrawals')
+                ->selectRaw('COALESCE(SUM(CASE WHEN status = 2 THEN amount ELSE 0 END),0) as pending_withdrawals')
+                ->selectRaw('COALESCE(SUM(CASE WHEN status = 3 THEN amount ELSE 0 END),0) as rejected_withdrawals')
+                ->selectRaw('COALESCE(SUM(CASE WHEN status = 0 THEN amount ELSE 0 END),0) as initiated_withdrawals')
+                ->first();
+        });
 
-        $investStats = Invest::where('user_id', $userId)
-            ->selectRaw('COALESCE(SUM(amount),0) as invests')
-            ->selectRaw('COALESCE(SUM(CASE WHEN status = 0 THEN amount ELSE 0 END),0) as completed_invests')
-            ->selectRaw('COALESCE(SUM(CASE WHEN status = 1 THEN amount ELSE 0 END),0) as running_invests')
-            ->selectRaw('COALESCE(SUM(CASE WHEN status = 1 AND wallet_type = "deposit_wallet" THEN amount ELSE 0 END),0) as deposit_wallet_invests')
-            ->selectRaw('COALESCE(SUM(CASE WHEN status = 1 AND wallet_type = "interest_wallet" THEN amount ELSE 0 END),0) as interest_wallet_invests')
-            ->first();
+        $investStats = \Cache::remember("user_invest_stats_{$userId}", 120, function() use ($userId) {
+            return Invest::where('user_id', $userId)
+                ->selectRaw('COALESCE(SUM(amount),0) as invests')
+                ->selectRaw('COALESCE(SUM(CASE WHEN status = 0 THEN amount ELSE 0 END),0) as completed_invests')
+                ->selectRaw('COALESCE(SUM(CASE WHEN status = 1 THEN amount ELSE 0 END),0) as running_invests')
+                ->selectRaw('COALESCE(SUM(CASE WHEN status = 1 AND wallet_type = "deposit_wallet" THEN amount ELSE 0 END),0) as deposit_wallet_invests')
+                ->selectRaw('COALESCE(SUM(CASE WHEN status = 1 AND wallet_type = "interest_wallet" THEN amount ELSE 0 END),0) as interest_wallet_invests')
+                ->first();
+        });
 
-        $transactionStats = Transaction::where('user_id', $userId)
-            ->selectRaw('COALESCE(SUM(CASE WHEN remark = "interest" THEN amount ELSE 0 END),0) as interests')
-            ->selectRaw('COALESCE(SUM(CASE WHEN remark = "referral_commission" THEN amount ELSE 0 END),0) as referral_earnings')
-            ->first();
+        $transactionStats = \Cache::remember("user_trx_stats_{$userId}", 120, function() use ($userId) {
+            return Transaction::where('user_id', $userId)
+                ->selectRaw('COALESCE(SUM(CASE WHEN remark = "interest" THEN amount ELSE 0 END),0) as interests')
+                ->selectRaw('COALESCE(SUM(CASE WHEN remark = "referral_commission" THEN amount ELSE 0 END),0) as referral_earnings')
+                ->first();
+        });
 
         $data['requestedDeposits']   = $depositStats->requested_deposits ?? 0;
         $data['submittedDeposits']   = $depositStats->submitted_deposits ?? 0;
@@ -111,13 +119,15 @@ class UserController extends Controller
         $dbDriver = \DB::connection()->getDriverName();
         $dateFormat = $dbDriver === 'pgsql' ? "TO_CHAR(created_at, 'YYYY-MM-DD')" : "DATE_FORMAT(created_at,'%Y-%m-%d')";
 
-        $data['chartData'] = Transaction::where('remark', 'interest')
-            ->where('created_at', '>=', Carbon::now()->subDays(30))
-            ->where('user_id', $userId)
-            ->selectRaw("SUM(amount) as amount, $dateFormat as date")
-            ->orderBy('date', 'asc')
-            ->groupBy('date')
-            ->get();
+        $data['chartData'] = \Cache::remember("user_dashboard_chart_{$userId}", 300, function() use ($userId, $dateFormat) {
+            return Transaction::where('remark', 'interest')
+                ->where('created_at', '>=', Carbon::now()->subDays(30))
+                ->where('user_id', $userId)
+                ->selectRaw("SUM(amount) as amount, $dateFormat as date")
+                ->orderBy('date', 'asc')
+                ->groupBy('date')
+                ->get();
+        });
 
         $activeCode = InvestmentCode::where('status', 1)->latest()->first();
         $isActiveCodeValid = (bool) $activeCode && (!$activeCode->expires_at || now()->lte($activeCode->expires_at));
