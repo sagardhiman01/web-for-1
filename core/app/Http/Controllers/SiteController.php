@@ -31,12 +31,21 @@ class SiteController extends Controller
         }
         $pageTitle = 'Home';
         $sections  = Page::where('tempname', $this->activeTemplate)->where('slug', '/')->first();
+        if (!$sections) {
+            $sections = Page::where('slug', '/')->first();
+        }
         return view($this->activeTemplate . 'home', compact('pageTitle', 'sections'));
     }
 
     public function pages($slug)
     {
-        $page      = Page::where('tempname', $this->activeTemplate)->where('slug', $slug)->firstOrFail();
+        $page      = Page::where('tempname', $this->activeTemplate)->where('slug', $slug)->first();
+        if (!$page) {
+            $page = Page::where('slug', $slug)->first();
+        }
+        if (!$page) {
+            abort(404);
+        }
         $pageTitle = $page->name;
         $sections  = $page->secs;
         return view($this->activeTemplate . 'pages', compact('pageTitle', 'sections'));
@@ -131,7 +140,10 @@ class SiteController extends Controller
         $blogs     = Frontend::where('data_keys', 'blog.element')->where('template_name', activeTemplateName())->orderBy('id', 'desc')->paginate(getPaginate(9));
         $pageTitle = 'Blogs';
         $page      = Page::where('tempname', $this->activeTemplate)->where('slug', 'blogs')->first();
-        $sections  = $page->secs;
+        if (!$page) {
+            $page  = Page::where('slug', 'blogs')->first();
+        }
+        $sections  = $page ? $page->secs : null;
         return view($this->activeTemplate . 'blogs', compact('blogs', 'pageTitle', 'sections'));
     }
 
@@ -187,6 +199,9 @@ class SiteController extends Controller
         $pageTitle       = "Investment Plan";
         $plans           = Plan::where('status', 1)->get();
         $sections        = Page::where('tempname', $this->activeTemplate)->where('slug', 'plans')->first();
+        if (!$sections) {
+            $sections = Page::where('slug', 'plans')->first();
+        }
         $layout          = 'frontend';
         $gatewayCurrency = null;
         $view            = 'plan';
