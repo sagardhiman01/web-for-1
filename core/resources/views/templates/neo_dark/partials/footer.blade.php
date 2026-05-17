@@ -28,7 +28,9 @@
                         <ul class="privacy-links">
                             <li><a href="{{ route('whitepaper') }}" class="base--color">@lang('Whitepaper')</a></li>
                             @foreach($links as $link)
-                                <li><a href="{{ route('policy.pages',[slug($link->data_values->title),$link->id]) }}" class="base--color">@lang     ($link->data_values->title)</a></li>
+                                @if(@$link->data_values->title)
+                                    <li><a href="{{ route('policy.pages',[slug($link->data_values->title),$link->id]) }}" class="base--color">@lang($link->data_values->title)</a></li>
+                                @endif
                             @endforeach
                         </ul>
                     </div>
