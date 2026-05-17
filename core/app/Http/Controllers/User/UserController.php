@@ -115,7 +115,7 @@ class UserController extends Controller
             ->where('created_at', '>=', Carbon::now()->subDays(30))
             ->where('user_id', $userId)
             ->selectRaw("SUM(amount) as amount, $dateFormat as date")
-            ->orderBy('created_at', 'asc')
+            ->orderBy('date', 'asc')
             ->groupBy('date')
             ->get();
 

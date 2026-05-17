@@ -58,7 +58,7 @@ class AdminController extends Controller
         $trxReport['date'] = collect([]);
         $plusTrx           = Transaction::where('trx_type', '+')->where('created_at', '>=', Carbon::now()->subDays(30))
             ->selectRaw("SUM(amount) as amount, $dateFormat as date")
-            ->orderBy('created_at')
+            ->orderBy('date')
             ->groupBy('date')
             ->get();
 
@@ -68,7 +68,7 @@ class AdminController extends Controller
 
         $minusTrx = Transaction::where('trx_type', '-')->where('created_at', '>=', Carbon::now()->subDays(30))
             ->selectRaw("SUM(amount) as amount, $dateFormat as date")
-            ->orderBy('created_at')
+            ->orderBy('date')
             ->groupBy('date')
             ->get();
 
