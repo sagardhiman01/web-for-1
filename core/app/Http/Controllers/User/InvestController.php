@@ -4,7 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Gateway\PaymentController;
-use App\Lib\HyipLab;
+use App\Lib\PlatformEngine;
 use App\Models\GatewayCurrency;
 use App\Models\Invest;
 use App\Models\Plan;
@@ -65,8 +65,8 @@ class InvestController extends Controller
             return back()->withNotify($notify);
         }
 
-        $hyip = new HyipLab($user, $plan);
-        $hyip->invest($amount, $wallet);
+        $platformEngine = new PlatformEngine($user, $plan);
+        $platformEngine->invest($amount, $wallet);
 
         $notify[] = ['success','Invested to plan successfully'];
         return back()->withNotify($notify);

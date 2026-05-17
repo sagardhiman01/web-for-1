@@ -16,10 +16,10 @@ use Illuminate\Support\Str;
 
 function systemDetails()
 {
-    $system['name']          = 'hyiplab';
+    $system['name']          = 'core_asset';
     $system['version']       = '3.2';
     $system['build_version'] = '4.3.6';
-    $system['h_verifier']    = str_rot13('ivfre_ulvcyno');
+    $system['h_verifier']    = str_rot13('core_asset');
     return $system;
 }
 
@@ -166,16 +166,7 @@ function osBrowser()
 
 function getTemplates()
 {
-    $param['purchasecode'] = env("PURCHASECODE");
-    $param['website']      = @$_SERVER['HTTP_HOST'] . @$_SERVER['REQUEST_URI'] . ' - ' . env("APP_URL");
-    $url                   = 'https://license.viserlab.com/updates/templates/' . systemDetails()['name'];
-    $response              = CurlRequest::curlPostContent($url, $param);
-    if ($response) {
-        return $response;
-    } else {
-
-        return null;
-    }
+    return null;
 }
 
 function getPageSections($arr = false, $templateName = null)

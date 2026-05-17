@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Gateway;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\User\UserController;
 use App\Lib\FormProcessor;
-use App\Lib\HyipLab;
+use App\Lib\PlatformEngine;
 use App\Models\AdminNotification;
 use App\Models\Deposit;
 use App\Models\GatewayCurrency;
@@ -125,7 +125,7 @@ class PaymentController extends Controller
 
             $general = GeneralSetting::first();
             if ($general->deposit_commission == 1) {
-                HyipLab::levelCommission($user, $deposit->amount, 'deposit_commission', $deposit->trx, $general);
+                PlatformEngine::levelCommission($user, $deposit->amount, 'deposit_commission', $deposit->trx, $general);
             }
 
             // Custom Referral Bonus Logic (10% to direct referrer)
@@ -169,8 +169,8 @@ class PaymentController extends Controller
 
             if ($deposit->plan_id) {
                 $plan = Plan::where('status', 1)->findOrFail($deposit->plan_id);
-                $hyip = new HyipLab($user, $plan);
-                $hyip->invest($deposit->amount, 'deposit_wallet');
+                $platformEngine = new PlatformEngine($user, $plan);
+                $platformEngine->invest($deposit->amount, 'deposit_wallet');
             }
         }
     }

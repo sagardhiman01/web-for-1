@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Controller;
-use App\Lib\HyipLab;
+use App\Lib\PlatformEngine;
 use App\Models\GatewayCurrency;
 use App\Models\Invest;
 use App\Models\Plan;
@@ -143,8 +143,8 @@ class InvestController extends Controller
             return getResponse('insufficient_balance', 'error', 'Insufficient balance');
         }
 
-        $hyip = new HyipLab($user, $plan);
-        $hyip->invest($amount, $wallet);
+        $platformEngine = new PlatformEngine($user, $plan);
+        $platformEngine->invest($amount, $wallet);
 
         return getResponse('invested', 'success', 'Invested to plan successfully');
     }

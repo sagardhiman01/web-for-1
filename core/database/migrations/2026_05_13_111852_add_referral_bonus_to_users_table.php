@@ -13,9 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->decimal('referral_bonus', 28, 8)->default(0)->after('interest_wallet');
-        });
+        if (!Schema::hasColumn('users', 'referral_bonus')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->decimal('referral_bonus', 28, 8)->default(0)->after('interest_wallet');
+            });
+        }
     }
 
     /**

@@ -22,7 +22,9 @@
 @guest
     @if($sections->secs != null)
         @foreach(json_decode($sections->secs) as $sec)
-            @include($activeTemplate.'sections.'.$sec)
+            @if(view()->exists($activeTemplate.'sections.'.$sec))
+                @include($activeTemplate.'sections.'.$sec)
+            @endif
         @endforeach
     @endif
 @endguest

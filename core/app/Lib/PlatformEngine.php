@@ -10,7 +10,7 @@ use App\Models\TimeSetting;
 use App\Models\Transaction;
 use Carbon\Carbon;
 
-class HyipLab
+class PlatformEngine
 {
     /**
     * Instance of investor user

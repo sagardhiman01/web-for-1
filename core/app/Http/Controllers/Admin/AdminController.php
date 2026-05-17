@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Lib\CurlRequest;
-use App\Lib\HyipLab;
+use App\Lib\PlatformEngine;
 use App\Models\AdminNotification;
 use App\Models\Deposit;
 use App\Models\Invest;
@@ -132,10 +132,10 @@ class AdminController extends Controller
             }
         }
 
-        $isHoliday      = HyipLab::isHoliDay(now()->toDateTimeString(), gs());
+        $isHoliday      = PlatformEngine::isHoliDay(now()->toDateTimeString(), gs());
         $nextWorkingDay = now()->toDateString();
         if ($isHoliday) {
-            $nextWorkingDay = HyipLab::nextWorkingDay(24);
+            $nextWorkingDay = PlatformEngine::nextWorkingDay(24);
             $nextWorkingDay = Carbon::parse($nextWorkingDay)->toDateString();
         }
 

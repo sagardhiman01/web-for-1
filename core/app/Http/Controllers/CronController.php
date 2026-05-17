@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Lib\HyipLab;
+use App\Lib\PlatformEngine;
 use App\Models\GeneralSetting;
 use App\Models\Invest;
 use App\Models\Nft;
@@ -45,7 +45,7 @@ class CronController extends Controller
         $invests = Invest::where('status', 1)->where('next_time', '<=', $now)->orderBy('last_time')->take(100)->get();
         foreach ($invests as $invest) {
             $now  = $now;
-            $next = HyipLab::nextWorkingDay($invest->plan->time);
+            $next = PlatformEngine::nextWorkingDay($invest->plan->time);
             $user = $invest->user;
 
             $invest->return_rec_time += 1;
@@ -76,7 +76,7 @@ class CronController extends Controller
             // Give Referral Commission if Enabled
             if ($general->invest_commission == 1) {
                 $commissionType = 'invest_return_commission';
-                HyipLab::levelCommission($user, $invest->interest, $commissionType, $trx, $general);
+                PlatformEngine::levelCommission($user, $invest->interest, $commissionType, $trx, $general);
             }
 
             // Complete the investment if user get full amount as plan

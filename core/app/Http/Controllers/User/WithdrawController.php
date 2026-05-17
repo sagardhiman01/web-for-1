@@ -4,7 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Lib\FormProcessor;
-use App\Lib\HyipLab;
+use App\Lib\PlatformEngine;
 use App\Models\AdminNotification;
 use App\Models\Transaction;
 use App\Models\User;
@@ -21,11 +21,11 @@ class WithdrawController extends Controller
         $pageTitle      = 'Withdraw Money';
         $savedWithdrawAddress = trim((string) (auth()->user()->bep20_wallet_address ?? ''));
 
-        $isHoliday      = HyipLab::isHoliDay(now()->toDateTimeString(), gs());
+        $isHoliday      = PlatformEngine::isHoliDay(now()->toDateTimeString(), gs());
         $nextWorkingDay = now()->toDateString();
 
         if ($isHoliday && !gs()->holiday_withdraw) {
-            $nextWorkingDay = HyipLab::nextWorkingDay(24);
+            $nextWorkingDay = PlatformEngine::nextWorkingDay(24);
             $nextWorkingDay = Carbon::parse($nextWorkingDay)->toDateString();
         }
 
@@ -115,7 +115,7 @@ class WithdrawController extends Controller
     public function withdrawStore(Request $request)
     {
 
-        $isHoliday = HyipLab::isHoliDay(now()->toDateTimeString(), gs());
+        $isHoliday = PlatformEngine::isHoliDay(now()->toDateTimeString(), gs());
         if ($isHoliday && !gs()->holiday_withdraw) {
             $notify[] = ['error', 'Today is holiday. You\'re unable to withdraw today'];
             return back()->withNotify($notify);

@@ -261,7 +261,7 @@
                 }else{
                     var modal = $('#editModal');
                 }
-                var plan = new HyipPlan(modal, $(this));
+                var plan = new PlatformPlan(modal, $(this));
 
                 modal.find('[name=invest_type]').change(function() {
                     plan.getInvestType($(this).val());
@@ -282,7 +282,7 @@
             });
 
 
-            class HyipPlan{
+            class PlatformPlan{
                 constructor(modal,btn){
                     this.modal = modal;
                     this.btn = btn;

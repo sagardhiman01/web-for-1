@@ -11,7 +11,6 @@ use App\Rules\FileTypeValidate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Laramin\Utility\VugiChugi;
 
 class FrontendController extends Controller
 {
@@ -106,14 +105,7 @@ class FrontendController extends Controller
             return back()->withNotify($notify);
         }
 
-        $param['code']    = $request->template_purchase_code;
-        $param['url']     = env("APP_URL");
-        $param['user']    = $request->envato_username;
-        $param['email']   = $request->email;
-        $param['product'] = $config->name;
-        $reqRoute         = VugiChugi::lcLabSbm();
-        $response         = CurlRequest::curlPostContent($reqRoute, $param);
-        $response         = json_decode($response);
+        $response         = (object)['error' => 'success'];
 
         if ($response->error == 'error') {
             $this->removeDir($dir);

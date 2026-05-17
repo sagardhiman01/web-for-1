@@ -5,7 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Lib\FormProcessor;
 use App\Lib\GoogleAuthenticator;
-use App\Lib\HyipLab;
+use App\Lib\PlatformEngine;
 use App\Models\Deposit;
 use App\Models\Form;
 use App\Models\Invest;
@@ -109,10 +109,10 @@ class UserController extends Controller
             ->latest('id')
             ->first('amount');
 
-        $data['isHoliday']      = HyipLab::isHoliDay(now()->toDateTimeString(), gs());
+        $data['isHoliday']      = PlatformEngine::isHoliDay(now()->toDateTimeString(), gs());
         $data['nextWorkingDay'] = now()->toDateString();
         if ($data['isHoliday']) {
-            $data['nextWorkingDay'] = HyipLab::nextWorkingDay(24);
+            $data['nextWorkingDay'] = PlatformEngine::nextWorkingDay(24);
             $data['nextWorkingDay'] = Carbon::parse($data['nextWorkingDay'])->toDateString();
         }
 
