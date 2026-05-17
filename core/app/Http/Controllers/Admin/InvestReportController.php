@@ -31,7 +31,7 @@ class InvestReportController extends Controller
         });
   
         $recentInvests = Invest::with('plan')->orderBy('id', 'desc')->limit(3)->get();
-        $firstInvestYear = Invest::selectRaw("DATE_FORMAT(created_at, '%Y') as date")->first();
+        $firstInvestYear = Invest::selectRaw($this->getDateFormat('%Y') . " as date")->first();
 
         return view('admin.investment.statistics',compact('pageTitle', 'widget', 'investByPlans', 'recentInvests', 'totalInvest', 'firstInvestYear'));
     }
@@ -49,7 +49,7 @@ class InvestReportController extends Controller
             $prevTime = now()->startOfWeek()->subWeek();
         }
         
-        $invests = Invest::where('created_at', '>=', $time)->selectRaw("SUM(amount) as amount, DATE_FORMAT(created_at, '%Y-%m-%d') as date")->groupBy('date')->get();
+        $invests = Invest::where('created_at', '>=', $time)->selectRaw("SUM(amount) as amount, " . $this->getDateFormat('%Y-%m-%d') . " as date")->groupBy('date')->get();
         $totalInvest = $invests->sum('amount');
         
         $invests = $invests->mapWithKeys(function($invest){
@@ -126,13 +126,13 @@ class InvestReportController extends Controller
 
     public function investInterestChart(Request $request)
     {
-        $invests = Invest::whereYear('created_at',$request->year)->whereMonth('created_at',$request->month)->selectRaw("SUM(amount) as amount, DATE_FORMAT(created_at, '%d') as date")->groupBy('date')->get();
+        $invests = Invest::whereYear('created_at',$request->year)->whereMonth('created_at',$request->month)->selectRaw("SUM(amount) as amount, " . $this->getDateFormat('%d') . " as date")->groupBy('date')->get();
 
         $investsDate = $invests->map(function($invest){
             return $invest->date;
         })->toArray();
 
-        $interests = Transaction::whereYear('created_at',$request->year)->whereMonth('created_at',$request->month)->where('remark','interest')->selectRaw("SUM(amount) as amount, DATE_FORMAT(created_at, '%d') as date")->groupBy('date')->get();
+        $interests = Transaction::whereYear('created_at',$request->year)->whereMonth('created_at',$request->month)->where('remark','interest')->selectRaw("SUM(amount) as amount, " . $this->getDateFormat('%d') . " as date")->groupBy('date')->get();
 
         $interestsDate = $interests->map(function($interest){
             return $interest->date;
@@ -151,5 +151,19 @@ class InvestReportController extends Controller
             'invests'   => $investsData,
             'interests' => $interestsData,
         ];
+    }
+
+    private function getDateFormat($format)
+    {
+        $dbDriver = \DB::connection()->getDriverName();
+        if ($dbDriver === 'pgsql') {
+            $map = [
+                '%Y' => 'YYYY',
+                '%Y-%m-%d' => 'YYYY-MM-DD',
+                '%d' => 'DD'
+            ];
+            return "TO_CHAR(created_at, '" . ($map[$format] ?? 'YYYY-MM-DD') . "')";
+        }
+        return "DATE_FORMAT(created_at, '" . $format . "')";
     }
 }  

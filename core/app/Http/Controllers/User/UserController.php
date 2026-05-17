@@ -108,10 +108,13 @@ class UserController extends Controller
             $data['nextWorkingDay'] = Carbon::parse($data['nextWorkingDay'])->toDateString();
         }
 
+        $dbDriver = \DB::connection()->getDriverName();
+        $dateFormat = $dbDriver === 'pgsql' ? "TO_CHAR(created_at, 'YYYY-MM-DD')" : "DATE_FORMAT(created_at,'%Y-%m-%d')";
+
         $data['chartData'] = Transaction::where('remark', 'interest')
             ->where('created_at', '>=', Carbon::now()->subDays(30))
             ->where('user_id', $userId)
-            ->selectRaw("SUM(amount) as amount, DATE_FORMAT(created_at,'%Y-%m-%d') as date")
+            ->selectRaw("SUM(amount) as amount, $dateFormat as date")
             ->orderBy('created_at', 'asc')
             ->groupBy('date')
             ->get();

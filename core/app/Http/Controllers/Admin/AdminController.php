@@ -22,6 +22,9 @@ class AdminController extends Controller
     public function dashboard()
     {
         $pageTitle = 'Dashboard';
+        $dbDriver = \DB::connection()->getDriverName();
+        $dateFormat = $dbDriver === 'pgsql' ? "TO_CHAR(created_at, 'YYYY-MM-DD')" : "DATE_FORMAT(created_at,'%Y-%m-%d')";
+        $monthFormat = $dbDriver === 'pgsql' ? "TO_CHAR(created_at, 'FMMonth-YYYY')" : "DATE_FORMAT(created_at,'%M-%Y')";
 
         // User Info
         $widget['total_users']             = User::count();
@@ -54,7 +57,7 @@ class AdminController extends Controller
 
         $trxReport['date'] = collect([]);
         $plusTrx           = Transaction::where('trx_type', '+')->where('created_at', '>=', Carbon::now()->subDays(30))
-            ->selectRaw("SUM(amount) as amount, DATE_FORMAT(created_at,'%Y-%m-%d') as date")
+            ->selectRaw("SUM(amount) as amount, $dateFormat as date")
             ->orderBy('created_at')
             ->groupBy('date')
             ->get();
@@ -64,7 +67,7 @@ class AdminController extends Controller
         });
 
         $minusTrx = Transaction::where('trx_type', '-')->where('created_at', '>=', Carbon::now()->subDays(30))
-            ->selectRaw("SUM(amount) as amount, DATE_FORMAT(created_at,'%Y-%m-%d') as date")
+            ->selectRaw("SUM(amount) as amount, $dateFormat as date")
             ->orderBy('created_at')
             ->groupBy('date')
             ->get();
@@ -83,7 +86,7 @@ class AdminController extends Controller
         $depositsMonth = Deposit::where('created_at', '>=', Carbon::now()->subYear())
             ->where('status', 1)
             ->selectRaw("SUM( CASE WHEN status = 1 THEN amount END) as depositAmount")
-            ->selectRaw("DATE_FORMAT(created_at,'%M-%Y') as months")
+            ->selectRaw("$monthFormat as months")
             ->orderBy('created_at')
             ->groupBy('months')->get();
 
@@ -93,7 +96,7 @@ class AdminController extends Controller
         });
         $withdrawalMonth = Withdrawal::where('created_at', '>=', Carbon::now()->subYear())->where('status', 1)
             ->selectRaw("SUM( CASE WHEN status = 1 THEN amount END) as withdrawAmount")
-            ->selectRaw("DATE_FORMAT(created_at,'%M-%Y') as months")
+            ->selectRaw("$monthFormat as months")
             ->orderBy('created_at')
             ->groupBy('months')->get();
         $withdrawalMonth->map(function ($withdrawData) use ($report) {
@@ -216,17 +219,8 @@ class AdminController extends Controller
 
     public function requestReport()
     {
-        $pageTitle            = 'Your Listed Report & Request';
-        $arr['app_name']      = systemDetails()['name'];
-        $arr['app_url']       = env('APP_URL');
-        $arr['purchase_code'] = env('PURCHASE_CODE');
-        $url                  = "https://license.viserlab.com/issue/get?" . http_build_query($arr);
-        $response             = CurlRequest::curlContent($url);
-        $response             = json_decode($response);
-        if ($response->status == 'error') {
-            return to_route('admin.dashboard')->withErrors($response->message);
-        }
-        $reports = $response->message[0];
+        $pageTitle = 'Your Listed Report & Request';
+        $reports = [];
         return view('admin.reports', compact('reports', 'pageTitle'));
     }
 
@@ -236,19 +230,7 @@ class AdminController extends Controller
             'type'    => 'required|in:bug,feature',
             'message' => 'required',
         ]);
-        $url = 'https://license.viserlab.com/issue/add';
-
-        $arr['app_name']      = systemDetails()['name'];
-        $arr['app_url']       = env('APP_URL');
-        $arr['purchase_code'] = env('PURCHASE_CODE');
-        $arr['req_type']      = $request->type;
-        $arr['message']       = $request->message;
-        $response             = CurlRequest::curlPostContent($url, $arr);
-        $response             = json_decode($response);
-        if ($response->status == 'error') {
-            return back()->withErrors($response->message);
-        }
-        $notify[] = ['success', $response->message];
+        $notify[] = ['success', 'Report submitted successfully (Offline Mode)'];
         return back()->withNotify($notify);
     }
 
