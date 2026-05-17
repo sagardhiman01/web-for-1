@@ -53,16 +53,19 @@ class AppServiceProvider extends ServiceProvider
             view()->share($viewShare);
 
             view()->composer('admin.partials.sidenav', function ($view) {
-                $view->with([
-                    'bannedUsersCount'           => User::banned()->count(),
-                    'emailUnverifiedUsersCount'  => User::emailUnverified()->count(),
-                    'mobileUnverifiedUsersCount' => User::mobileUnverified()->count(),
-                    'kycUnverifiedUsersCount'    => User::kycUnverified()->count(),
-                    'kycPendingUsersCount'       => User::kycPending()->count(),
-                    'pendingTicketCount'         => SupportTicket::whereIN('status', [0, 2])->count(),
-                    'pendingDepositsCount'       => Deposit::pending()->count(),
-                    'pendingWithdrawCount'       => Withdrawal::pending()->count(),
-                ]);
+                $counts = Cache::remember('admin_sidenav_counts', 15, function () {
+                    return [
+                        'bannedUsersCount'           => User::banned()->count(),
+                        'emailUnverifiedUsersCount'  => User::emailUnverified()->count(),
+                        'mobileUnverifiedUsersCount' => User::mobileUnverified()->count(),
+                        'kycUnverifiedUsersCount'    => User::kycUnverified()->count(),
+                        'kycPendingUsersCount'       => User::kycPending()->count(),
+                        'pendingTicketCount'         => SupportTicket::whereIN('status', [0, 2])->count(),
+                        'pendingDepositsCount'       => Deposit::pending()->count(),
+                        'pendingWithdrawCount'       => Withdrawal::pending()->count(),
+                    ];
+                });
+                $view->with($counts);
             });
         } catch (\Throwable $e) {
             // Silence DB errors during initial boot/server run
@@ -76,10 +79,13 @@ class AppServiceProvider extends ServiceProvider
 
         try {
             view()->composer('admin.partials.topnav', function ($view) {
-                $view->with([
-                    'adminNotifications'     => AdminNotification::where('is_read', 0)->with('user')->orderBy('id', 'desc')->take(10)->get(),
-                    'adminNotificationCount' => AdminNotification::where('is_read', 0)->count(),
-                ]);
+                $notifications = Cache::remember('admin_topnav_notifications', 15, function () {
+                    return [
+                        'adminNotifications'     => AdminNotification::where('is_read', 0)->with('user')->orderBy('id', 'desc')->take(10)->get(),
+                        'adminNotificationCount' => AdminNotification::where('is_read', 0)->count(),
+                    ];
+                });
+                $view->with($notifications);
             });
 
             view()->composer('partials.seo', function ($view) {

@@ -13,28 +13,48 @@ class ClientInfo{
 	{
 	    $ip = getRealIP();
 
+	    return \Cache::remember('ip_info_' . $ip, 86400, function() use ($ip) {
+	        $data = [
+	            'country' => 'India',
+	            'city' => 'Delhi',
+	            'area' => 'DL',
+	            'code' => 'IN',
+	            'long' => '77.2090',
+	            'lat' => '28.6139',
+	            'ip' => $ip,
+	            'time' => date('Y-m-d h:i:s A')
+	        ];
 
-	    $xml = @simplexml_load_file("http://www.geoplugin.net/xml.gp?ip=" . $ip);
+	        if ($ip === '127.0.0.1' || $ip === '::1') {
+	            return $data;
+	        }
 
+	        try {
+	            $ch = curl_init();
+	            curl_setopt($ch, CURLOPT_URL, "http://www.geoplugin.net/xml.gp?ip=" . $ip);
+	            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
+	            curl_setopt($ch, CURLOPT_TIMEOUT, 2);
+	            $response = curl_exec($ch);
+	            curl_close($ch);
 
-	    $country = @$xml->geoplugin_countryName;
-	    $city = @$xml->geoplugin_city;
-	    $area = @$xml->geoplugin_areaCode;
-	    $code = @$xml->geoplugin_countryCode;
-	    $long = @$xml->geoplugin_longitude;
-	    $lat = @$xml->geoplugin_latitude;
+	            if ($response) {
+	                $xml = @simplexml_load_string($response);
+	                if ($xml) {
+	                    $data['country'] = (string) $xml->geoplugin_countryName ?: 'India';
+	                    $data['city'] = (string) $xml->geoplugin_city ?: 'Delhi';
+	                    $data['area'] = (string) $xml->geoplugin_areaCode ?: 'DL';
+	                    $data['code'] = (string) $xml->geoplugin_countryCode ?: 'IN';
+	                    $data['long'] = (string) $xml->geoplugin_longitude ?: '77.2090';
+	                    $data['lat'] = (string) $xml->geoplugin_latitude ?: '28.6139';
+	                }
+	            }
+	        } catch (\Exception $e) {
+	            // Fail silently
+	        }
 
-	    $data['country'] = $country ?? [];
-	    $data['city'] = $city ?? [];
-	    $data['area'] = $area ?? [];
-	    $data['code'] = $code ?? [];
-	    $data['long'] = $long ?? [];
-	    $data['lat'] = $lat ?? [];
-	    $data['ip'] = $ip;
-	    $data['time'] = date('Y-m-d h:i:s A');
-
-
-	    return $data;
+	        return $data;
+	    });
 	}
 
     /**
