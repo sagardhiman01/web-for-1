@@ -15,12 +15,12 @@ class ClientInfo{
 
 	    return \Cache::remember('ip_info_' . $ip, 86400, function() use ($ip) {
 	        $data = [
-	            'country' => 'India',
-	            'city' => 'Delhi',
-	            'area' => 'DL',
-	            'code' => 'IN',
-	            'long' => '77.2090',
-	            'lat' => '28.6139',
+	            'country' => ['India'],
+	            'city' => ['Delhi'],
+	            'area' => ['DL'],
+	            'code' => ['IN'],
+	            'long' => ['77.2090'],
+	            'lat' => ['28.6139'],
 	            'ip' => $ip,
 	            'time' => date('Y-m-d h:i:s A')
 	        ];
@@ -41,12 +41,12 @@ class ClientInfo{
 	            if ($response) {
 	                $xml = @simplexml_load_string($response);
 	                if ($xml) {
-	                    $data['country'] = (string) $xml->geoplugin_countryName ?: 'India';
-	                    $data['city'] = (string) $xml->geoplugin_city ?: 'Delhi';
-	                    $data['area'] = (string) $xml->geoplugin_areaCode ?: 'DL';
-	                    $data['code'] = (string) $xml->geoplugin_countryCode ?: 'IN';
-	                    $data['long'] = (string) $xml->geoplugin_longitude ?: '77.2090';
-	                    $data['lat'] = (string) $xml->geoplugin_latitude ?: '28.6139';
+	                    $data['country'] = [(string) $xml->geoplugin_countryName ?: 'India'];
+	                    $data['city'] = [(string) $xml->geoplugin_city ?: 'Delhi'];
+	                    $data['area'] = [(string) $xml->geoplugin_areaCode ?: 'DL'];
+	                    $data['code'] = [(string) $xml->geoplugin_countryCode ?: 'IN'];
+	                    $data['long'] = [(string) $xml->geoplugin_longitude ?: '77.2090'];
+	                    $data['lat'] = [(string) $xml->geoplugin_latitude ?: '28.6139'];
 	                }
 	            }
 	        } catch (\Exception $e) {
