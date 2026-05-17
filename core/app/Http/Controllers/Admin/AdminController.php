@@ -87,7 +87,7 @@ class AdminController extends Controller
             ->where('status', 1)
             ->selectRaw("SUM( CASE WHEN status = 1 THEN amount END) as depositAmount")
             ->selectRaw("$monthFormat as months")
-            ->orderBy('created_at')
+            ->orderByRaw("MIN(created_at) asc")
             ->groupBy('months')->get();
 
         $depositsMonth->map(function ($depositData) use ($report) {
@@ -97,7 +97,7 @@ class AdminController extends Controller
         $withdrawalMonth = Withdrawal::where('created_at', '>=', Carbon::now()->subYear())->where('status', 1)
             ->selectRaw("SUM( CASE WHEN status = 1 THEN amount END) as withdrawAmount")
             ->selectRaw("$monthFormat as months")
-            ->orderBy('created_at')
+            ->orderByRaw("MIN(created_at) asc")
             ->groupBy('months')->get();
         $withdrawalMonth->map(function ($withdrawData) use ($report) {
             if (!in_array($withdrawData->months, $report['months']->toArray())) {
