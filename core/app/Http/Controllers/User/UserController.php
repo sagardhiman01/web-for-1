@@ -61,15 +61,15 @@ class UserController extends Controller
                 ->selectRaw('COALESCE(SUM(amount),0) as invests')
                 ->selectRaw('COALESCE(SUM(CASE WHEN status = 0 THEN amount ELSE 0 END),0) as completed_invests')
                 ->selectRaw('COALESCE(SUM(CASE WHEN status = 1 THEN amount ELSE 0 END),0) as running_invests')
-                ->selectRaw('COALESCE(SUM(CASE WHEN status = 1 AND wallet_type = "deposit_wallet" THEN amount ELSE 0 END),0) as deposit_wallet_invests')
-                ->selectRaw('COALESCE(SUM(CASE WHEN status = 1 AND wallet_type = "interest_wallet" THEN amount ELSE 0 END),0) as interest_wallet_invests')
+                ->selectRaw("COALESCE(SUM(CASE WHEN status = 1 AND wallet_type = 'deposit_wallet' THEN amount ELSE 0 END),0) as deposit_wallet_invests")
+                ->selectRaw("COALESCE(SUM(CASE WHEN status = 1 AND wallet_type = 'interest_wallet' THEN amount ELSE 0 END),0) as interest_wallet_invests")
                 ->first();
         });
 
         $transactionStats = \Cache::remember("user_trx_stats_{$userId}", 120, function() use ($userId) {
             return Transaction::where('user_id', $userId)
-                ->selectRaw('COALESCE(SUM(CASE WHEN remark = "interest" THEN amount ELSE 0 END),0) as interests')
-                ->selectRaw('COALESCE(SUM(CASE WHEN remark = "referral_commission" THEN amount ELSE 0 END),0) as referral_earnings')
+                ->selectRaw("COALESCE(SUM(CASE WHEN remark = 'interest' THEN amount ELSE 0 END),0) as interests")
+                ->selectRaw("COALESCE(SUM(CASE WHEN remark = 'referral_commission' THEN amount ELSE 0 END),0) as referral_earnings")
                 ->first();
         });
 
