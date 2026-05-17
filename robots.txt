@@ -5,4 +5,4 @@ Disallow: /core/
 Disallow: /user/login
 Disallow: /user/register
 
-Sitemap: /sitemap.xml
+Sitemap: https://coreasset.site/sitemap.xml
