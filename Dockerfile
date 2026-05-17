@@ -47,7 +47,7 @@ RUN mkdir -p /var/www/html/core/storage/logs \
 ENV DB_CONNECTION=pgsql
 ENV DB_PORT=5432
 ENV CACHE_DRIVER=array
-ENV SESSION_DRIVER=array
+ENV SESSION_DRIVER=cookie
 ENV LOG_CHANNEL=stderr
 ENV PURCHASECODE=activated
 
