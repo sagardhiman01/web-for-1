@@ -28,7 +28,7 @@ services:
       - key: PURCHASECODE
         value: activated
       - key: CACHE_DRIVER
-        value: array
+        value: file
       - key: SESSION_DRIVER
         value: file
       - key: LOG_CHANNEL

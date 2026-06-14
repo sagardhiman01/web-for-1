@@ -9,7 +9,7 @@ echo "=============================="
 
 # --- Force correct env variables (override .env file settings) ---
 export DB_CONNECTION=pgsql
-export CACHE_DRIVER=array
+export CACHE_DRIVER=file
 export SESSION_DRIVER=file
 export LOG_CHANNEL=stderr
 
@@ -73,10 +73,17 @@ echo "Running seeder..."
 php artisan db:seed --class=InitialDataSeeder --force 2>&1 || true
 echo "Seeder done."
 
-# --- Step 6: Clear caches ---
-echo "Clearing caches..."
+# --- Step 6: Optimize & Cache ---
+echo "Optimizing application..."
 php artisan config:clear 2>&1 || true
 php artisan cache:clear 2>&1 || true
+php artisan view:clear 2>&1 || true
+php artisan route:clear 2>&1 || true
+
+# Generate production caches
+php artisan config:cache 2>&1 || true
+php artisan view:cache 2>&1 || true
+php artisan route:cache 2>&1 || true
 
 # --- Step 7: Fix Apache port ---
 echo "Configuring Apache port: $PORT"
