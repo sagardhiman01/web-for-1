@@ -35,6 +35,7 @@ echo "DATABASE_URL is set. OK."
 
 # --- Step 2: Check if DB is reachable ---
 echo "Testing database connection..."
+export PGSSLMODE=prefer
 psql "$DATABASE_URL" -c "SELECT 1;" 2>&1
 if [ $? -ne 0 ]; then
     echo "ERROR: Cannot connect to database! Check DATABASE_URL."
