@@ -51,12 +51,7 @@ echo "Admins table check result: '$ADMINS_EXISTS'"
 if [ "$ADMINS_EXISTS" != "1" ]; then
     echo "Fresh database. Wiping and importing base schema..."
 
-    # Wipe database
-    echo "Dropping and recreating public schema..."
-    psql "$DATABASE_URL" -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;" 2>&1
-    echo "Schema wiped OK."
-
-    # Import SQL dump (errors are expected in legacy data, they won't stop us)
+    # Check if database has tables. If not, import. We removed the DROP SCHEMA command.
     echo "Importing database_pg.sql..."
     psql "$DATABASE_URL" --set ON_ERROR_STOP=off -f /var/www/html/install/database_pg.sql 2>&1 || true
     echo "SQL import done (some errors above are normal for legacy data)."
@@ -89,6 +84,18 @@ php artisan route:cache 2>&1 || true
 # --- Step 7: Fix Apache port ---
 echo "Configuring Apache port: $PORT"
 sed -i "s/\${PORT}/$PORT/g" /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf 2>&1 || true
+
+echo "=============================="
+echo "=== STARTING KEEP-ALIVE ==="
+echo "=============================="
+(
+    # Wait for the server to start
+    sleep 30
+    while true; do
+        curl -s https://web-for-1.onrender.com > /dev/null
+        sleep 600
+    done
+) &
 
 echo "=============================="
 echo "=== STARTING APACHE SERVER ==="
